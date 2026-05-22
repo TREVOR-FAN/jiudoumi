@@ -542,9 +542,9 @@ neAudio.addEventListener('ended',()=>{
   if(isPlaying)advanceTrack();
 });
 
-function playNetEase(id){
+function playNetEase(id,title){
   if(!id)return;
-  neAudio.src='/api/stream?id='+id;
+  neAudio.src='/api/stream?id='+id+'&title='+encodeURIComponent(title||'');
   showNetEaseStatus('加载中...','loading');
   neAudio.load();
   neAudio.play().catch(()=>{
@@ -795,7 +795,7 @@ function playCurrent(){
   if(item.neteaseId){
     speakingPhase='content';
     updatePlayerUI();
-    playNetEase(item.neteaseId);
+    playNetEase(item.neteaseId, item.title);
     scheduleAdvance(item.duration||60);
   }else{
     if(isPlaying)advanceTrack();
