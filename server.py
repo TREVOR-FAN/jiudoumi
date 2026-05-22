@@ -25,9 +25,9 @@ try:
         data = json.load(f)
         _song_cache = data.get('songs', {})
     ct = len([s for s in _song_cache.values() if s.get('url')])
-    print(f'[cache] Loaded {ct} cached song URLs')
-except Exception:
-    pass
+    print(f'[cache] Loaded {ct} cached song URLs from {_cache_file}')
+except Exception as e:
+    print(f'[cache] WARNING: Failed to load cache: {e}', file=sys.stderr)
 
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -40,6 +40,16 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/api/stream'):
             self.handle_stream()
+        elif self.path == '/api/ping':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            cache_count = len([s for s in _song_cache.values() if s.get('url')])
+            self.wfile.write(json.dumps({
+                'ok': True,
+                'cache_songs': cache_count,
+                'cache_file': os.path.basename(_cache_file),
+            }).encode())
         else:
             super().do_GET()
 
@@ -90,7 +100,18 @@ def _api_request(url, timeout=10):
     }
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read())
+        raw = resp.read()
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            # NetEase sometimes returns non-JSON (e.g. captcha page)
+            text = raw.decode('utf-8', errors='replace')
+            start = text.find('{')
+            if start >= 0:
+                end = text.rfind('}')
+                if end > start:
+                    return json.loads(text[start:end+1])
+            return None
 
 
 def get_url_by_id(song_id):
