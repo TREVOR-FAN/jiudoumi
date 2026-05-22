@@ -55,7 +55,7 @@ body{
 /* Daily Parenting Quote Card */
 .daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:20px 18px 16px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
 .daily-quote-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,152,0,0.08) 0%,transparent 70%);border-radius:50%}
-.daily-quote-icon{font-size:28px;margin-bottom:8px;display:block}
+.daily-quote-icon{width:80px;height:80px;margin-bottom:8px;display:block;object-fit:contain}
 .daily-quote-text{font-size:15px;line-height:1.8;color:#5D4037;font-weight:500;position:relative;z-index:1}
 .daily-quote-text::before{content:'"';font-size:32px;color:rgba(255,152,0,0.2);position:absolute;left:-4px;top:-10px;font-family:Georgia,serif}
 .daily-quote-text::after{content:'"';font-size:32px;color:rgba(255,152,0,0.2);font-family:Georgia,serif}
@@ -257,9 +257,9 @@ body{
   </div>
 
   <div class="section" id="daily-quote-section">
-    <div class="section-title"><span>💡</span> 每日育儿语录</div>
+    <div class="section-title"><span>💡</span> 豆米成长语录</div>
     <div class="daily-quote-card" id="daily-quote-card">
-      <span class="daily-quote-icon">🌱</span>
+      <img class="daily-quote-icon" src="images/doudou.png" alt="豆米">
       <div class="daily-quote-text" id="daily-quote-text"></div>
       <div class="daily-quote-source" id="daily-quote-source"></div>
     </div>
