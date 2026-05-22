@@ -69,7 +69,13 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def _api_request(url, timeout=10):
-    req = urllib.request.Request(url, headers={'User-Agent': UA, 'Referer': REFERER})
+    headers = {
+        'User-Agent': UA,
+        'Referer': REFERER,
+        'X-Forwarded-For': '202.106.0.20',
+        'X-Real-IP': '202.106.0.20',
+    }
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read())
 
