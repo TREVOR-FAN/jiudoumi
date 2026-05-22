@@ -696,6 +696,14 @@ function previewVoice(){
   synth.speak(u);
 }
 
+function getTimeGreeting(){
+  const h=new Date().getHours();
+  if(h<6)return '夜深了';
+  if(h<12)return '早安';
+  if(h<14)return '午安';
+  if(h<18)return '下午好';
+  return '晚安';
+}
 function updateTodayDate(){
   const n=new Date(),wd=['日','一','二','三','四','五','六'];
   document.getElementById('today-date').innerHTML=`<span style="font-size:16px">📅</span> ${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${wd[n.getDay()]}`;
@@ -713,7 +721,8 @@ function renderHome(){
   document.getElementById('daily-quote-source').textContent=tip.source;
 
   if(profile){
-    document.getElementById('welcome-line').innerHTML=`早安，<span class="baby-name">${profile.name}</span>的家长`;
+    const gr=getTimeGreeting();
+document.getElementById('welcome-line').innerHTML=`${gr}，<span class="baby-name">${profile.name}</span>的家长`;
     document.getElementById('no-profile-banner').style.display='none';
     const ad=getAgeMonthsAndDays(profile.birthDate);
     const e=Z_EMOJI[profile.zodiac]||'⭐';
