@@ -38,7 +38,7 @@ body{
 .header{background:linear-gradient(135deg,#FFD166,#FFE599 60%,#FFF0C0);border-radius:0 0 48px 48px;padding:24px 16px 20px;margin:-16px -16px 0}
 .header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
 .date-text{font-size:12px;color:rgba(51,51,51,0.5);margin-top:6px;white-space:nowrap}
-.welcome{font-size:14px;font-weight:400;color:#333;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.welcome{font-size:28px;font-weight:500;color:#333;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .baby-name{color:var(--primary)}
 /* Daily Parenting Quote Card */
 .daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:20px 18px 16px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
@@ -116,9 +116,14 @@ body{
 /* Now Playing */
 .now-playing{padding:0 20px 16px;text-align:center}
 .now-type{font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:8px}
-.now-art{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 14px}
+.now-art{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 14px;position:relative}
 .now-art.song{background:linear-gradient(135deg,#EF476F,#F5958E);box-shadow:0 8px 32px rgba(239,71,111,0.35)}
 .now-art.reading{background:linear-gradient(135deg,#06D6A0,#4ECDC4);box-shadow:0 8px 32px rgba(6,214,160,0.35)}
+.now-art.playing{animation:artPulse 1.5s ease-in-out infinite}
+.now-art.playing::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);animation:rippleOut 1.5s ease-out infinite}
+.now-art.playing::after{content:'';position:absolute;inset:-14px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);animation:rippleOut 1.5s ease-out .5s infinite}
+@keyframes artPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes rippleOut{0%{opacity:1;transform:scale(.9)}100%{opacity:0;transform:scale(1.15)}}
 .now-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px}
 .now-title-zh{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:4px}
 .now-source{font-size:11px;color:rgba(255,255,255,0.35);font-style:italic}
@@ -281,7 +286,6 @@ body{
   </div>
 
   <div class="player-controls">
-    <button class="ctrl-btn prev-btn" onclick="prevSong()" title="上一首">⏮</button>
     <button class="main-play-btn" id="main-play-btn" onclick="togglePlay()">▶</button>
     <button class="ctrl-btn next-btn" onclick="nextSong()" title="下一首">⏭</button>
   </div>
@@ -487,11 +491,16 @@ let neAdvanceTimer=null;
 
 neAudio.addEventListener('play',()=>{
   hideNetEaseStatus();
+  document.getElementById('now-art').classList.add('playing');
   const item=playlist[currentIndex];
   scheduleAdvance(item?item.duration:60);
 });
+neAudio.addEventListener('pause',()=>{
+  document.getElementById('now-art').classList.remove('playing');
+});
 neAudio.addEventListener('playing',()=>{
   hideNetEaseStatus();
+  document.getElementById('now-art').classList.add('playing');
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
@@ -686,10 +695,10 @@ function renderHome(){
     const con=getConstellation(profile.birthDate);
     const ce=C_EMOJI[con]||'⭐';
     document.getElementById('info-chips').innerHTML=`
-      <div class="chip"><span>🎂</span> ${ad.months}个月${ad.days}天</div>
+      <div class="chip chip-birthday" id="chip-birthday" onclick="toggleDays()" title="点击查看总天数" style="cursor:pointer"><span>🎂</span> <span id="birthday-text">${ad.months}个月${ad.days}天</span></div>
       <div class="chip"><span>${profile.gender==='boy'?'👦':'👧'}</span> ${profile.gender==='boy'?'男宝':'女宝'}</div>
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
-      <div class="chip"><span>${ce}</span> ${con}</div>`;
+      <div class="chip chip-constellation" id="chip-constellation" onclick="showBabyHoroscope()" title="点击查看婴儿星座运势" style="cursor:pointer"><span>${ce}</span> ${con}</div>`;
   }else{
     document.getElementById('welcome-line').textContent='';
     document.getElementById('no-profile-banner').style.display='flex';
@@ -934,6 +943,50 @@ window.onerror=function(msg,url,line){
   showToast('JS Error: '+msg+' (line '+line+')');
   return false;
 };
+
+function toggleDays(){
+  if(!profile)return;
+  const el=document.getElementById('birthday-text');
+  if(el.dataset.days){
+    const ad=getAgeMonthsAndDays(profile.birthDate);
+    el.textContent=ad.months+'个月'+ad.days+'天';
+    el.removeAttribute('data-days');
+  }else{
+    const birth=new Date(profile.birthDate);
+    const totalDays=Math.floor((new Date()-birth)/86400000);
+    el.textContent='共'+totalDays+'天';
+    el.dataset.days='1';
+  }
+}
+
+const babyHoroscopes={
+  '白羊座':['今天是充满活力的一天！宝宝会展现出强烈的好奇心，多给TA探索的机会。','宝宝今天可能有些急性子，温柔的拥抱是最好的安抚。','适合带宝宝接触新事物，TA的勇气会让你惊喜。'],
+  '金牛座':['宝宝今天对声音特别敏感，播放轻柔的音乐让TA安心。','今天是建立安全感的好日子，多抱抱宝宝。','宝宝可能对新食物感兴趣，可以尝试新的辅食口味。'],
+  '双子座':['宝宝今天语言敏感度很高，多和TA说话吧！','宝宝可能注意力容易转移，用鲜艳的颜色吸引TA。','今天适合社交互动，带宝宝见见其他小朋友。'],
+  '巨蟹座':['宝宝今天特别需要妈妈的抱抱，多给TA安全感。','宝宝的情绪可能比较敏感，温柔的摇篮曲是最好的陪伴。','今天适合在家里安静地玩耍，宝宝会感到特别舒适。'],
+  '狮子座':['宝宝今天表现欲很强，多给TA展示自己的机会。','用夸张的表情和声音和宝宝互动，TA会咯咯笑。','宝宝今天喜欢被关注，给TA多一些掌声和赞美。'],
+  '处女座':['宝宝今天对细节很专注，给TA一些精细动作的玩具。','保持规律的作息会让宝宝今天心情愉快。','宝宝可能对整洁有要求，保持环境干净TA会更开心。'],
+  '天秤座':['宝宝今天特别喜欢和谐的旋律，播放优雅的古典乐。','宝宝可能对美的事物感兴趣，给TA看色彩柔和的绘本。','今天适合亲子互动游戏，宝宝会很享受和你的时光。'],
+  '天蝎座':['宝宝今天的眼神特别专注，给TA一些需要观察的玩具。','宝宝可能情绪比较强烈，耐心陪伴是最好的回应。','今天适合玩躲猫猫游戏，宝宝会特别投入。'],
+  '射手座':['宝宝今天精力旺盛，多带TA活动身体。','宝宝可能对新环境特别好奇，可以带TA出门散步。','今天适合自由的探索，不要限制宝宝的行动。'],
+  '摩羯座':['宝宝今天特别有耐心，可以尝试稍微复杂的玩具。','建立规律的作息会让宝宝更有安全感。','宝宝今天可能表现得比平时更安静，这是正常的成长节奏。'],
+  '水瓶座':['宝宝今天想象力丰富，给TA一些创意玩具。','宝宝可能有些独特的举动，这是TA在探索世界。','今天适合自由玩耍，不要打扰宝宝的独立思考。'],
+  '双鱼座':['宝宝今天特别需要温柔的安抚，摇篮曲是最好的礼物。','宝宝可能做了个好梦，醒来的笑容格外甜美。','今天适合水中游戏，宝宝对流动的水特别着迷。']
+};
+
+function showBabyHoroscope(){
+  if(!profile)return;
+  const con=getConstellation(profile.birthDate);
+  const horoscopes=babyHoroscopes[con]||['今天是特别的一天，好好享受和宝宝在一起的时光。'];
+  const now=new Date();
+  const idx=(now.getFullYear()+now.getMonth()+now.getDate())%horoscopes.length;
+  const msg=horoscopes[idx];
+  const e=C_EMOJI[con]||'⭐';
+  const t=document.getElementById('toast');
+  t.innerHTML='<div style="font-size:16px;margin-bottom:6px">'+e+' '+con+' 宝宝</div><div style="font-size:13px;line-height:1.6;text-align:left">'+msg+'</div>';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),5000);
+}
 
 init();
 </script>
