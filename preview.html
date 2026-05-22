@@ -50,10 +50,11 @@ body{
 .daily-quote-source{margin-top:12px;font-size:12px;color:#A1887F;text-align:right;font-style:italic}
 .daily-quote-source::before{content:'— '}
 .info-chips{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0}
-.chip{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,0.8);padding:4px 10px;border-radius:24px;font-size:11px;color:#555;white-space:nowrap;flex-shrink:0}
+.chip{display:flex;align-items:center;justify-content:center;gap:3px;background:rgba(255,255,255,0.8);padding:4px 6px;border-radius:24px;font-size:11px;color:#555;white-space:nowrap;flex:1;text-align:center;overflow:hidden}
 .no-profile-banner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);padding:14px 16px;border-radius:16px;font-size:14px;color:#555;margin-top:8px;cursor:pointer}
-.aqi-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(92,184,92,0.12);border:1.5px solid rgba(92,184,92,0.4);padding:3px 10px;border-radius:20px;font-size:12px;color:#388E3C;cursor:pointer;flex-shrink:0}
-.aqi-val{font-weight:700;font-size:14px;color:#2E7D32}
+.aqi-badge{display:inline-flex;align-items:center;gap:2px;background:rgba(92,184,92,0.12);border:1px solid rgba(92,184,92,0.35);padding:1px 8px;border-radius:20px;font-size:10px;color:#388E3C;cursor:pointer;flex-shrink:0;margin-top:2px}
+.aqi-val{font-weight:700;font-size:11px;color:#2E7D32}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 
 /* Sections */
 .section{margin-top:20px}
@@ -204,12 +205,14 @@ body{
         <div class="logo-mark"><img src="images/logo.png" class="logo-img" alt="九豆米"></div>
         <span class="logo-tagline">欢迎来到九豆米的世界</span>
       </div>
-      <span class="date-text" id="today-date"></span>
+      <div class="header-right">
+        <span class="date-text" id="today-date"></span>
+        <div class="aqi-badge" id="aqi-badge" style="display:none" onclick="showAQIInfo(event)">🌬 <span id="aqi-val"></span></div>
+      </div>
     </div>
     <div class="welcome" id="welcome-line"></div>
     <div class="info-chips" id="info-chips">
       <span id="info-chips-dynamic"></span>
-      <div class="aqi-badge" id="aqi-badge" style="display:none" onclick="showAQIInfo(event)">🌬 <span id="aqi-val"></span></div>
     </div>
     <div class="no-profile-banner" id="no-profile-banner" onclick="switchTab('profile')"><span>📋</span> 点击设置宝宝档案，获得个性化推荐 →</div>
   </div>
