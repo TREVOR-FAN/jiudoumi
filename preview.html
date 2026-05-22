@@ -49,12 +49,11 @@ body{
 .daily-quote-text::after{content:'"';font-size:32px;color:rgba(255,152,0,0.2);font-family:Georgia,serif}
 .daily-quote-source{margin-top:12px;font-size:12px;color:#A1887F;text-align:right;font-style:italic}
 .daily-quote-source::before{content:'— '}
-.info-chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.8);padding:6px 14px;border-radius:24px;font-size:12px;color:#555}
+.info-chips{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0}
+.chip{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,0.8);padding:4px 10px;border-radius:24px;font-size:11px;color:#555;white-space:nowrap;flex-shrink:0}
 .no-profile-banner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);padding:14px 16px;border-radius:16px;font-size:14px;color:#555;margin-top:8px;cursor:pointer}
-.aqi-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.6);padding:4px 10px;border-radius:20px;font-size:12px;color:#555;margin-top:8px}
-.aqi-val{font-weight:700;font-size:14px}
-.aqi-good{color:#5CB85C}.aqi-moderate{color:#F0AD4E}.aqi-unhealthy{color:#EF476F}
+.aqi-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(92,184,92,0.12);border:1.5px solid rgba(92,184,92,0.4);padding:3px 10px;border-radius:20px;font-size:12px;color:#388E3C;cursor:pointer;flex-shrink:0}
+.aqi-val{font-weight:700;font-size:14px;color:#2E7D32}
 
 /* Sections */
 .section{margin-top:20px}
@@ -208,9 +207,11 @@ body{
       <span class="date-text" id="today-date"></span>
     </div>
     <div class="welcome" id="welcome-line"></div>
-    <div class="info-chips" id="info-chips"></div>
+    <div class="info-chips" id="info-chips">
+      <span id="info-chips-dynamic"></span>
+      <div class="aqi-badge" id="aqi-badge" style="display:none" onclick="showAQIInfo(event)">🌬 <span id="aqi-val"></span></div>
+    </div>
     <div class="no-profile-banner" id="no-profile-banner" onclick="switchTab('profile')"><span>📋</span> 点击设置宝宝档案，获得个性化推荐 →</div>
-    <div class="aqi-badge" id="aqi-badge" style="display:none">🌬 <span id="aqi-val"></span></div>
   </div>
 
   <div class="section" id="daily-quote-section">
@@ -568,8 +569,14 @@ function isFavorite(songId){return favorites.has(songId);}
 function renderAllFavIcons(){
   document.querySelectorAll('.fav-btn').forEach(btn=>{
     const sid=btn.dataset.songId;
-    if(sid)btn.classList.toggle('on',favorites.has(sid));
+    if(!sid)return;
+    const fav=favorites.has(sid);
+    btn.classList.toggle('on',fav);
+    btn.textContent=fav?'⭐':'☆';
   });
+  document.getElementById('fav-filter-btn').classList.toggle('on',favOnly);
+  // Refresh playlist if fav filter is on
+  if(favOnly)renderPlaylist();
 }
 
 function updateLyrics(){
@@ -674,7 +681,7 @@ function renderHome(){
     const e=Z_EMOJI[profile.zodiac]||'⭐';
     const con=getConstellation(profile.birthDate);
     const ce=C_EMOJI[con]||'⭐';
-    document.getElementById('info-chips').innerHTML=`
+    document.getElementById('info-chips-dynamic').innerHTML=`
       <div class="chip chip-birthday" id="chip-birthday" onclick="toggleDays()" title="点击查看总天数" style="cursor:pointer"><span>🎂</span> <span id="birthday-text">${ad.months}个月${ad.days}天</span></div>
       <div class="chip"><span>${profile.gender==='boy'?'👦':'👧'}</span> ${profile.gender==='boy'?'男宝':'女宝'}</div>
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
@@ -682,7 +689,7 @@ function renderHome(){
   }else{
     document.getElementById('welcome-line').textContent='';
     document.getElementById('no-profile-banner').style.display='flex';
-    document.getElementById('info-chips').innerHTML='';
+    document.getElementById('info-chips-dynamic').innerHTML='';
   }
 
   // Play-all button text
@@ -706,7 +713,7 @@ function renderHome(){
           <span class="item-source-short">${item.author||''}</span>
         </div>
       </div>
-      <button class="fav-btn mini" data-song-id="${item.id}" onclick="toggleFavorite('${item.id}',event)">${isFavorite(item.id)?'❤️':'🤍'}</button>
+      <button class="fav-btn mini" data-song-id="${item.id}" onclick="toggleFavorite('${item.id}',event)">${isFavorite(item.id)?'⭐':'☆'}</button>
     </div>`;
   });
   // Pagination controls
@@ -801,7 +808,7 @@ function updatePlayerUI(){
   const art=document.getElementById('now-art');
   art.className='now-art song';
   art.textContent='🎵';
-  document.getElementById('now-title').innerHTML=item.title+' <button class="fav-btn" data-song-id="'+item.id+'" onclick="toggleFavorite(\''+item.id+'\',event)" style="font-size:20px;vertical-align:middle">'+(isFavorite(item.id)?'❤️':'🤍')+'</button>';
+  document.getElementById('now-title').innerHTML=item.title+' <button class="fav-btn" data-song-id="'+item.id+'" onclick="toggleFavorite(\''+item.id+'\',event)" style="font-size:20px;vertical-align:middle">'+(isFavorite(item.id)?'⭐':'☆')+'</button>';
   document.getElementById('now-title-zh').textContent=item.titleZh||'';
   document.getElementById('now-source').textContent=item.source||'';
   // Lyrics: show first line as preview
@@ -825,7 +832,7 @@ function renderPlaylist(){
   const el=document.getElementById('playlist-scroll');
   const showItems=favOnly?playlist.filter((item,i)=>favorites.has(item.id)):playlist;
   if(favOnly&&showItems.length===0){
-    el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);padding:32px">暂无收藏歌曲<br><small>点击 ❤️ 收藏喜欢的歌曲</small></div>';
+    el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);padding:32px">暂无收藏歌曲<br><small>点击 ☆ 收藏喜欢的歌曲</small></div>';
     return;
   }
   let h='';
@@ -839,7 +846,7 @@ function renderPlaylist(){
         <span class="pl-name">${item.title}</span>
         <span class="pl-type-label pl-song-label">儿歌</span>
       </div>
-      <button class="fav-btn mini" data-song-id="${item.id}" onclick="toggleFavorite('${item.id}',event)">${isFavorite(item.id)?'❤️':'🤍'}</button>
+      <button class="fav-btn mini" data-song-id="${item.id}" onclick="toggleFavorite('${item.id}',event)">${isFavorite(item.id)?'⭐':'☆'}</button>
       <span class="pl-dur">${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</span>
     </div>`;
   });
@@ -920,12 +927,17 @@ function fetchAQI(){
   fetch('/api/aqi').then(r=>r.json()).then(d=>{
     const v=d.aqi;
     if(v==='N/A')return;
-    let cls='aqi-good',desc='优';
-    if(v>150){cls='aqi-unhealthy';desc='污染';}
-    else if(v>50){cls='aqi-moderate';desc='良';}
-    document.getElementById('aqi-val').innerHTML='AQI <span class="aqi-val '+cls+'">'+v+'</span> '+desc+' · '+d.city;
+    let desc='优';
+    if(v>150)desc='污染';
+    else if(v>50)desc='良';
+    document.getElementById('aqi-val').innerHTML='AQI <span class="aqi-val">'+v+'</span> '+desc;
     document.getElementById('aqi-badge').style.display='inline-flex';
   }).catch(()=>{});
+}
+
+function showAQIInfo(e){
+  if(e)e.stopPropagation();
+  showToast('AQI空气质量指数：0-50优（绿），51-100良（黄），>100污染。数值越小对宝宝越友好，污染天建议减少户外活动。');
 }
 
 // Global error trap
