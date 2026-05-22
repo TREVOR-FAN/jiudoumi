@@ -2,20 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>九豆米 · 宝宝英语启蒙</title>
-
-<!-- PWA -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="九豆米">
-<meta name="theme-color" content="#FFD166">
-<meta name="description" content="0-3岁宝宝英语儿歌每日推荐">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -40,22 +28,22 @@ body{
 .page.active{display:block}
 
 /* Brand Logo */
-.brand-logo{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
-.logo-mark{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 4px 16px rgba(255,170,0,0.3))}
-.logo-img{width:100%;height:100%;object-fit:cover;border-radius:24px}
-.logo-tagline{font-size:20px;color:#B8860B;font-weight:600;letter-spacing:2px;font-family:'Great Vibes','Tangerine',cursive}
+.brand-logo{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.logo-mark{position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center}
+.logo-img{width:100%;height:100%;object-fit:cover;border-radius:18px}
+.logo-tagline{font-size:11px;color:#B8860B;font-weight:500;letter-spacing:1px;white-space:nowrap}
 
 
 /* Header */
-.header{background:linear-gradient(135deg,#FFD166,#FFE599 60%,#FFF0C0);border-radius:0 0 48px 48px;padding:20px 16px 18px;margin:-16px -16px 0}
-.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.date-text{font-size:13px;color:#fff;background:rgba(0,0,0,0.10);padding:8px 16px;border-radius:20px;font-weight:500;letter-spacing:0.5px;white-space:nowrap;backdrop-filter:blur(4px);display:inline-flex;align-items:center;gap:6px}
-.welcome{font-size:36px;font-weight:500;color:#4A3000;margin-bottom:8px;font-family:'Tangerine','Great Vibes',cursive;letter-spacing:1px;line-height:1.2}
-.baby-name{color:var(--primary);font-family:'Tangerine','Great Vibes',cursive;font-size:42px;font-weight:700}
+.header{background:linear-gradient(135deg,#FFD166,#FFE599 60%,#FFF0C0);border-radius:0 0 48px 48px;padding:24px 16px 20px;margin:-16px -16px 0}
+.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.date-text{font-size:12px;color:rgba(51,51,51,0.5);margin-top:6px;white-space:nowrap}
+.welcome{font-size:14px;font-weight:400;color:#333;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.baby-name{color:var(--primary)}
 /* Daily Parenting Quote Card */
 .daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:20px 18px 16px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
 .daily-quote-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,152,0,0.08) 0%,transparent 70%);border-radius:50%}
-.daily-quote-icon{width:80px;height:80px;margin-bottom:8px;display:block;object-fit:contain}
+.daily-quote-icon{font-size:28px;margin-bottom:8px;display:block}
 .daily-quote-text{font-size:15px;line-height:1.8;color:#5D4037;font-weight:500;position:relative;z-index:1}
 .daily-quote-text::before{content:'"';font-size:32px;color:rgba(255,152,0,0.2);position:absolute;left:-4px;top:-10px;font-family:Georgia,serif}
 .daily-quote-text::after{content:'"';font-size:32px;color:rgba(255,152,0,0.2);font-family:Georgia,serif}
@@ -63,9 +51,6 @@ body{
 .daily-quote-source::before{content:'— '}
 .info-chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.8);padding:6px 14px;border-radius:24px;font-size:12px;color:#555}
-.chip-clickable{cursor:pointer;transition:transform .15s,box-shadow .15s}
-.chip-clickable:active{transform:scale(0.95)}
-.chip-clickable:hover{box-shadow:0 2px 12px rgba(108,92,231,0.2)}
 .no-profile-banner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);padding:14px 16px;border-radius:16px;font-size:14px;color:#555;margin-top:8px;cursor:pointer}
 
 /* Sections */
@@ -73,29 +58,17 @@ body{
 .section-title{font-size:20px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .item-count{font-size:13px;font-weight:400;color:#ccc;margin-left:auto}
 
-/* Sub-tabs */
-
-/* Featured */
-
 /* Item list */
 .item-list{display:flex;flex-direction:column;gap:10px}
 .item-card{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04);cursor:pointer;transition:background .15s}
 .item-card:hover{background:#fafafa}
-.item-type-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.icon-song{background:rgba(239,71,111,0.1)}
-.icon-reading{background:rgba(6,214,160,0.1)}
 .item-info{flex:1;min-width:0}
 .item-title{font-size:15px;font-weight:600;color:#333;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-title-zh{font-size:11px;color:#999;display:block;margin-top:1px}
 .item-meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:10px}
-.item-duration{color:#bbb}
 .item-type-label{padding:1px 8px;border-radius:8px;font-size:10px}
 .label-song{color:#EF476F;background:rgba(239,71,111,0.08)}
-.label-reading{color:#06D6A0;background:rgba(6,214,160,0.08)}
 .item-source-short{color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-play-btn{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0}
-.play-song{background:linear-gradient(135deg,#EF476F,#F06888);box-shadow:0 3px 10px rgba(239,71,111,0.25)}
-.play-reading{background:linear-gradient(135deg,#06D6A0,#2ED9A8);box-shadow:0 3px 10px rgba(6,214,160,0.25)}
 
 /* Play-All Button */
 .play-all-bar{padding:0 0 20px}
@@ -129,129 +102,80 @@ body{
 .save-btn{width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#EF476F,#F06888);color:#fff;font-size:16px;font-weight:600;border:none;border-radius:48px;cursor:pointer;box-shadow:0 6px 20px rgba(239,71,111,0.3)}
 .save-btn:hover{opacity:.92}
 
-/* ============ PLAYER OVERLAY (iPhone Style) ============ */
+/* ============ PLAYER OVERLAY ============ */
 .player-overlay{
   display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-  background:linear-gradient(180deg,#0D0D1A 0%,#1A1A2E 40%,#252540 100%);
+  background:linear-gradient(180deg,#1A1A2E,#2D2D3F);
   z-index:200;flex-direction:column;overflow:hidden;
 }
 .player-overlay.show{display:flex}
+.player-top-bar{display:flex;justify-content:space-between;align-items:center;padding:48px 20px 16px}
 
-/* Top bar */
-.player-top-bar{display:flex;justify-content:space-between;align-items:center;padding:52px 20px 8px}
-.player-dismiss-btn{background:none;border:none;color:rgba(255,255,255,0.5);font-size:24px;cursor:pointer;padding:8px 12px;transition:color .2s}
-.player-dismiss-btn:hover{color:#fff}
-.player-top-title{font-size:13px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:1px}
+.close-player-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:28px;cursor:pointer;padding:4px}
 
-/* Album Art Area */
-.album-art-container{display:flex;align-items:center;justify-content:center;padding:16px 0 12px;position:relative}
-.album-art-outer{position:relative}
-.album-art{width:200px;height:200px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;z-index:1;cursor:pointer;transition:transform .3s ease}
-.album-art.playing{animation:iconRotate 3s linear infinite,iconRipple 1.5s ease-out infinite}
-.album-art-shadow{position:absolute;inset:-12px;border-radius:50%;background:inherit;filter:blur(30px);opacity:.4;z-index:0;transition:opacity .3s}
-.album-art-shadow.active{animation:shadowPulse 2.5s ease-in-out infinite}
-@keyframes iconRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes iconRipple{0%{box-shadow:0 0 0 0 rgba(255,255,255,0.4),0 0 0 0 rgba(255,255,255,0.2)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0),0 0 0 24px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0),0 0 0 0 rgba(255,255,255,0)}}
-@keyframes shadowPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.5;transform:scale(1.06)}}
-
-/* Equalizer bars */
-.equalizer{display:none;position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);gap:3px;z-index:2}
-.equalizer.active{display:flex}
-.eq-bar{width:3px;border-radius:2px;background:rgba(255,255,255,0.6);animation:eqJump .8s ease-in-out infinite}
-.eq-bar:nth-child(1){height:10px;animation-delay:0s}
-.eq-bar:nth-child(2){height:18px;animation-delay:.15s}
-.eq-bar:nth-child(3){height:24px;animation-delay:.3s}
-.eq-bar:nth-child(4){height:18px;animation-delay:.45s}
-.eq-bar:nth-child(5){height:10px;animation-delay:.6s}
-@keyframes eqJump{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
-
-/* Song Info */
-.song-info-section{text-align:center;padding:8px 24px 0}
-.song-info-title{font-size:20px;font-weight:700;color:#fff;line-height:1.3;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.song-info-zh{font-size:14px;color:rgba(255,255,255,0.45);margin-top:4px}
-
+/* Now Playing */
+.now-playing{padding:0 20px 16px;text-align:center}
+.now-type{font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.now-art{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 14px}
+.now-art.song{background:linear-gradient(135deg,#EF476F,#F5958E);box-shadow:0 8px 32px rgba(239,71,111,0.35)}
+.now-art.reading{background:linear-gradient(135deg,#06D6A0,#4ECDC4);box-shadow:0 8px 32px rgba(6,214,160,0.35)}
+.now-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px}
+.now-title-zh{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.now-source{font-size:11px;color:rgba(255,255,255,0.35);font-style:italic}
+.now-status{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:14px;color:var(--secondary);font-weight:600}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--secondary);animation:pulse 1.2s infinite}
+.status-dot.paused{animation:none;opacity:.3}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
 
 /* Progress */
-.player-progress{padding:4px 28px 0}
-.progress-time-row{display:flex;justify-content:space-between;padding:0 2px 6px;font-size:10px;color:rgba(255,255,255,0.3);font-variant-numeric:tabular-nums}
-.progress-track{height:4px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:visible;position:relative;cursor:pointer}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--secondary),#FFE599);border-radius:3px;width:0%;transition:width .5s linear;position:relative}
-.progress-fill::after{content:'';position:absolute;right:-6px;top:-4px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);opacity:0;transition:opacity .2s}
-.progress-track:hover .progress-fill::after,.progress-track:active .progress-fill::after{opacity:1}
+.player-progress{padding:0 20px;margin-bottom:8px}
+.progress-track{height:3px;background:rgba(255,255,255,0.12);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.progress-fill{height:100%;background:var(--secondary);width:0%;transition:width .3s}
+.progress-label{font-size:10px;color:rgba(255,255,255,0.35);text-align:center}
 
-
-.playlist-divider{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:10px auto 6px}
+/* Controls */
+.song-time-row{display:flex;justify-content:space-between;padding:0 20px 4px;font-size:11px;color:rgba(255,255,255,0.4);font-variant-numeric:tabular-nums}
+.song-time{font-family:monospace}
+.next-btn{background:none;border:none;color:rgba(255,255,255,0.5);font-size:28px;cursor:pointer;padding:8px;transition:color .2s}
+.next-btn:hover{color:#fff}
+.next-btn:active{color:var(--secondary)}
+.player-controls{display:flex;align-items:center;justify-content:center;gap:24px;padding:8px 20px 16px}
+.main-play-btn{width:64px;height:64px;border-radius:50%;background:var(--secondary);border:none;cursor:pointer;font-size:24px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,209,102,0.4)}
+.main-play-btn:hover{opacity:.9}
 
 /* Playlist */
-.playlist-section{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 16px 20px;margin-top:4px}
+.playlist-section{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 16px 24px}
 .playlist-header{display:flex;justify-content:space-between;align-items:center;padding:0 4px 10px}
-.playlist-title{font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px}
-.playlist-count{font-size:11px;color:rgba(255,255,255,0.2)}
+.playlist-title{font-size:14px;font-weight:700;color:rgba(255,255,255,0.6)}
+.playlist-count{font-size:12px;color:rgba(255,255,255,0.3)}
 .playlist-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.pl-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:10px;cursor:pointer;transition:background .15s}
-.pl-item:active{background:rgba(255,255,255,0.06)}
-.pl-item.current{background:rgba(255,255,255,0.08)}
+.pl-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:12px;cursor:pointer;transition:background .15s}
+.pl-item:hover{background:rgba(255,255,255,0.05)}
+.pl-item.current{background:rgba(255,255,255,0.1)}
 .pl-item.played .pl-index{color:var(--accent)}
-.pl-index{width:26px;text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.25);flex-shrink:0}
-.pl-item.current .pl-index{color:var(--secondary);font-size:14px}
-.pl-item.playing .pl-index{color:var(--secondary)}
-.pl-item-art{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pl-item.current .pl-item-art{box-shadow:0 0 12px rgba(255,209,102,0.25)}
+.pl-index{width:28px;text-align:center;font-size:13px;font-weight:700;color:rgba(255,255,255,0.3);flex-shrink:0}
+.pl-item.current .pl-index{color:var(--secondary)}
+.pl-type-icon{font-size:18px;flex-shrink:0}
 .pl-info{flex:1;min-width:0}
-.pl-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.75);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pl-item.current .pl-name{color:#fff;font-weight:700}
-.pl-sub{font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px}
-.pl-dur{font-size:10px;color:rgba(255,255,255,0.25);flex-shrink:0}
+.pl-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl-item.current .pl-name{color:#fff}
+.pl-type-label{font-size:10px;padding:1px 6px;border-radius:6px;display:inline-block;margin-top:2px}
+.pl-song-label{color:#EF476F;background:rgba(239,71,111,0.15)}
+.pl-reading-label{color:#06D6A0;background:rgba(6,214,160,0.15)}
+.pl-dur{font-size:11px;color:rgba(255,255,255,0.3);flex-shrink:0}
 
-/* Circular Song Icon */
-.song-icon-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;position:relative;cursor:pointer;transition:transform .2s,box-shadow .2s}
-.song-icon-circle::before{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0}
-.song-icon-circle.playing{animation:iconRotate 3s linear infinite}
-.song-icon-circle.playing::before{opacity:1;animation:iconRipple 1.5s ease-out infinite}
-.song-icon-circle .play-dot{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--primary)}
-@keyframes iconRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes iconRipple{0%{box-shadow:0 0 0 0 rgba(255,209,102,0.6)}100%{box-shadow:0 0 0 16px rgba(255,209,102,0)}}
+.footer{text-align:center;padding:28px 0 12px;font-size:11px;color:#ccc;line-height:1.8}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:300;display:none}
+.toast.show{display:block;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.9)}}
 
-/* Mini Player Bar */
-.mini-player{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;background:rgba(26,26,46,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:10px 14px;display:none;align-items:center;gap:12px;z-index:150;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-.mini-player.show{display:flex}
-.mini-player-art{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.mini-player-art.playing{animation:iconRotate 3s linear infinite}
-.mini-player-info{flex:1;min-width:0}
-.mini-player-title{font-size:13px;font-weight:600;color:#fff;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-player-sub{font-size:10px;color:rgba(255,255,255,0.5)}
-.mini-player-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0;background:rgba(255,255,255,0.15)}
-.mini-player-close{background:none;border:none;color:rgba(255,255,255,0.3);font-size:16px;cursor:pointer;padding:4px}
-
-/* Horoscope Modal */
-.horo-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;justify-content:center;align-items:center}
-.horo-overlay.show{display:flex}
-.horo-card{background:linear-gradient(145deg,#1A1A2E,#252540);border-radius:24px;padding:28px 24px 20px;width:calc(100% - 48px);max-width:340px;text-align:center;position:relative;box-shadow:0 16px 48px rgba(0,0,0,0.5)}
-.horo-close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:22px;cursor:pointer;padding:4px}
-.horo-icon{font-size:48px;margin-bottom:8px;display:block}
-.horo-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
-.horo-date{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:16px}
-.horo-body{font-size:14px;line-height:1.8;color:rgba(255,255,255,0.65);text-align:left;padding:16px;background:rgba(255,255,255,0.04);border-radius:14px}
-.horo-tag{display:inline-block;background:rgba(108,92,231,0.2);color:#A78BFA;border-radius:12px;padding:3px 10px;font-size:11px;margin-top:12px}
 </style>
 </head>
 <body>
 
 <!-- Tab Bar -->
-
-<!-- Mini Player Bar -->
-<div class="mini-player" id="mini-player" onclick="openPlayerFull()">
-  <div class="mini-player-art" id="mini-player-art">🎵</div>
-  <div class="mini-player-info">
-    <span class="mini-player-title" id="mini-player-title">—</span>
-    <span class="mini-player-sub" id="mini-player-sub"></span>
-  </div>
-  <button class="mini-player-btn" id="mini-player-play-btn" onclick="event.stopPropagation();toggleMiniPlay()">▶</button>
-  <button class="mini-player-close" onclick="closeMiniPlayer(event)">✕</button>
-</div>
-
 <div class="tab-bar">
-  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>Harvard/Oxford每日推荐</div>
+  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>今日推荐</div>
   <div class="tab-item" data-tab="profile"><span class="tab-icon">👶</span>宝宝档案</div>
 </div>
 
@@ -261,7 +185,7 @@ body{
     <div class="header-row">
       <div class="brand-logo">
         <div class="logo-mark"><img src="images/logo.png" class="logo-img" alt="九豆米"></div>
-        <span class="logo-tagline">欢迎来到豆比爸比电台</span>
+        <span class="logo-tagline">欢迎来到九豆米的世界</span>
       </div>
       <span class="date-text" id="today-date"></span>
     </div>
@@ -271,7 +195,7 @@ body{
   </div>
 
   <div class="section" id="daily-quote-section">
-    <div class="section-title"><span>💡</span> 豆米成长语录</div>
+    <div class="section-title"><span>💡</span> 每日育儿语录</div>
     <div class="daily-quote-card" id="daily-quote-card">
       <span class="daily-quote-icon">🌱</span>
       <div class="daily-quote-text" id="daily-quote-text"></div>
@@ -281,7 +205,7 @@ body{
 
 
   <div class="section">
-    <div class="section-title"><span>🎧</span> Harvard/Oxford每日推荐 <span class="item-count" id="item-count"></span></div>
+    <div class="section-title"><span>🎧</span> 今日推荐 <span class="item-count" id="item-count"></span></div>
     <!-- Play-All Bar -->
     <div class="play-all-bar">
       <button class="play-all-btn" id="play-all-btn" onclick="openPlayer(0)">▶ 全部播放 · 20首</button>
@@ -295,7 +219,7 @@ body{
 <!-- ========== PROFILE PAGE ========== -->
 <div class="page" id="page-profile">
   <div style="display:flex;justify-content:center;padding:12px 0 4px">
-    <div class="brand-logo"><div class="logo-mark" style="width:80px;height:80px"><img src="images/doudou.png" class="logo-img" alt="豆米" style="border-radius:50%;background:linear-gradient(135deg,#FFD166,#FFE599)"></div></div>
+    <div class="brand-logo"><div class="logo-mark" style="width:56px;height:56px"><img src="images/logo.png" class="logo-img" alt="九豆米"></div></div>
   </div>
   <div class="profile-title" id="profile-header-title">设置宝宝档案</div>
   <div class="profile-subtitle">完善信息以获得个性化每日推荐</div>
@@ -308,67 +232,49 @@ body{
   <button class="save-btn" onclick="saveProfile()">💾 保存档案</button>
 </div>
 
-<!-- ========== PLAYER OVERLAY (iPhone Style) ========== -->
+<!-- ========== PLAYER OVERLAY ========== -->
 <div class="player-overlay" id="player-overlay">
   <div class="player-top-bar">
-    <button class="player-dismiss-btn" onclick="closePlayer()">▼</button>
-    <span class="player-top-title">正在播放</span>
-    <div style="width:44px"></div>
-  </div>
-
-  <div class="album-art-container">
-    <div class="album-art-outer">
-      <div class="album-art-shadow" id="album-art-shadow"></div>
-      <div class="album-art" id="album-art" onclick="event.stopPropagation();togglePlay()">🎵</div>
-      <div class="equalizer" id="equalizer">
-        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
-      </div>
+    <div></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="close-player-btn" onclick="closePlayer()">✕</button>
     </div>
   </div>
 
-  <div class="song-info-section">
-    <div class="song-info-title" id="song-info-title">—</div>
-    <div class="song-info-zh" id="song-info-zh"></div>
-
+  <div class="now-playing">
+    <div class="now-type" id="now-type">—</div>
+    <div class="now-art" id="now-art">🎵</div>
+    <div class="now-title" id="now-title">—</div>
+    <div class="now-title-zh" id="now-title-zh"></div>
+    <div class="now-source" id="now-source"></div>
+    <div class="now-status" id="now-status"><span class="status-dot paused" id="status-dot"></span><span id="status-text">就绪</span></div>
   </div>
 
-  <audio id="netease-audio" preload="auto" style="display:none"></audio>
+  <!-- Audio player (uses local proxy to fetch NetEase MP3 URLs) -->
+  <audio id="netease-audio" preload="auto" playsinline webkit-playsinline></audio>
 
+  <div class="song-time-row" id="song-time-row">
+    <span class="song-time" id="time-elapsed">0:00</span>
+    <span class="song-time" id="time-total">-0:00</span>
+  </div>
   <div class="player-progress">
-    <div class="progress-time-row">
-      <span id="time-current">0:00</span>
-      <span id="time-total">-0:00</span>
-    </div>
-    <div class="progress-track" id="progress-track" onclick="seekTrack(event)">
-      <div class="progress-fill" id="progress-fill"></div>
-    </div>
+    <div class="progress-track" id="song-progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 20</div>
   </div>
 
-
-
-  <div class="playlist-divider"></div>
+  <div class="player-controls">
+    <button class="ctrl-btn next-btn" onclick="nextSong()" title="下一首">⏭</button>
+    <button class="main-play-btn" id="main-play-btn" onclick="togglePlay()">▶</button>
+  </div>
 
   <div class="playlist-section">
-    <div class="playlist-header"><span class="playlist-title">播放列表</span><span class="playlist-count" id="playlist-count">共20首</span></div>
+    <div class="playlist-header"><span class="playlist-title">📋 播放列表</span><span class="playlist-count" id="playlist-count">共20首</span></div>
     <div class="playlist-scroll" id="playlist-scroll"></div>
-  </div>
-</div>
-
-<!-- Horoscope Modal -->
-<div class="horo-overlay" id="horo-overlay" onclick="closeHoroscope(event)">
-  <div class="horo-card" onclick="event.stopPropagation()">
-    <button class="horo-close" onclick="closeHoroscope()">✕</button>
-    <span class="horo-icon" id="horo-icon"></span>
-    <div class="horo-title" id="horo-title"></div>
-    <div class="horo-date" id="horo-date"></div>
-    <div class="horo-body" id="horo-body"></div>
-    <span class="horo-tag" id="horo-tag"></span>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- NetEase status overlay -->
 <!-- NetEase status overlay -->
 <div id="netease-status" style="display:none;position:fixed;bottom:200px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#fff;padding:8px 20px;border-radius:20px;font-size:12px;z-index:220;white-space:nowrap;pointer-events:none;"></div>
 
@@ -384,70 +290,67 @@ const C_EMOJI={'白羊座':'♈','金牛座':'♉','双子座':'♊','巨蟹座'
 
 // 60 songs
 const songs=[
-  {id:'s001',icon:'⭐',iconBg:'#FFD166,#FFA000',title:'Twinkle Twinkle Little Star',titleZh:'小星星',source:'Oxford University Press — "Very First Reading" Series',ageRange:[0,36],tags:['lullaby','classic','soothing'],zodiacAffinity:['兔','羊','猪'],lyrics:'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!',duration:95,neteaseId:2085770188},
-  {id:'s002',icon:'🚌',iconBg:'#EF476F,#E8384F',title:'The Wheels on the Bus',titleZh:'公交车上的轮子',source:'Harvard Center on the Developing Child — "Early Rhythm & Movement"',ageRange:[6,36],tags:['action','movement','rhythm'],zodiacAffinity:['猴','虎','狗'],lyrics:'The wheels on the bus go round and round,\nRound and round, round and round.\nThe wheels on the bus go round and round,\nAll through the town!\nThe wipers on the bus go swish, swish, swish...\nThe horn on the bus goes beep, beep, beep...\nThe people on the bus go up and down...',duration:120,neteaseId:2678702021},
-  {id:'s003',icon:'🐄',iconBg:'#06D6A0,#00B87A',title:'Old MacDonald Had a Farm',titleZh:'老麦克唐纳有个农场',source:'Cambridge Early Years — "Phonics & Animal Sounds"',ageRange:[6,36],tags:['animals','phonics','interactive'],zodiacAffinity:['牛','马','鸡'],lyrics:'Old MacDonald had a farm, E-I-E-I-O!\nAnd on his farm he had a cow, E-I-E-I-O!\nWith a moo-moo here and a moo-moo there,\nHere a moo, there a moo, everywhere a moo-moo.\nOld MacDonald had a farm, E-I-E-I-O!',duration:135,neteaseId:1416557247},
-  {id:'s004',icon:'🚣',iconBg:'#118AB2,#0D6B8A',title:'Row Row Row Your Boat',titleZh:'划船歌',source:'Oxford Early Learning — "Gentle Action Songs"',ageRange:[0,24],tags:['gentle','action','classic'],zodiacAffinity:['鱼','蛇','兔'],lyrics:'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.',duration:45,neteaseId:1416555825},
-  {id:'s005',icon:'👏',iconBg:'#FFD166,#FF9500',title:'If You\'re Happy and You Know It',titleZh:'如果感到幸福你就拍拍手',source:'Harvard Graduate School of Education — "Social-Emotional Learning"',ageRange:[6,36],tags:['emotion','action','social'],zodiacAffinity:['虎','马','狗'],lyrics:'If you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, then your face will surely show it.\nIf you\'re happy and you know it, clap your hands! (clap clap)',duration:80,neteaseId:5166466},
-  {id:'s006',icon:'🐑',iconBg:'#8338EC,#6A24CC',title:'Baa Baa Black Sheep',titleZh:'咩咩小黑羊',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[0,30],tags:['lullaby','rhyme','gentle'],zodiacAffinity:['羊','猪','牛'],lyrics:'Baa, baa, black sheep, have you any wool?\nYes sir, yes sir, three bags full.\nOne for the master, one for the dame,\nAnd one for the little boy who lives down the lane.',duration:50,neteaseId:383767},
-  {id:'s007',icon:'🦶',iconBg:'#FF6B6B,#EE4444',title:'Head, Shoulders, Knees and Toes',titleZh:'头肩膝脚',source:'Montessori Early Childhood — "Body Awareness Through Song"',ageRange:[8,36],tags:['body','action','vocabulary'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Head, shoulders, knees and toes, knees and toes.\nHead, shoulders, knees and toes, knees and toes.\nAnd eyes and ears and mouth and nose.\nHead, shoulders, knees and toes, knees and toes!',duration:60,neteaseId:1436594241},
-  {id:'s008',icon:'🕷️',iconBg:'#3A86FF,#2260DD',title:'Itsy Bitsy Spider',titleZh:'小小蜘蛛',source:'Harvard Language Acquisition Lab — "Finger Play & Fine Motor"',ageRange:[6,30],tags:['fingerplay','fine-motor','rhyme'],zodiacAffinity:['蛇','猴','兔'],lyrics:'The itsy bitsy spider climbed up the water spout.\nDown came the rain and washed the spider out.\nOut came the sun and dried up all the rain,\nAnd the itsy bitsy spider climbed up the spout again.',duration:55,neteaseId:22508995},
-  {id:'s009',icon:'🦆',iconBg:'#FFB703,#FB8B24',title:'Five Little Ducks',titleZh:'五只小鸭子',source:'Oxford Reading Tree — "Numbers & Counting Rhymes"',ageRange:[12,36],tags:['counting','numbers','animals'],zodiacAffinity:['鸡','鸭','兔'],lyrics:'Five little ducks went out one day,\nOver the hill and far away.\nMother duck said, "Quack, quack, quack, quack."\nBut only four little ducks came back.',duration:70,neteaseId:1416557245},
-  {id:'s010',icon:'🌧️',iconBg:'#5E9ED6,#3B7EC0',title:'Rain Rain Go Away',titleZh:'雨啊雨啊快走开',source:'Yale Child Study Center — "Weather & Nature Songs"',ageRange:[0,36],tags:['weather','nature','gentle'],zodiacAffinity:['龙','鼠','猪'],lyrics:'Rain, rain, go away,\nCome again another day.\nLittle baby wants to play.\nRain, rain, go away.',duration:35,neteaseId:1416555844},
-  {id:'s011',icon:'🔤',iconBg:'#E63946,#CC2233',title:'The Alphabet Song',titleZh:'字母歌',source:'Harvard Graduate School of Education — "Early Literacy Foundations"',ageRange:[12,36],tags:['alphabet','phonics','literacy'],zodiacAffinity:['鸡','猴','虎'],lyrics:'A-B-C-D-E-F-G,\nH-I-J-K-L-M-N-O-P,\nQ-R-S, T-U-V,\nW-X, Y and Z.\nNow I know my ABCs,\nNext time won\'t you sing with me?',duration:65,neteaseId:20330674},
-  {id:'s012',icon:'☀️',iconBg:'#FFD166,#FFB700',title:'You Are My Sunshine',titleZh:'你是我的阳光',source:'Oxford University Press — "Bonding & Attachment Songs"',ageRange:[0,36],tags:['love','bonding','lullaby'],zodiacAffinity:['兔','羊','猪','狗'],lyrics:'You are my sunshine, my only sunshine.\nYou make me happy when skies are grey.\nYou\'ll never know, dear, how much I love you.\nPlease don\'t take my sunshine away.',duration:85,neteaseId:1339805651},
-  {id:'s013',icon:'🐑',iconBg:'#F4A261,#E07B39',title:'Mary Had a Little Lamb',titleZh:'玛丽有只小羊羔',source:'Stanford Early Learning — "Narrative Songs for Language Development"',ageRange:[6,36],tags:['story','animals','classic'],zodiacAffinity:['羊','牛','马'],lyrics:'Mary had a little lamb, little lamb, little lamb.\nMary had a little lamb, its fleece was white as snow.\nAnd everywhere that Mary went, Mary went, Mary went,\nEverywhere that Mary went, the lamb was sure to go.',duration:70,neteaseId:28707964},
-  {id:'s014',icon:'💃',iconBg:'#E36488,#D04A6E',title:'The Hokey Pokey',titleZh:'变戏法舞',source:'Montessori International — "Body Schema & Spatial Awareness"',ageRange:[12,36],tags:['body','action','coordination'],zodiacAffinity:['猴','虎','马'],lyrics:'You put your right hand in, you put your right hand out.\nYou put your right hand in and you shake it all about.\nYou do the Hokey Pokey and you turn yourself around.\nThat\'s what it\'s all about!',duration:110,neteaseId:28707948},
-  {id:'s015',icon:'🌙',iconBg:'#6C5CE7,#503FC4',title:'Hush Little Baby',titleZh:'安静吧宝贝',source:'Harvard Medical School — "Sleep & Bedtime Routines"',ageRange:[0,18],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊'],lyrics:'Hush, little baby, don\'t say a word,\nMama\'s going to buy you a mockingbird.\nAnd if that mockingbird won\'t sing,\nMama\'s going to buy you a diamond ring.',duration:100,neteaseId:4025354},
-  {id:'s016',icon:'🔢',iconBg:'#00B4D8,#008AAA',title:'One Two Three Four Five',titleZh:'一二三四五',source:'Oxford Numicon — "Mathematical Songs for Early Years"',ageRange:[8,36],tags:['counting','numbers','math'],zodiacAffinity:['鼠','猴','鸡'],lyrics:'One, two, three, four, five,\nOnce I caught a fish alive.\nSix, seven, eight, nine, ten,\nThen I let it go again.\nWhy did you let it go?\nBecause it bit my finger so!',duration:55,neteaseId:2155807735},
-  {id:'s017',icon:'🐷',iconBg:'#FF85A1,#E05A7A',title:'This Little Piggy',titleZh:'这只小猪',source:'Harvard Center on the Developing Child — "Touch & Bonding Games"',ageRange:[0,18],tags:['fingerplay','touch','bonding'],zodiacAffinity:['猪','牛','羊'],lyrics:'This little piggy went to market,\nThis little piggy stayed home,\nThis little piggy had roast beef,\nThis little piggy had none,\nAnd this little piggy went wee wee wee all the way home!',duration:40,neteaseId:1444908038},
-  {id:'s018',icon:'🐵',iconBg:'#F4A261,#D88A40',title:'Five Little Monkeys',titleZh:'五只小猴子',source:'Yale Child Study Center — "Cause & Effect Learning Songs"',ageRange:[12,36],tags:['counting','animals','fun'],zodiacAffinity:['猴','虎','蛇'],lyrics:'Five little monkeys jumping on the bed,\nOne fell off and bumped his head.\nMama called the doctor and the doctor said,\n"No more monkeys jumping on the bed!"',duration:75,neteaseId:1416557248},
-  {id:'s019',icon:'🧁',iconBg:'#FF9500,#E07B00',title:'The Muffin Man',titleZh:'松饼人',source:'Oxford University Press — "Community & Role Play Songs"',ageRange:[10,36],tags:['community','food','rhyme'],zodiacAffinity:['牛','猪','狗'],lyrics:'Do you know the Muffin Man, the Muffin Man, the Muffin Man?\nDo you know the Muffin Man who lives on Drury Lane?\nYes, I know the Muffin Man, the Muffin Man, the Muffin Man.\nYes, I know the Muffin Man who lives on Drury Lane.',duration:65,neteaseId:1443538672},
-  {id:'s020',icon:'🎂',iconBg:'#FF6B6B,#E05555',title:'Pat-a-Cake',titleZh:'拍拍蛋糕',source:'Montessori Infant-Toddler — "Clapping & Rhythm Songs"',ageRange:[0,24],tags:['clapping','rhythm','interactive'],zodiacAffinity:['兔','羊','鸡'],lyrics:'Pat-a-cake, pat-a-cake, baker\'s man,\nBake me a cake as fast as you can.\nPat it and prick it and mark it with B,\nAnd put it in the oven for baby and me.',duration:35,neteaseId:1304372197},
-  {id:'s021',icon:'🎖️',iconBg:'#2D6A4F,#1B4D35',title:'The Grand Old Duke of York',titleZh:'老约克公爵',source:'Cambridge Music & Movement — "Gross Motor Skill Development"',ageRange:[12,36],tags:['movement','marching','action'],zodiacAffinity:['马','虎','狗'],lyrics:'Oh, the grand old Duke of York,\nHe had ten thousand men.\nHe marched them up to the top of the hill,\nAnd he marched them down again.\nAnd when they\'re up, they\'re up,\nAnd when they\'re down, they\'re down,\nAnd when they\'re only half-way up,\nThey\'re neither up nor down!',duration:70,neteaseId:2146882537},
-  {id:'s022',icon:'🫖',iconBg:'#06D6A0,#00B87A',title:'I\'m a Little Teapot',titleZh:'我是一个小茶壶',source:'Harvard Project Zero — "Creative Movement & Expression"',ageRange:[8,30],tags:['action','imagination','body'],zodiacAffinity:['猪','兔','蛇'],lyrics:'I\'m a little teapot, short and stout.\nHere is my handle, here is my spout.\nWhen I get all steamed up, hear me shout:\n"Tip me over and pour me out!"',duration:40,neteaseId:2711955502},
-  {id:'s023',icon:'💫',iconBg:'#FF006E,#DD005A',title:'Skip to My Lou',titleZh:'跳向我的路',source:'Stanford Dance & Movement Lab — "Rhythmic Movement for Toddlers"',ageRange:[14,36],tags:['dance','movement','rhythm'],zodiacAffinity:['马','猴','虎'],lyrics:'Skip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip to my Lou, my darling.',duration:55,neteaseId:1344094561},
-  {id:'s024',icon:'🧸',iconBg:'#D4A017,#B0860E',title:'Teddy Bear Teddy Bear',titleZh:'泰迪熊泰迪熊',source:'Oxford Early Years — "Imagination & Comfort Songs"',ageRange:[6,28],tags:['action','comfort','imagination'],zodiacAffinity:['牛','猪','羊'],lyrics:'Teddy bear, teddy bear, turn around.\nTeddy bear, teddy bear, touch the ground.\nTeddy bear, teddy bear, show your shoe.\nTeddy bear, teddy bear, that will do!',duration:50,neteaseId:863769365},
-  {id:'s025',icon:'🥚',iconBg:'#8338EC,#6A24CC',title:'Humpty Dumpty',titleZh:'矮胖子',source:'Oxford University Press — "Story Rhymes Collection"',ageRange:[0,36],tags:['rhyme','story','classic'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Humpty Dumpty sat on a wall.\nHumpty Dumpty had a great fall.\nAll the king\'s horses and all the king\'s men\nCouldn\'t put Humpty together again.',duration:40,neteaseId:3341078750},
-  {id:'s026',icon:'⛰️',iconBg:'#3A86FF,#2260DD',title:'Jack and Jill',titleZh:'杰克和吉尔',source:'Harvard Literacy Lab — "Narrative Rhyme & Sequencing"',ageRange:[6,36],tags:['story','rhyme','classic'],zodiacAffinity:['鼠','蛇','虎'],lyrics:'Jack and Jill went up the hill,\nTo fetch a pail of water.\nJack fell down and broke his crown,\nAnd Jill came tumbling after.',duration:45,neteaseId:863769357},
-  {id:'s027',icon:'🐑',iconBg:'#FFB703,#E09B00',title:'Little Bo Peep',titleZh:'小牧羊女',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6,36],tags:['story','animals','gentle'],zodiacAffinity:['羊','牛','马'],lyrics:'Little Bo Peep has lost her sheep,\nAnd doesn\'t know where to find them.\nLeave them alone, and they\'ll come home,\nWagging their tails behind them.',duration:50,neteaseId:556969724},
-  {id:'s028',icon:'😸',iconBg:'#E36488,#D04A6E',title:'Hey Diddle Diddle',titleZh:'嘿摇啊摇',source:'Cambridge Imagination Lab — "Absurd Humor & Language Play"',ageRange:[6,36],tags:['imagination','fun','rhyme'],zodiacAffinity:['猴','龙','马'],lyrics:'Hey diddle diddle, the cat and the fiddle,\nThe cow jumped over the moon.\nThe little dog laughed to see such fun,\nAnd the dish ran away with the spoon.',duration:40,neteaseId:429564379},
-  {id:'s029',icon:'🛏️',iconBg:'#6C5CE7,#503FC4',title:'Rock-a-Bye Baby',titleZh:'睡吧宝贝',source:'Harvard Sleep Medicine — "Certified Bedtime Lullabies"',ageRange:[0,12],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊','牛'],lyrics:'Rock-a-bye baby, on the treetop,\nWhen the wind blows, the cradle will rock.\nWhen the bough breaks, the cradle will fall,\nAnd down will come baby, cradle and all.',duration:55,neteaseId:3383831294},
-  {id:'s030',icon:'🌉',iconBg:'#118AB2,#0D6B8A',title:'London Bridge Is Falling Down',titleZh:'伦敦桥要塌了',source:'Oxford World History — "Cultural Heritage Nursery Rhymes"',ageRange:[8,36],tags:['history','rhyme','group-play'],zodiacAffinity:['龙','虎','蛇'],lyrics:'London Bridge is falling down,\nFalling down, falling down.\nLondon Bridge is falling down,\nMy fair lady.',duration:55,neteaseId:1416555827},
-  {id:'s031',icon:'🐶',iconBg:'#EF476F,#D63855',title:'Bingo',titleZh:'宾果歌',source:"Harvard Center on the Developing Child — \"Spelling & Rhythm Songs\"",ageRange:[6,36],tags:['animals','spelling','action'],zodiacAffinity:['狗','猴','虎'],lyrics:'There was a farmer had a dog,\nAnd Bingo was his name-o.\nB-I-N-G-O, B-I-N-G-O, B-I-N-G-O,\nAnd Bingo was his name-o!',duration:60,neteaseId:567512419},
-  {id:'s032',icon:'🦈',iconBg:'#00B4D8,#008AAA',title:'Baby Shark',titleZh:'鲨鱼宝宝',source:"Harvard Language Acquisition Lab — \"Repetitive Pattern Songs\"",ageRange:[0,36],tags:['animals','action','movement'],zodiacAffinity:['鱼','龙','猴'],lyrics:'Baby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark!',duration:90,neteaseId:1350263842},
-  {id:'s033',icon:'👆',iconBg:'#FFD166,#FF9500',title:'Finger Family',titleZh:'手指家族',source:"Montessori Early Childhood — \"Family & Body Awareness Songs\"",ageRange:[6,30],tags:['family','fingerplay','body'],zodiacAffinity:['兔','羊','猪'],lyrics:'Daddy finger, daddy finger, where are you?\nHere I am, here I am. How do you do?\nMommy finger, mommy finger, where are you?\nHere I am, here I am. How do you do?',duration:80,neteaseId:2118679235},
-  {id:'s034',icon:'🛷',iconBg:'#E63946,#CC2233',title:'Jingle Bells',titleZh:'铃儿响叮当',source:"Oxford World Holidays — \"Seasonal Songs Collection\"",ageRange:[8,36],tags:['holiday','winter','classic'],zodiacAffinity:['马','虎','龙'],lyrics:'Jingle bells, jingle bells, jingle all the way!\nOh what fun it is to ride\nIn a one-horse open sleigh, hey!\nJingle bells, jingle bells, jingle all the way!',duration:75,neteaseId:2160011504},
-  {id:'s035',icon:'👴',iconBg:'#F4A261,#D88A40',title:'This Old Man',titleZh:'这位老先生',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[12,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鼠','牛','狗'],lyrics:'This old man, he played one,\nHe played knick-knack on my thumb.\nWith a knick-knack paddy whack,\nGive the dog a bone,\nThis old man came rolling home.',duration:85,neteaseId:569437341},
-  {id:'s036',icon:'🐱',iconBg:'#FF85A1,#E05A7A',title:'Three Little Kittens',titleZh:'三只小猫',source:"Cambridge Early Years — \"Animal Story Songs\"",ageRange:[6,30],tags:['animals','story','rhyme'],zodiacAffinity:['猫','兔','羊'],lyrics:'Three little kittens, they lost their mittens,\nAnd they began to cry.\n"Oh mother dear, we sadly fear,\nOur mittens we have lost."',duration:65,neteaseId:1445692899},
-  {id:'s037',icon:'🕐',iconBg:'#8338EC,#6A24CC',title:'Hickory Dickory Dock',titleZh:'滴答滴答钟',source:"Oxford University Press — \"Nursery Rhyme Treasury\"",ageRange:[0,30],tags:['animals','numbers','rhyme'],zodiacAffinity:['鼠','蛇','猴'],lyrics:'Hickory dickory dock,\nThe mouse ran up the clock.\nThe clock struck one,\nThe mouse ran down,\nHickory dickory dock.',duration:40,neteaseId:4024524},
-  {id:'s038',icon:'🕸️',iconBg:'#06D6A0,#00B87A',title:'Little Miss Muffet',titleZh:'小玛菲特小姐',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','rhyme','animals'],zodiacAffinity:['蛇','兔','猪'],lyrics:'Little Miss Muffet sat on a tuffet,\nEating her curds and whey.\nAlong came a spider who sat down beside her,\nAnd frightened Miss Muffet away.',duration:40,neteaseId:1404982755},
-  {id:'s039',icon:'🌹',iconBg:'#E36488,#D04A6E',title:'Ring Around the Rosie',titleZh:'玫瑰花环',source:"Harvard Movement & Play Lab — \"Circle Game Songs\"",ageRange:[12,36],tags:['circle-game','group-play','action'],zodiacAffinity:['猴','虎','马'],lyrics:'Ring around the rosie,\nA pocket full of posies.\nAshes! Ashes!\nWe all fall down!',duration:35,neteaseId:540301696},
-  {id:'s040',icon:'🎪',iconBg:'#FF6B6B,#E05555',title:'Pop Goes the Weasel',titleZh:'砰地跳出黄鼠狼',source:"Oxford Early Learning — \"Action & Surprise Songs\"",ageRange:[8,36],tags:['action','surprise','rhyme'],zodiacAffinity:['猴','鼠','虎'],lyrics:'All around the mulberry bush,\nThe monkey chased the weasel.\nThe monkey thought twas all in fun,\nPop! goes the weasel.',duration:45,neteaseId:28707961},
-  {id:'s041',icon:'🔔',iconBg:'#6C5CE7,#503FC4',title:'Are You Sleeping',titleZh:'两只老虎',source:"Stanford Early Learning — \"Round & Canon Songs\"",ageRange:[0,24],tags:['lullaby','classic','round'],zodiacAffinity:['猪','兔','牛'],lyrics:'Are you sleeping, are you sleeping,\nBrother John? Brother John?\nMorning bells are ringing,\nMorning bells are ringing,\nDing ding dong! Ding ding dong!',duration:50,neteaseId:526657941},
-  {id:'s042',icon:'👞',iconBg:'#D4A017,#B0860E',title:'One Two Buckle My Shoe',titleZh:'一二扣好鞋',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[8,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鸡','鼠','猴'],lyrics:'One, two, buckle my shoe.\nThree, four, shut the door.\nFive, six, pick up sticks.\nSeven, eight, lay them straight.\nNine, ten, a big fat hen!',duration:55,neteaseId:567177646},
-  {id:'s043',icon:'🍞',iconBg:'#FF9500,#E07B00',title:'Hot Cross Buns',titleZh:'热十字面包',source:"Oxford University Press — \"Food & Culture Rhymes\"",ageRange:[6,36],tags:['food','rhyme','classic'],zodiacAffinity:['牛','猪','鸡'],lyrics:'Hot cross buns! Hot cross buns!\nOne a penny, two a penny, hot cross buns!\nIf you have no daughters,\nGive them to your sons.\nOne a penny, two a penny, hot cross buns!',duration:45,neteaseId:406907162},
-  {id:'s044',icon:'🫖',iconBg:'#06D6A0,#00B87A',title:'Polly Put the Kettle On',titleZh:'波莉烧水',source:"Cambridge Culture & Play — \"Tea Party Rhymes\"",ageRange:[8,36],tags:['tea','rhyme','classic'],zodiacAffinity:['猪','牛','羊'],lyrics:'Polly, put the kettle on,\nPolly, put the kettle on,\nPolly, put the kettle on,\nWe will all have tea.\nSukey, take it off again,\nSukey, take it off again,\nSukey, take it off again,\nThey have all gone away.',duration:55,neteaseId:429564381},
-  {id:'s045',icon:'🥧',iconBg:'#FFB703,#E09B00',title:'Little Jack Horner',titleZh:'小杰克霍纳',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','food','rhyme'],zodiacAffinity:['鼠','猪','牛'],lyrics:'Little Jack Horner sat in the corner,\nEating a Christmas pie.\nHe put in his thumb and pulled out a plum,\nAnd said, "What a good boy am I!"',duration:35,neteaseId:5180043},
-  {id:'s046',icon:'🐦',iconBg:'#3A86FF,#2260DD',title:'Sing a Song of Sixpence',titleZh:'唱首六便士歌',source:"Oxford World Classics — \"Traditional English Rhymes\"",ageRange:[8,36],tags:['rhyme','story','classic'],zodiacAffinity:['鸡','龙','猴'],lyrics:'Sing a song of sixpence,\nA pocket full of rye.\nFour and twenty blackbirds,\nBaked in a pie.',duration:45,neteaseId:3551683},
-  {id:'s047',icon:'🎠',iconBg:'#E63946,#CC2233',title:'Yankee Doodle',titleZh:'扬基歌',source:"Oxford World History — \"Cultural Heritage Songs\"",ageRange:[10,36],tags:['patriotic','history','march'],zodiacAffinity:['马','虎','龙'],lyrics:'Yankee Doodle went to town,\nRiding on a pony.\nHe stuck a feather in his cap,\nAnd called it macaroni.',duration:50,neteaseId:4025272},
-  {id:'s048',icon:'🏔️',iconBg:'#2D6A4F,#1B4D35',title:'She\'ll Be Coming Round the Mountain',titleZh:'她从山那边来',source:"Montessori International — \"Gross Motor Skill Songs\"",ageRange:[8,36],tags:['action','movement','classic'],zodiacAffinity:['马','虎','狗'],lyrics:'She\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain when she comes.',duration:70,neteaseId:28707950},
-  {id:'s049',icon:'🏖️',iconBg:'#00B4D8,#008AAA',title:'Down by the Bay',titleZh:'在海湾边',source:"Harvard Imagination Lab — \"Nonsense Rhyme Songs\"",ageRange:[12,36],tags:['rhyme','imagination','animals'],zodiacAffinity:['鱼','猴','龙'],lyrics:'Down by the bay, where the watermelons grow,\nBack to my home, I dare not go.\nFor if I do, my mother will say:\n"Did you ever see a goose kissing a moose?"\nDown by the bay!',duration:80,neteaseId:3366423},
-  {id:'s050',icon:'👨‍🌾',iconBg:'#F4A261,#D88A40',title:'The Farmer in the Dell',titleZh:'山谷里的农夫',source:"Cambridge Community & Role Play — \"Village Songs\"",ageRange:[6,36],tags:['community','animals','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'The farmer in the dell, the farmer in the dell,\nHi-ho, the derry-o, the farmer in the dell.\nThe farmer takes a wife, the farmer takes a wife,\nHi-ho, the derry-o, the farmer takes a wife.',duration:65,neteaseId:22508374},
-  {id:'s051',icon:'🚶',iconBg:'#118AB2,#0D6B8A',title:'Walking Walking',titleZh:'走走走',source:"Montessori Infant-Toddler — \"Movement & Body Awareness\"",ageRange:[6,24],tags:['action','movement','body'],zodiacAffinity:['虎','猴','马'],lyrics:'Walking, walking, walking, walking.\nHop, hop, hop! Hop, hop, hop!\nRunning, running, running, running, running, running.\nNow let us stop! Now let us stop!',duration:50,neteaseId:1963312636},
-  {id:'s052',icon:'🛏️',iconBg:'#8338EC,#6A24CC',title:'Ten in the Bed',titleZh:'床上有十个',source:"Oxford Numicon — \"Subtraction & Counting Songs\"",ageRange:[8,36],tags:['counting','numbers','bedtime'],zodiacAffinity:['猪','羊','鼠'],lyrics:'There were ten in the bed\nAnd the little one said,\n"Roll over! Roll over!"\nSo they all rolled over and one fell out.',duration:65,neteaseId:2706691638},
-  {id:'s053',icon:'🕺',iconBg:'#FF006E,#DD005A',title:'Looby Loo',titleZh:'噜比噜',source:"Harvard Movement & Play Lab — \"Dance & Coordination Songs\"",ageRange:[12,36],tags:['dance','body','action'],zodiacAffinity:['猴','马','虎'],lyrics:'Here we go Looby Loo,\nHere we go Looby Light.\nHere we go Looby Loo,\nAll on a Saturday night.',duration:60,neteaseId:540041536},
-  {id:'s054',icon:'🤝',iconBg:'#06D6A0,#00B87A',title:'The More We Get Together',titleZh:'我们在一起越多',source:"Harvard Social-Emotional Learning — \"Friendship Songs\"",ageRange:[6,36],tags:['friendship','social','love'],zodiacAffinity:['兔','羊','狗'],lyrics:'The more we get together, together, together,\nThe more we get together, the happier we will be!\nFor your friends are my friends,\nAnd my friends are your friends.\nThe more we get together, the happier we will be!',duration:70,neteaseId:22508976},
-  {id:'s055',icon:'🌈',iconBg:'#FF006E,#FF9500',title:'I Can Sing a Rainbow',titleZh:'我能唱彩虹',source:"Stanford Early Learning — \"Color & Nature Songs\"",ageRange:[8,36],tags:['colors','nature','rhyme'],zodiacAffinity:['龙','兔','鸡'],lyrics:'Red and yellow and pink and green,\nPurple and orange and blue.\nI can sing a rainbow, sing a rainbow,\nSing a rainbow too.',duration:55,neteaseId:561565340},
-  {id:'s056',icon:'🍎',iconBg:'#E63946,#CC2233',title:'Apples and Bananas',titleZh:'苹果和香蕉',source:"Harvard Phonics Lab — \"Vowel Sound Play Songs\"",ageRange:[8,36],tags:['food','phonics','vowel-play'],zodiacAffinity:['猴','鸡','鼠'],lyrics:'I like to eat, eat, eat apples and bananas.\nI like to eat, eat, eat apples and bananas.\nI like to ate, ate, ate ay-ples and ba-nay-nays.\nI like to ate, ate, ate ay-ples and ba-nay-nays.',duration:75,neteaseId:2251011},
-  {id:'s057',icon:'🌳',iconBg:'#2D6A4F,#1B4D35',title:'Round and Round the Garden',titleZh:'绕着花园转',source:"Montessori Infant-Toddler — \"Touch & Bonding Fingerplays\"",ageRange:[0,18],tags:['fingerplay','touch','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Round and round the garden,\nLike a teddy bear.\nOne step, two step,\nTickle you under there!',duration:30,neteaseId:1311209993},
-  {id:'s058',icon:'🥣',iconBg:'#D4A017,#B0860E',title:'Pease Porridge Hot',titleZh:'热豆粥',source:"Oxford University Press — \"Food Rhymes Collection\"",ageRange:[6,30],tags:['food','rhyme','classic'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Pease porridge hot, pease porridge cold,\nPease porridge in the pot, nine days old.\nSome like it hot, some like it cold,\nSome like it in the pot, nine days old.',duration:40,neteaseId:529443852},
-  {id:'s059',icon:'🐦',iconBg:'#3A86FF,#2260DD',title:'Two Little Dickie Birds',titleZh:'两只小鸟',source:"Montessori Infant-Toddler — \"Fingerplay & Animal Songs\"",ageRange:[0,24],tags:['fingerplay','animals','rhyme'],zodiacAffinity:['鸡','兔','猴'],lyrics:'Two little dickie birds sitting on a wall,\nOne named Peter, one named Paul.\nFly away Peter! Fly away Paul!\nCome back Peter! Come back Paul!',duration:35,neteaseId:1325305846},
-  {id:'s060',icon:'👞',iconBg:'#F4A261,#D88A40',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865}
+  {id:'s001',title:'Twinkle Twinkle Little Star',titleZh:'小星星',source:'Oxford University Press — "Very First Reading" Series',ageRange:[0,36],tags:['lullaby','classic','soothing'],zodiacAffinity:['兔','羊','猪'],lyrics:'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!',duration:95,neteaseId:2085770188},
+  {id:'s002',title:'The Wheels on the Bus',titleZh:'公交车上的轮子',source:'Harvard Center on the Developing Child — "Early Rhythm & Movement"',ageRange:[6,36],tags:['action','movement','rhythm'],zodiacAffinity:['猴','虎','狗'],lyrics:'The wheels on the bus go round and round,\nRound and round, round and round.\nThe wheels on the bus go round and round,\nAll through the town!\nThe wipers on the bus go swish, swish, swish...\nThe horn on the bus goes beep, beep, beep...\nThe people on the bus go up and down...',duration:120,neteaseId:2678702021},
+  {id:'s003',title:'Old MacDonald Had a Farm',titleZh:'老麦克唐纳有个农场',source:'Cambridge Early Years — "Phonics & Animal Sounds"',ageRange:[6,36],tags:['animals','phonics','interactive'],zodiacAffinity:['牛','马','鸡'],lyrics:'Old MacDonald had a farm, E-I-E-I-O!\nAnd on his farm he had a cow, E-I-E-I-O!\nWith a moo-moo here and a moo-moo there,\nHere a moo, there a moo, everywhere a moo-moo.\nOld MacDonald had a farm, E-I-E-I-O!',duration:135,neteaseId:1416557247},
+  {id:'s004',title:'Row Row Row Your Boat',titleZh:'划船歌',source:'Oxford Early Learning — "Gentle Action Songs"',ageRange:[0,24],tags:['gentle','action','classic'],zodiacAffinity:['鱼','蛇','兔'],lyrics:'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.',duration:45,neteaseId:1416555825},
+  {id:'s005',title:'If You\'re Happy and You Know It',titleZh:'如果感到幸福你就拍拍手',source:'Harvard Graduate School of Education — "Social-Emotional Learning"',ageRange:[6,36],tags:['emotion','action','social'],zodiacAffinity:['虎','马','狗'],lyrics:'If you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, then your face will surely show it.\nIf you\'re happy and you know it, clap your hands! (clap clap)',duration:80,neteaseId:5166466},
+  {id:'s006',title:'Baa Baa Black Sheep',titleZh:'咩咩小黑羊',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[0,30],tags:['lullaby','rhyme','gentle'],zodiacAffinity:['羊','猪','牛'],lyrics:'Baa, baa, black sheep, have you any wool?\nYes sir, yes sir, three bags full.\nOne for the master, one for the dame,\nAnd one for the little boy who lives down the lane.',duration:50,neteaseId:383767},
+  {id:'s007',title:'Head, Shoulders, Knees and Toes',titleZh:'头肩膝脚',source:'Montessori Early Childhood — "Body Awareness Through Song"',ageRange:[8,36],tags:['body','action','vocabulary'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Head, shoulders, knees and toes, knees and toes.\nHead, shoulders, knees and toes, knees and toes.\nAnd eyes and ears and mouth and nose.\nHead, shoulders, knees and toes, knees and toes!',duration:60,neteaseId:1436594241},
+  {id:'s008',title:'Itsy Bitsy Spider',titleZh:'小小蜘蛛',source:'Harvard Language Acquisition Lab — "Finger Play & Fine Motor"',ageRange:[6,30],tags:['fingerplay','fine-motor','rhyme'],zodiacAffinity:['蛇','猴','兔'],lyrics:'The itsy bitsy spider climbed up the water spout.\nDown came the rain and washed the spider out.\nOut came the sun and dried up all the rain,\nAnd the itsy bitsy spider climbed up the spout again.',duration:55,neteaseId:22508995},
+  {id:'s009',title:'Five Little Ducks',titleZh:'五只小鸭子',source:'Oxford Reading Tree — "Numbers & Counting Rhymes"',ageRange:[12,36],tags:['counting','numbers','animals'],zodiacAffinity:['鸡','鸭','兔'],lyrics:'Five little ducks went out one day,\nOver the hill and far away.\nMother duck said, "Quack, quack, quack, quack."\nBut only four little ducks came back.',duration:70,neteaseId:1416557245},
+  {id:'s010',title:'Rain Rain Go Away',titleZh:'雨啊雨啊快走开',source:'Yale Child Study Center — "Weather & Nature Songs"',ageRange:[0,36],tags:['weather','nature','gentle'],zodiacAffinity:['龙','鼠','猪'],lyrics:'Rain, rain, go away,\nCome again another day.\nLittle baby wants to play.\nRain, rain, go away.',duration:35,neteaseId:1416555844},
+  {id:'s011',title:'The Alphabet Song',titleZh:'字母歌',source:'Harvard Graduate School of Education — "Early Literacy Foundations"',ageRange:[12,36],tags:['alphabet','phonics','literacy'],zodiacAffinity:['鸡','猴','虎'],lyrics:'A-B-C-D-E-F-G,\nH-I-J-K-L-M-N-O-P,\nQ-R-S, T-U-V,\nW-X, Y and Z.\nNow I know my ABCs,\nNext time won\'t you sing with me?',duration:65,neteaseId:20330674},
+  {id:'s012',title:'You Are My Sunshine',titleZh:'你是我的阳光',source:'Oxford University Press — "Bonding & Attachment Songs"',ageRange:[0,36],tags:['love','bonding','lullaby'],zodiacAffinity:['兔','羊','猪','狗'],lyrics:'You are my sunshine, my only sunshine.\nYou make me happy when skies are grey.\nYou\'ll never know, dear, how much I love you.\nPlease don\'t take my sunshine away.',duration:85,neteaseId:1339805651},
+  {id:'s013',title:'Mary Had a Little Lamb',titleZh:'玛丽有只小羊羔',source:'Stanford Early Learning — "Narrative Songs for Language Development"',ageRange:[6,36],tags:['story','animals','classic'],zodiacAffinity:['羊','牛','马'],lyrics:'Mary had a little lamb, little lamb, little lamb.\nMary had a little lamb, its fleece was white as snow.\nAnd everywhere that Mary went, Mary went, Mary went,\nEverywhere that Mary went, the lamb was sure to go.',duration:70,neteaseId:28707964},
+  {id:'s014',title:'The Hokey Pokey',titleZh:'变戏法舞',source:'Montessori International — "Body Schema & Spatial Awareness"',ageRange:[12,36],tags:['body','action','coordination'],zodiacAffinity:['猴','虎','马'],lyrics:'You put your right hand in, you put your right hand out.\nYou put your right hand in and you shake it all about.\nYou do the Hokey Pokey and you turn yourself around.\nThat\'s what it\'s all about!',duration:110,neteaseId:28707948},
+  {id:'s015',title:'Hush Little Baby',titleZh:'安静吧宝贝',source:'Harvard Medical School — "Sleep & Bedtime Routines"',ageRange:[0,18],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊'],lyrics:'Hush, little baby, don\'t say a word,\nMama\'s going to buy you a mockingbird.\nAnd if that mockingbird won\'t sing,\nMama\'s going to buy you a diamond ring.',duration:100,neteaseId:4025354},
+  {id:'s016',title:'One Two Three Four Five',titleZh:'一二三四五',source:'Oxford Numicon — "Mathematical Songs for Early Years"',ageRange:[8,36],tags:['counting','numbers','math'],zodiacAffinity:['鼠','猴','鸡'],lyrics:'One, two, three, four, five,\nOnce I caught a fish alive.\nSix, seven, eight, nine, ten,\nThen I let it go again.\nWhy did you let it go?\nBecause it bit my finger so!',duration:55,neteaseId:2155807735},
+  {id:'s017',title:'This Little Piggy',titleZh:'这只小猪',source:'Harvard Center on the Developing Child — "Touch & Bonding Games"',ageRange:[0,18],tags:['fingerplay','touch','bonding'],zodiacAffinity:['猪','牛','羊'],lyrics:'This little piggy went to market,\nThis little piggy stayed home,\nThis little piggy had roast beef,\nThis little piggy had none,\nAnd this little piggy went wee wee wee all the way home!',duration:40,neteaseId:1444908038},
+  {id:'s018',title:'Five Little Monkeys',titleZh:'五只小猴子',source:'Yale Child Study Center — "Cause & Effect Learning Songs"',ageRange:[12,36],tags:['counting','animals','fun'],zodiacAffinity:['猴','虎','蛇'],lyrics:'Five little monkeys jumping on the bed,\nOne fell off and bumped his head.\nMama called the doctor and the doctor said,\n"No more monkeys jumping on the bed!"',duration:75,neteaseId:1416557248},
+  {id:'s019',title:'The Muffin Man',titleZh:'松饼人',source:'Oxford University Press — "Community & Role Play Songs"',ageRange:[10,36],tags:['community','food','rhyme'],zodiacAffinity:['牛','猪','狗'],lyrics:'Do you know the Muffin Man, the Muffin Man, the Muffin Man?\nDo you know the Muffin Man who lives on Drury Lane?\nYes, I know the Muffin Man, the Muffin Man, the Muffin Man.\nYes, I know the Muffin Man who lives on Drury Lane.',duration:65,neteaseId:1443538672},
+  {id:'s020',title:'Pat-a-Cake',titleZh:'拍拍蛋糕',source:'Montessori Infant-Toddler — "Clapping & Rhythm Songs"',ageRange:[0,24],tags:['clapping','rhythm','interactive'],zodiacAffinity:['兔','羊','鸡'],lyrics:'Pat-a-cake, pat-a-cake, baker\'s man,\nBake me a cake as fast as you can.\nPat it and prick it and mark it with B,\nAnd put it in the oven for baby and me.',duration:35,neteaseId:1304372197},
+  {id:'s021',title:'The Grand Old Duke of York',titleZh:'老约克公爵',source:'Cambridge Music & Movement — "Gross Motor Skill Development"',ageRange:[12,36],tags:['movement','marching','action'],zodiacAffinity:['马','虎','狗'],lyrics:'Oh, the grand old Duke of York,\nHe had ten thousand men.\nHe marched them up to the top of the hill,\nAnd he marched them down again.\nAnd when they\'re up, they\'re up,\nAnd when they\'re down, they\'re down,\nAnd when they\'re only half-way up,\nThey\'re neither up nor down!',duration:70,neteaseId:2146882537},
+  {id:'s022',title:'I\'m a Little Teapot',titleZh:'我是一个小茶壶',source:'Harvard Project Zero — "Creative Movement & Expression"',ageRange:[8,30],tags:['action','imagination','body'],zodiacAffinity:['猪','兔','蛇'],lyrics:'I\'m a little teapot, short and stout.\nHere is my handle, here is my spout.\nWhen I get all steamed up, hear me shout:\n"Tip me over and pour me out!"',duration:40,neteaseId:2711955502},
+  {id:'s023',title:'Skip to My Lou',titleZh:'跳向我的路',source:'Stanford Dance & Movement Lab — "Rhythmic Movement for Toddlers"',ageRange:[14,36],tags:['dance','movement','rhythm'],zodiacAffinity:['马','猴','虎'],lyrics:'Skip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip to my Lou, my darling.',duration:55,neteaseId:1344094561},
+  {id:'s024',title:'Teddy Bear Teddy Bear',titleZh:'泰迪熊泰迪熊',source:'Oxford Early Years — "Imagination & Comfort Songs"',ageRange:[6,28],tags:['action','comfort','imagination'],zodiacAffinity:['牛','猪','羊'],lyrics:'Teddy bear, teddy bear, turn around.\nTeddy bear, teddy bear, touch the ground.\nTeddy bear, teddy bear, show your shoe.\nTeddy bear, teddy bear, that will do!',duration:50,neteaseId:863769365},
+  {id:'s025',title:'Humpty Dumpty',titleZh:'矮胖子',source:'Oxford University Press — "Story Rhymes Collection"',ageRange:[0,36],tags:['rhyme','story','classic'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Humpty Dumpty sat on a wall.\nHumpty Dumpty had a great fall.\nAll the king\'s horses and all the king\'s men\nCouldn\'t put Humpty together again.',duration:40,neteaseId:3341078750},
+  {id:'s026',title:'Jack and Jill',titleZh:'杰克和吉尔',source:'Harvard Literacy Lab — "Narrative Rhyme & Sequencing"',ageRange:[6,36],tags:['story','rhyme','classic'],zodiacAffinity:['鼠','蛇','虎'],lyrics:'Jack and Jill went up the hill,\nTo fetch a pail of water.\nJack fell down and broke his crown,\nAnd Jill came tumbling after.',duration:45,neteaseId:863769357},
+  {id:'s027',title:'Little Bo Peep',titleZh:'小牧羊女',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6,36],tags:['story','animals','gentle'],zodiacAffinity:['羊','牛','马'],lyrics:'Little Bo Peep has lost her sheep,\nAnd doesn\'t know where to find them.\nLeave them alone, and they\'ll come home,\nWagging their tails behind them.',duration:50,neteaseId:556969724},
+  {id:'s028',title:'Hey Diddle Diddle',titleZh:'嘿摇啊摇',source:'Cambridge Imagination Lab — "Absurd Humor & Language Play"',ageRange:[6,36],tags:['imagination','fun','rhyme'],zodiacAffinity:['猴','龙','马'],lyrics:'Hey diddle diddle, the cat and the fiddle,\nThe cow jumped over the moon.\nThe little dog laughed to see such fun,\nAnd the dish ran away with the spoon.',duration:40,neteaseId:429564379},
+  {id:'s029',title:'Rock-a-Bye Baby',titleZh:'睡吧宝贝',source:'Harvard Sleep Medicine — "Certified Bedtime Lullabies"',ageRange:[0,12],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊','牛'],lyrics:'Rock-a-bye baby, on the treetop,\nWhen the wind blows, the cradle will rock.\nWhen the bough breaks, the cradle will fall,\nAnd down will come baby, cradle and all.',duration:55,neteaseId:3383831294},
+  {id:'s030',title:'London Bridge Is Falling Down',titleZh:'伦敦桥要塌了',source:'Oxford World History — "Cultural Heritage Nursery Rhymes"',ageRange:[8,36],tags:['history','rhyme','group-play'],zodiacAffinity:['龙','虎','蛇'],lyrics:'London Bridge is falling down,\nFalling down, falling down.\nLondon Bridge is falling down,\nMy fair lady.',duration:55,neteaseId:1416555827},
+  {id:'s031',title:'Bingo',titleZh:'宾果歌',source:"Harvard Center on the Developing Child — \"Spelling & Rhythm Songs\"",ageRange:[6,36],tags:['animals','spelling','action'],zodiacAffinity:['狗','猴','虎'],lyrics:'There was a farmer had a dog,\nAnd Bingo was his name-o.\nB-I-N-G-O, B-I-N-G-O, B-I-N-G-O,\nAnd Bingo was his name-o!',duration:60,neteaseId:567512419},
+  {id:'s032',title:'Baby Shark',titleZh:'鲨鱼宝宝',source:"Harvard Language Acquisition Lab — \"Repetitive Pattern Songs\"",ageRange:[0,36],tags:['animals','action','movement'],zodiacAffinity:['鱼','龙','猴'],lyrics:'Baby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark!',duration:90,neteaseId:1350263842},
+  {id:'s033',title:'Finger Family',titleZh:'手指家族',source:"Montessori Early Childhood — \"Family & Body Awareness Songs\"",ageRange:[6,30],tags:['family','fingerplay','body'],zodiacAffinity:['兔','羊','猪'],lyrics:'Daddy finger, daddy finger, where are you?\nHere I am, here I am. How do you do?\nMommy finger, mommy finger, where are you?\nHere I am, here I am. How do you do?',duration:80,neteaseId:2118679235},
+  {id:'s034',title:'Jingle Bells',titleZh:'铃儿响叮当',source:"Oxford World Holidays — \"Seasonal Songs Collection\"",ageRange:[8,36],tags:['holiday','winter','classic'],zodiacAffinity:['马','虎','龙'],lyrics:'Jingle bells, jingle bells, jingle all the way!\nOh what fun it is to ride\nIn a one-horse open sleigh, hey!\nJingle bells, jingle bells, jingle all the way!',duration:75,neteaseId:2160011504},
+  {id:'s035',title:'This Old Man',titleZh:'这位老先生',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[12,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鼠','牛','狗'],lyrics:'This old man, he played one,\nHe played knick-knack on my thumb.\nWith a knick-knack paddy whack,\nGive the dog a bone,\nThis old man came rolling home.',duration:85,neteaseId:569437341},
+  {id:'s036',title:'Three Little Kittens',titleZh:'三只小猫',source:"Cambridge Early Years — \"Animal Story Songs\"",ageRange:[6,30],tags:['animals','story','rhyme'],zodiacAffinity:['猫','兔','羊'],lyrics:'Three little kittens, they lost their mittens,\nAnd they began to cry.\n"Oh mother dear, we sadly fear,\nOur mittens we have lost."',duration:65,neteaseId:1445692899},
+  {id:'s037',title:'Hickory Dickory Dock',titleZh:'滴答滴答钟',source:"Oxford University Press — \"Nursery Rhyme Treasury\"",ageRange:[0,30],tags:['animals','numbers','rhyme'],zodiacAffinity:['鼠','蛇','猴'],lyrics:'Hickory dickory dock,\nThe mouse ran up the clock.\nThe clock struck one,\nThe mouse ran down,\nHickory dickory dock.',duration:40,neteaseId:4024524},
+  {id:'s038',title:'Little Miss Muffet',titleZh:'小玛菲特小姐',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','rhyme','animals'],zodiacAffinity:['蛇','兔','猪'],lyrics:'Little Miss Muffet sat on a tuffet,\nEating her curds and whey.\nAlong came a spider who sat down beside her,\nAnd frightened Miss Muffet away.',duration:40,neteaseId:1404982755},
+  {id:'s039',title:'Ring Around the Rosie',titleZh:'玫瑰花环',source:"Harvard Movement & Play Lab — \"Circle Game Songs\"",ageRange:[12,36],tags:['circle-game','group-play','action'],zodiacAffinity:['猴','虎','马'],lyrics:'Ring around the rosie,\nA pocket full of posies.\nAshes! Ashes!\nWe all fall down!',duration:35,neteaseId:540301696},
+  {id:'s040',title:'Pop Goes the Weasel',titleZh:'砰地跳出黄鼠狼',source:"Oxford Early Learning — \"Action & Surprise Songs\"",ageRange:[8,36],tags:['action','surprise','rhyme'],zodiacAffinity:['猴','鼠','虎'],lyrics:'All around the mulberry bush,\nThe monkey chased the weasel.\nThe monkey thought twas all in fun,\nPop! goes the weasel.',duration:45,neteaseId:28707961},
+  {id:'s041',title:'Are You Sleeping',titleZh:'两只老虎',source:"Stanford Early Learning — \"Round & Canon Songs\"",ageRange:[0,24],tags:['lullaby','classic','round'],zodiacAffinity:['猪','兔','牛'],lyrics:'Are you sleeping, are you sleeping,\nBrother John? Brother John?\nMorning bells are ringing,\nMorning bells are ringing,\nDing ding dong! Ding ding dong!',duration:50,neteaseId:526657941},
+  {id:'s042',title:'One Two Buckle My Shoe',titleZh:'一二扣好鞋',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[8,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鸡','鼠','猴'],lyrics:'One, two, buckle my shoe.\nThree, four, shut the door.\nFive, six, pick up sticks.\nSeven, eight, lay them straight.\nNine, ten, a big fat hen!',duration:55,neteaseId:567177646},
+  {id:'s043',title:'Hot Cross Buns',titleZh:'热十字面包',source:"Oxford University Press — \"Food & Culture Rhymes\"",ageRange:[6,36],tags:['food','rhyme','classic'],zodiacAffinity:['牛','猪','鸡'],lyrics:'Hot cross buns! Hot cross buns!\nOne a penny, two a penny, hot cross buns!\nIf you have no daughters,\nGive them to your sons.\nOne a penny, two a penny, hot cross buns!',duration:45,neteaseId:406907162},
+  {id:'s044',title:'Polly Put the Kettle On',titleZh:'波莉烧水',source:"Cambridge Culture & Play — \"Tea Party Rhymes\"",ageRange:[8,36],tags:['tea','rhyme','classic'],zodiacAffinity:['猪','牛','羊'],lyrics:'Polly, put the kettle on,\nPolly, put the kettle on,\nPolly, put the kettle on,\nWe will all have tea.\nSukey, take it off again,\nSukey, take it off again,\nSukey, take it off again,\nThey have all gone away.',duration:55,neteaseId:429564381},
+  {id:'s045',title:'Little Jack Horner',titleZh:'小杰克霍纳',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','food','rhyme'],zodiacAffinity:['鼠','猪','牛'],lyrics:'Little Jack Horner sat in the corner,\nEating a Christmas pie.\nHe put in his thumb and pulled out a plum,\nAnd said, "What a good boy am I!"',duration:35,neteaseId:5180043},
+  {id:'s046',title:'Sing a Song of Sixpence',titleZh:'唱首六便士歌',source:"Oxford World Classics — \"Traditional English Rhymes\"",ageRange:[8,36],tags:['rhyme','story','classic'],zodiacAffinity:['鸡','龙','猴'],lyrics:'Sing a song of sixpence,\nA pocket full of rye.\nFour and twenty blackbirds,\nBaked in a pie.',duration:45,neteaseId:3551683},
+  {id:'s047',title:'Yankee Doodle',titleZh:'扬基歌',source:"Oxford World History — \"Cultural Heritage Songs\"",ageRange:[10,36],tags:['patriotic','history','march'],zodiacAffinity:['马','虎','龙'],lyrics:'Yankee Doodle went to town,\nRiding on a pony.\nHe stuck a feather in his cap,\nAnd called it macaroni.',duration:50,neteaseId:4025272},
+  {id:'s048',title:'She\'ll Be Coming Round the Mountain',titleZh:'她从山那边来',source:"Montessori International — \"Gross Motor Skill Songs\"",ageRange:[8,36],tags:['action','movement','classic'],zodiacAffinity:['马','虎','狗'],lyrics:'She\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain when she comes.',duration:70,neteaseId:28707950},
+  {id:'s049',title:'Down by the Bay',titleZh:'在海湾边',source:"Harvard Imagination Lab — \"Nonsense Rhyme Songs\"",ageRange:[12,36],tags:['rhyme','imagination','animals'],zodiacAffinity:['鱼','猴','龙'],lyrics:'Down by the bay, where the watermelons grow,\nBack to my home, I dare not go.\nFor if I do, my mother will say:\n"Did you ever see a goose kissing a moose?"\nDown by the bay!',duration:80,neteaseId:3366423},
+  {id:'s050',title:'The Farmer in the Dell',titleZh:'山谷里的农夫',source:"Cambridge Community & Role Play — \"Village Songs\"",ageRange:[6,36],tags:['community','animals','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'The farmer in the dell, the farmer in the dell,\nHi-ho, the derry-o, the farmer in the dell.\nThe farmer takes a wife, the farmer takes a wife,\nHi-ho, the derry-o, the farmer takes a wife.',duration:65,neteaseId:22508374},
+  {id:'s051',title:'Walking Walking',titleZh:'走走走',source:"Montessori Infant-Toddler — \"Movement & Body Awareness\"",ageRange:[6,24],tags:['action','movement','body'],zodiacAffinity:['虎','猴','马'],lyrics:'Walking, walking, walking, walking.\nHop, hop, hop! Hop, hop, hop!\nRunning, running, running, running, running, running.\nNow let us stop! Now let us stop!',duration:50,neteaseId:1963312636},
+  {id:'s052',title:'Ten in the Bed',titleZh:'床上有十个',source:"Oxford Numicon — \"Subtraction & Counting Songs\"",ageRange:[8,36],tags:['counting','numbers','bedtime'],zodiacAffinity:['猪','羊','鼠'],lyrics:'There were ten in the bed\nAnd the little one said,\n"Roll over! Roll over!"\nSo they all rolled over and one fell out.',duration:65,neteaseId:2706691638},
+  {id:'s053',title:'Looby Loo',titleZh:'噜比噜',source:"Harvard Movement & Play Lab — \"Dance & Coordination Songs\"",ageRange:[12,36],tags:['dance','body','action'],zodiacAffinity:['猴','马','虎'],lyrics:'Here we go Looby Loo,\nHere we go Looby Light.\nHere we go Looby Loo,\nAll on a Saturday night.',duration:60,neteaseId:540041536},
+  {id:'s054',title:'The More We Get Together',titleZh:'我们在一起越多',source:"Harvard Social-Emotional Learning — \"Friendship Songs\"",ageRange:[6,36],tags:['friendship','social','love'],zodiacAffinity:['兔','羊','狗'],lyrics:'The more we get together, together, together,\nThe more we get together, the happier we will be!\nFor your friends are my friends,\nAnd my friends are your friends.\nThe more we get together, the happier we will be!',duration:70,neteaseId:22508976},
+  {id:'s055',title:'I Can Sing a Rainbow',titleZh:'我能唱彩虹',source:"Stanford Early Learning — \"Color & Nature Songs\"",ageRange:[8,36],tags:['colors','nature','rhyme'],zodiacAffinity:['龙','兔','鸡'],lyrics:'Red and yellow and pink and green,\nPurple and orange and blue.\nI can sing a rainbow, sing a rainbow,\nSing a rainbow too.',duration:55,neteaseId:561565340},
+  {id:'s056',title:'Apples and Bananas',titleZh:'苹果和香蕉',source:"Harvard Phonics Lab — \"Vowel Sound Play Songs\"",ageRange:[8,36],tags:['food','phonics','vowel-play'],zodiacAffinity:['猴','鸡','鼠'],lyrics:'I like to eat, eat, eat apples and bananas.\nI like to eat, eat, eat apples and bananas.\nI like to ate, ate, ate ay-ples and ba-nay-nays.\nI like to ate, ate, ate ay-ples and ba-nay-nays.',duration:75,neteaseId:2251011},
+  {id:'s057',title:'Round and Round the Garden',titleZh:'绕着花园转',source:"Montessori Infant-Toddler — \"Touch & Bonding Fingerplays\"",ageRange:[0,18],tags:['fingerplay','touch','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Round and round the garden,\nLike a teddy bear.\nOne step, two step,\nTickle you under there!',duration:30,neteaseId:1311209993},
+  {id:'s058',title:'Pease Porridge Hot',titleZh:'热豆粥',source:"Oxford University Press — \"Food Rhymes Collection\"",ageRange:[6,30],tags:['food','rhyme','classic'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Pease porridge hot, pease porridge cold,\nPease porridge in the pot, nine days old.\nSome like it hot, some like it cold,\nSome like it in the pot, nine days old.',duration:40,neteaseId:529443852},
+  {id:'s059',title:'Two Little Dickie Birds',titleZh:'两只小鸟',source:"Montessori Infant-Toddler — \"Fingerplay & Animal Songs\"",ageRange:[0,24],tags:['fingerplay','animals','rhyme'],zodiacAffinity:['鸡','兔','猴'],lyrics:'Two little dickie birds sitting on a wall,\nOne named Peter, one named Paul.\nFly away Peter! Fly away Paul!\nCome back Peter! Come back Paul!',duration:35,neteaseId:1325305846},
+  {id:'s060',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865}
 ];
-
-const readings_null=[ // placeholder, all content now in songs
-]; // old readings removed
 
 
 // ==================== RECOMMENDER ====================
@@ -547,9 +450,7 @@ function getDailyTip(){
 
 // ==================== APP STATE ====================
 let profile=null, playlist=[], currentIndex=0;
-let synth=window.speechSynthesis, utterance=null;
-let isPlaying=false, isLooping=true, currentPlayingId=null;
-let speakingPhase=''; // 'title' | 'content' | ''
+let isPlaying=false;
 let currentPage=0;
 let lastDateStr=''; // midnight refresh tracking
 
@@ -564,35 +465,82 @@ neAudio.addEventListener('play',()=>{
 });
 neAudio.addEventListener('playing',()=>{
   hideNetEaseStatus();
-  speakingPhase='content';
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
-  // Fall back to TTS when audio stream fails
-  stopNetEase();
-  if(isPlaying)speakLyrics();
+  // Skip failed tracks (copyright-restricted, network error, etc.)
+  showNetEaseStatus('此歌曲暂无免费资源，自动跳过','error');
+  setTimeout(()=>{
+    hideNetEaseStatus();
+    if(isPlaying)advanceTrack();
+  },1500);
 });
 neAudio.addEventListener('ended',()=>{
   if(isPlaying)advanceTrack();
 });
-
-function playNetEase(id,title,songId){
-  if(!id)return;
-  neAudio.src='/api/stream?id='+encodeURIComponent(songId||id)+'&neid='+id+'&title='+encodeURIComponent(title||'');
+neAudio.addEventListener('timeupdate',()=>{
+  if(neAudio.duration&&isFinite(neAudio.duration)){
+    const pct=(neAudio.currentTime/neAudio.duration)*100;
+    document.getElementById('progress-fill').style.width=pct+'%';
+    document.getElementById('time-elapsed').textContent=fmtTime(neAudio.currentTime);
+    document.getElementById('time-total').textContent='-'+fmtTime(neAudio.duration-neAudio.currentTime);
+  }
+});
+neAudio.addEventListener('loadstart',()=>{
+  document.getElementById('progress-fill').style.width='0%';
   showNetEaseStatus('加载中...','loading');
+});
+neAudio.addEventListener('canplay',()=>{
+  hideNetEaseStatus();
+});
+neAudio.addEventListener('waiting',()=>{
+  showNetEaseStatus('缓冲中...','loading');
+});
+
+function fmtTime(sec){
+  if(!isFinite(sec)||sec<0)return'0:00';
+  const m=Math.floor(sec/60);
+  const s=Math.floor(sec%60);
+  return m+':'+String(s).padStart(2,'0');
+}
+
+function nextSong(){
+  stopPlayback();
+  advanceTrack();
+}
+
+function playNetEase(neId, songKey, title){
+  if(!neId&&!songKey)return;
+  const params=new URLSearchParams();
+  if(songKey)params.set('id',songKey);
+  if(neId)params.set('neid',neId);
+  if(title)params.set('title',title);
+  const url='/api/stream?'+params.toString();
+  if(neAudio.src.endsWith(params.toString())){
+    // Same song — just resume if paused
+    if(neAudio.paused)neAudio.play().catch(()=>{});
+    return;
+  }
+  neAudio.src=url;
   neAudio.load();
-  neAudio.play().catch(()=>{
-    // Autoplay blocked, show play hint
-    showNetEaseStatus('点击播放按钮开始','loading');
-    setTimeout(()=>hideNetEaseStatus(),2000);
-  });
+  neAudio.play().catch(()=>{});
 }
 
 function stopNetEase(){
   neAudio.pause();
-  neAudio.src='';
-  neAudio.removeAttribute('src');
   if(neAdvanceTimer){clearTimeout(neAdvanceTimer);neAdvanceTimer=null;}
+}
+
+function preloadFirstSong(){
+  if(!playlist.length)return;
+  const item=playlist[0];
+  if(!item.neteaseId)return;
+  const params=new URLSearchParams();
+  params.set('id',item.id);
+  params.set('neid',item.neteaseId);
+  params.set('title',item.title);
+  neAudio.src='/api/stream?'+params.toString();
+  neAudio.load();  // start buffering, don't play — keeps data ready for first click
 }
 
 function scheduleAdvance(durationSec){
@@ -602,11 +550,6 @@ function scheduleAdvance(durationSec){
   },(durationSec+2)*1000);
 }
 
-function openNetEaseTab(){
-  const item=playlist[currentIndex];
-  if(!item||!item.neteaseId)return;
-  window.open('https://music.163.com/#/song?id='+item.neteaseId,'_blank','noopener,noreferrer');
-}
 
 const neStatusEl=document.getElementById('netease-status');
 function showNetEaseStatus(msg,type){
@@ -617,12 +560,6 @@ function showNetEaseStatus(msg,type){
 function hideNetEaseStatus(){neStatusEl.style.display='none';}
 
 
-// Voice settings
-let voiceSettings={
-  voiceName: localStorage.getItem('jiudoumi_voiceName')||'auto',
-  rate: parseFloat(localStorage.getItem('jiudoumi_voiceRate'))||0.85,
-  pitch: parseFloat(localStorage.getItem('jiudoumi_voicePitch'))||1.1
-};
 
 function init(){
   const s=localStorage.getItem('babyProfile');
@@ -637,76 +574,10 @@ function init(){
   },60000);
 }
 
-// ==================== VOICE SETTINGS ====================
-function toggleVoicePanel(){
-  const p=document.getElementById('voice-panel');
-  if(!p.classList.contains('show'))populateVoiceList();
-  p.classList.toggle('show');
-}
 
-function populateVoiceList(){
-  if(!synth)return;
-  const voices=synth.getVoices().filter(v=>v.lang.startsWith('en'));
-  const sel=document.getElementById('voice-select');
-  sel.innerHTML='<option value="auto">自动选择（推荐）</option>';
-  const us=voices.filter(v=>v.lang==='en-US');
-  const gb=voices.filter(v=>v.lang==='en-GB');
-  const other=voices.filter(v=>v.lang!=='en-US'&&v.lang!=='en-GB');
-  function addGroup(label,list){
-    if(list.length===0)return;
-    const g=document.createElement('optgroup');
-    g.label=label;
-    list.forEach(v=>{
-      const o=document.createElement('option');
-      o.value=v.name; o.textContent=v.name+(v.name.includes('(Enhanced)')?'':''); o.selected=(v.name===voiceSettings.voiceName);
-      g.appendChild(o);
-    });
-    sel.appendChild(g);
-  }
-  addGroup('美式英语',us); addGroup('英式英语',gb); addGroup('其他英语',other);
-  document.getElementById('voice-rate').value=voiceSettings.rate;
-  document.getElementById('voice-rate-val').textContent=voiceSettings.rate.toFixed(2);
-  document.getElementById('voice-pitch').value=voiceSettings.pitch;
-  document.getElementById('voice-pitch-val').textContent=voiceSettings.pitch.toFixed(2);
-}
-
-function onVoiceChange(){
-  voiceSettings.voiceName=document.getElementById('voice-select').value;
-  localStorage.setItem('jiudoumi_voiceName',voiceSettings.voiceName);
-}
-
-function onRateChange(){
-  const v=parseFloat(document.getElementById('voice-rate').value);
-  voiceSettings.rate=v; document.getElementById('voice-rate-val').textContent=v.toFixed(2);
-  localStorage.setItem('jiudoumi_voiceRate',v);
-}
-
-function onPitchChange(){
-  const v=parseFloat(document.getElementById('voice-pitch').value);
-  voiceSettings.pitch=v; document.getElementById('voice-pitch-val').textContent=v.toFixed(2);
-  localStorage.setItem('jiudoumi_voicePitch',v);
-}
-
-function previewVoice(){
-  stopSpeech();
-  const u=new SpeechSynthesisUtterance('Hello! I am your English learning companion. Let us learn together.');
-  u.lang='en-US'; u.rate=voiceSettings.rate; u.pitch=voiceSettings.pitch;
-  if(voiceSettings.voiceName!=='auto'){const v=synth.getVoices().find(x=>x.name===voiceSettings.voiceName); if(v)u.voice=v;}
-  else{const voices=synth.getVoices(); const ev=voices.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||voices.find(v=>v.lang==='en-US'&&v.name.includes('Alex'))||voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en')); if(ev)u.voice=ev;}
-  synth.speak(u);
-}
-
-function getTimeGreeting(){
-  const h=new Date().getHours();
-  if(h<6)return '夜深了';
-  if(h<12)return '早安';
-  if(h<14)return '午安';
-  if(h<18)return '下午好';
-  return '晚安';
-}
 function updateTodayDate(){
   const n=new Date(),wd=['日','一','二','三','四','五','六'];
-  document.getElementById('today-date').innerHTML=`<span style="font-size:16px">📅</span> ${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${wd[n.getDay()]}`;
+  document.getElementById('today-date').textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${wd[n.getDay()]}`;
 }
 
 
@@ -721,8 +592,7 @@ function renderHome(){
   document.getElementById('daily-quote-source').textContent=tip.source;
 
   if(profile){
-    const gr=getTimeGreeting();
-const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙','夜深了':'✨'};document.getElementById('welcome-line').innerHTML=`<span style="font-size:28px">${ge[gr]||'🌟'}</span> ${gr}，<span class="baby-name">${profile.name}</span>的家长`;
+    document.getElementById('welcome-line').innerHTML=`早安，<span class="baby-name">${profile.name}</span>的家长`;
     document.getElementById('no-profile-banner').style.display='none';
     const ad=getAgeMonthsAndDays(profile.birthDate);
     const e=Z_EMOJI[profile.zodiac]||'⭐';
@@ -732,9 +602,9 @@ const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙
       <div class="chip"><span>🎂</span> ${ad.months}个月${ad.days}天</div>
       <div class="chip"><span>${profile.gender==='boy'?'👦':'👧'}</span> ${profile.gender==='boy'?'男宝':'女宝'}</div>
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
-      <div class="chip chip-clickable" onclick="event.stopPropagation();openHoroscope('${con}','${ce}')"><span>${ce}</span> ${con} ▸</div>`;
+      <div class="chip"><span>${ce}</span> ${con}</div>`;
   }else{
-    document.getElementById('welcome-line').innerHTML='<span style="font-size:24px">📻</span> <span class="baby-name">欢迎来到豆比爸比电台</span>';
+    document.getElementById('welcome-line').textContent='';
     document.getElementById('no-profile-banner').style.display='flex';
     document.getElementById('info-chips').innerHTML='';
   }
@@ -750,12 +620,9 @@ const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙
   let list='';
   pageItems.forEach((item,i)=>{
     const globalIdx=start+i;
-    list+=`<div class="item-card">
-      <div class="song-icon-circle${currentPlayingId===item.id?' playing':''}" style="background:linear-gradient(135deg,${item.iconBg||'#EF476F,#F06888'})" onclick="event.stopPropagation();toggleSongPlay('${item.id}',${globalIdx})">
-        <span>${item.icon||'🎵'}</span>
-        <div class="play-dot">${currentPlayingId===item.id?'⏸':'▶'}</div>
-      </div>
-      <div class="item-info" onclick="toggleSongPlay('${item.id}',${globalIdx})">
+    list+=`<div class="item-card" onclick="openPlayer(${globalIdx})">
+      <div class="item-type-icon icon-song"><span>🎵</span></div>
+      <div class="item-info">
         <span class="item-title">${item.title} <text style="font-size:10px;color:#aaa">🕐${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</text></span>
         <span class="item-title-zh">${item.titleZh}</span>
         <div class="item-meta">
@@ -763,6 +630,7 @@ const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙
           <span class="item-source-short">${item.author||''}</span>
         </div>
       </div>
+      <div class="mini-play-btn play-song"><span>▶</span></div>
     </div>`;
   });
   // Pagination controls
@@ -772,6 +640,7 @@ const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙
     <button class="page-btn" onclick="changePage(1)" ${currentPage===totalPages-1?'disabled':''}>下一页 ▶</button>
   </div>`;
   document.getElementById('item-list').innerHTML=list;
+  preloadFirstSong();
 }
 
 function changePage(dir){
@@ -781,70 +650,29 @@ function changePage(dir){
 
 
 
-// ==================== TTS PLAYER ====================
+// ==================== PLAYER ====================
 function openPlayer(startIndex){
   if(playlist.length===0){showToast('暂无歌曲');return;}
   currentIndex=Math.max(0,Math.min(startIndex,playlist.length-1));
-  const item=playlist[currentIndex];
-  currentPlayingId=item?item.id:null;
-  stopSpeech();
   isPlaying=true;
-  openPlayerFull();
-  updatePlayerUI();
+  // Play BEFORE DOM changes — keeps play() inside the user-gesture chain
+  stopPlayback();
   playCurrent();
-  renderHome();
-}
-
-function toggleMiniPlay(){
-  if(isPlaying){stopSpeech();isPlaying=false;currentPlayingId=null;hideMiniPlayer();}
-  else{isPlaying=true;playCurrent();showMiniPlayer();}
-  renderHome();
-}
-function openPlayerFull(){
-  if(!currentPlayingId)return;
-  hideMiniPlayer();
   document.getElementById('player-overlay').classList.add('show');
   renderPlaylist();
   updatePlayerUI();
-  updatePlaylistHighlight();
-  scrollPlaylistToCurrent();
 }
+
 function closePlayer(){
+  stopPlayback();
+  isPlaying=false;
   document.getElementById('player-overlay').classList.remove('show');
-  if(isPlaying){showMiniPlayer();}
-  renderHome();
 }
 
-function stopSpeech(){
-  if(synth){synth.cancel();}
+function stopPlayback(){
   stopNetEase();
-  speakingPhase='';
 }
 
-function speak(text, rate, onEnd, pitchOverride){
-  if(!synth){if(onEnd)onEnd();return;}
-  stopSpeech();
-  utterance=new SpeechSynthesisUtterance(text);
-  utterance.lang='en-US';
-  utterance.rate=rate||voiceSettings.rate;
-  utterance.pitch=(pitchOverride!==undefined)?pitchOverride:voiceSettings.pitch;
-  // Voice selection: explicit > auto fallback chain
-  const voices=synth.getVoices();
-  if(voiceSettings.voiceName!=='auto'){
-    const match=voices.find(v=>v.name===voiceSettings.voiceName);
-    if(match)utterance.voice=match;
-  }
-  if(!utterance.voice){
-    const enVoice=voices.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||
-                   voices.find(v=>v.lang==='en-US'&&v.name.includes('Alex'))||
-                   voices.find(v=>v.lang==='en-US')||
-                   voices.find(v=>v.lang.startsWith('en'));
-    if(enVoice)utterance.voice=enVoice;
-  }
-  utterance.onend=()=>{if(onEnd)onEnd();};
-  utterance.onerror=()=>{if(onEnd)onEnd();};
-  synth.speak(utterance);
-}
 
 function playCurrent(){
   if(!isPlaying||currentIndex>=playlist.length)return;
@@ -853,82 +681,14 @@ function playCurrent(){
   updatePlaylistHighlight();
   scrollPlaylistToCurrent();
 
-  currentPlayingId=item.id;
   if(item.neteaseId){
-    speakingPhase='content';
-    updatePlayerUI();
-    playNetEase(item.neteaseId, item.title, item.id);
+    playNetEase(item.neteaseId, item.id, item.title);
     scheduleAdvance(item.duration||60);
   }else{
-    speakLyrics();
-  }
-}
-
-function speakLyrics(){
-  if(!isPlaying||currentIndex>=playlist.length)return;
-  const item=playlist[currentIndex];
-  if(!item.lyrics){
     if(isPlaying)advanceTrack();
-    return;
   }
-  speakingPhase='content';
-  updatePlayerUI();
-  showNetEaseStatus('🔊 TTS朗读中...','loading');
-  // First speak the title
-  speak(item.title, voiceSettings.rate, ()=>{
-    hideNetEaseStatus();
-    if(!isPlaying)return;
-    // Schedule advance based on lyrics length (rough estimate: 4s per line)
-    const lines=item.lyrics.split(/[\n,.]/).filter(l=>l.trim());
-    const durationEst=Math.max(lines.length*3.5, 15);
-    scheduleAdvance(durationEst);
-    // Then speak lyrics at slightly slower rate
-    speak(item.lyrics, voiceSettings.rate*0.7, ()=>{
-      hideNetEaseStatus();
-      if(isPlaying)advanceTrack();
-    }, voiceSettings.pitch);
-  }, 1.3);
 }
 
-function toggleSongPlay(songId,idx){
-  if(currentPlayingId===songId){
-    // Toggle play/pause on current song
-    if(isPlaying){stopSpeech();isPlaying=false;}
-    else{isPlaying=true;playCurrent();}
-    updatePlayerUI();
-    return;
-  }
-  // Play new song — build playlist from current recommendations
-  if(currentPlayingId)stopSpeech();
-  const recs=getDailyRecommendations(profile);
-  playlist=recs.items;
-  const found=playlist.findIndex(s=>s.id===songId);
-  currentIndex=found>=0?found:idx;
-  currentPlayingId=songId;
-  isPlaying=true;
-  openPlayerFull();
-  updatePlayerUI();
-  renderPlaylist();
-  updatePlaylistHighlight();
-  scrollPlaylistToCurrent();
-  playCurrent();
-}
-
-function showMiniPlayer(){
-  document.getElementById('mini-player').classList.add('show');
-}
-function hideMiniPlayer(){
-  document.getElementById('mini-player').classList.remove('show');
-}
-
-function closeMiniPlayer(e){
-  e.stopPropagation();
-  stopSpeech();
-  isPlaying=false;
-  currentPlayingId=null;
-  hideMiniPlayer();
-  renderHome();
-}
 function advanceTrack(){
   if(currentIndex<playlist.length-1){
     currentIndex++;
@@ -936,117 +696,70 @@ function advanceTrack(){
     updatePlaylistHighlight();
     scrollPlaylistToCurrent();
     playCurrent();
-  }else if(isLooping){
+  }else{
     currentIndex=0;
     updatePlayerUI();
     updatePlaylistHighlight();
     scrollPlaylistToCurrent();
     playCurrent();
-  }else{
-    isPlaying=false;
-    updatePlayerUI();
   }
 }
 
-function nextTrack(){
-  stopSpeech();
-  if(currentIndex<playlist.length-1){
-    currentIndex++;
-  }else if(isLooping){
-    currentIndex=0;
-  }
-  updatePlayerUI();
-  updatePlaylistHighlight();
-  scrollPlaylistToCurrent();
-  if(isPlaying)playCurrent();
-}
 
-function prevTrack(){
-  stopSpeech();
-  if(currentIndex>0){
-    currentIndex--;
-  }else if(isLooping){
-    currentIndex=playlist.length-1;
-  }
-  updatePlayerUI();
-  updatePlaylistHighlight();
-  scrollPlaylistToCurrent();
-  if(isPlaying)playCurrent();
-}
 
-function restartTrack(){
-  stopSpeech();
-  updatePlayerUI();
-  if(isPlaying)playCurrent();
-}
 
 function togglePlay(){
   isPlaying=!isPlaying;
   if(isPlaying){
     playCurrent();
   }else{
-    stopSpeech();
+    stopPlayback();
   }
   updatePlayerUI();
 }
 
-function toggleLoop(){
-  isLooping=!isLooping;
-  showToast(isLooping?'循环播放：开':'循环播放：关');
-}
 
 function updatePlayerUI(){
   if(currentIndex>=playlist.length)return;
   const item=playlist[currentIndex];
-  // Album art
-  const art=document.getElementById('album-art');
-  art.textContent=item.icon||'🎵';
-  art.style.background='linear-gradient(135deg,'+(item.iconBg||'#EF476F,#F06888')+')';
-  const shadow=document.getElementById('album-art-shadow');
-  shadow.style.background='linear-gradient(135deg,'+(item.iconBg||'#EF476F,#F06888')+')';
-  art.className=isPlaying?'album-art playing':'album-art';
-  shadow.className=isPlaying?'album-art-shadow active':'album-art-shadow';
-  const eq=document.getElementById('equalizer');
-  eq.className=isPlaying?'equalizer active':'equalizer';
-  // Song info
-  document.getElementById('song-info-title').textContent=item.title;
-  document.getElementById('song-info-zh').textContent=item.titleZh||'';
-  // Progress
-  const pct=(currentIndex/(playlist.length-1||1))*100;
-  document.getElementById('progress-fill').style.width=pct+'%';
-  document.getElementById('time-current').textContent=(currentIndex+1)+'/'+playlist.length;
-  document.getElementById('time-total').textContent='共'+playlist.length+'首';
-  document.getElementById('playlist-count').textContent='共'+playlist.length+'首';
-  // Mini player update
-  const mp=document.getElementById('mini-player');
-  if(mp&&mp.classList.contains('show')){
-    document.getElementById('mini-player-art').textContent=item.icon||'🎵';
-    document.getElementById('mini-player-art').style.background='linear-gradient(135deg,'+(item.iconBg||'#EF476F,#F06888')+')';
-    document.getElementById('mini-player-art').className=isPlaying?'mini-player-art playing':'mini-player-art';
-    document.getElementById('mini-player-title').textContent=item.title;
-    document.getElementById('mini-player-sub').textContent='🎵 播放中...';
-    document.getElementById('mini-player-play-btn').textContent=isPlaying?'⏸':'▶';
+  document.getElementById('now-type').textContent='🎵 儿歌';
+  const art=document.getElementById('now-art');
+  art.className='now-art song';
+  art.textContent='🎵';
+  document.getElementById('now-title').textContent=item.title;
+  document.getElementById('now-title-zh').textContent=item.titleZh||'';
+  document.getElementById('now-source').textContent=item.source||'';
+  document.getElementById('main-play-btn').textContent=isPlaying?'⏸':'▶';
+
+  // Status
+  const dot=document.getElementById('status-dot');
+  const stxt=document.getElementById('status-text');
+  if(!isPlaying){dot.className='status-dot paused';stxt.textContent='已暂停';}
+  else if(isPlaying){
+    const isSong=playlist[currentIndex]&&playlist[currentIndex].contentType==='song';
+    dot.className='status-dot';
+    stxt.textContent='🎵 播放歌曲中...';
   }
+  else{dot.className='status-dot paused';stxt.textContent='就绪';}
+
+  // Playlist position
+  document.getElementById('progress-label').textContent=`${currentIndex+1} / ${playlist.length}`;
+  document.getElementById('playlist-count').textContent=`共${playlist.length}首`;
 }
 
 function renderPlaylist(){
   const el=document.getElementById('playlist-scroll');
   let h='';
   playlist.forEach((item,i)=>{
-    let cls='pl-item';
-    if(i===currentIndex)cls+=' current'+(isPlaying?' playing':'');
-    if(i<currentIndex)cls+=' played';
-    const dur=Math.floor((item.duration||0)/60)+':'+String(Math.floor((item.duration||0)%60)).padStart(2,'0');
+    const cls=i===currentIndex?'pl-item current':(i<currentIndex?'pl-item played':'pl-item');
     h+=`<div class="${cls}" onclick="jumpToTrack(${i})">
       <span class="pl-index">${i<currentIndex?'✓':(i+1)}</span>
-      <div class="pl-item-art" style="background:linear-gradient(135deg,${item.iconBg||'#EF476F,#F06888'})">
-        <span style="font-size:16px">${item.icon||'🎵'}</span>
-      </div>
+      <span class="pl-type-icon">🎵</span>
       <div class="pl-info">
         <span class="pl-name">${item.title}</span>
-        <span class="pl-sub">${item.titleZh||''}</span>
+        <span class="pl-type-label pl-song-label">儿歌</span>
       </div>
-      <span class="pl-dur">${dur}</span>
+      <span class="pl-dur">${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</span>
     </div>`;
   });
   el.innerHTML=h;
@@ -1071,7 +784,7 @@ function scrollPlaylistToCurrent(){
 }
 
 function jumpToTrack(i){
-  stopSpeech();
+  stopPlayback();
   currentIndex=i;
   updatePlayerUI();
   renderPlaylist();
@@ -1080,9 +793,6 @@ function jumpToTrack(i){
   playCurrent();
 }
 
-// Load voices early
-if(synth)synth.getVoices();
-if(synth)synth.onvoiceschanged=()=>synth.getVoices();
 
 // ==================== PROFILE ====================
 function selectGender(g,el){document.querySelectorAll('.gender-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');document.getElementById('gender-icon').textContent=g==='boy'?'👦':'👧';}
@@ -1123,43 +833,6 @@ function switchTab(tab){
 }
 document.querySelectorAll('.tab-item').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
 
-// Baby horoscope data
-const HOROSCOPE={
-  '白羊座':{emoji:'♈',lucky:'红色',activity:'动作儿歌',tip:'今天宝宝像小勇士一样勇敢探索！多鼓励爬行和抓握，Head Shoulders Knees and Toes 是最佳BGM。精力旺盛时来一段 baby massage 帮助平静。',mood:'🔥 活力满满',avoid:'过度包裹限制活动'},
-  '金牛座':{emoji:'♉',lucky:'绿色',activity:'感官游戏',tip:'宝宝今天对触觉特别敏感，准备不同材质的玩具让TA探索。温柔哼唱 Twinkle Twinkle 配合轻轻摇动，是睡前仪式的最佳拍档。',mood:'🌿 温和专注',avoid:'频繁更换玩具打断专注'},
-  '双子座':{emoji:'♊',lucky:'黄色',activity:'语言互动',tip:'语言敏感日！多和宝宝说话、模仿TA的发声。The Alphabet Song 今天特别有魔力，宝宝可能咿呀学语回应你。绘本时间翻倍吧！',mood:'💬 叽叽喳喳',avoid:'长时间单一刺激'},
-  '巨蟹座':{emoji:'♋',lucky:'银白色',activity:'亲子依偎',tip:'今天需要更多的抱抱和安全感。Hush Little Baby 是最佳安抚曲，肌肤接触时轻轻哼唱。水宝宝喜欢温水浴，洗澡时唱歌加倍快乐！',mood:'🤗 粘人撒娇',avoid:'强行分离训练'},
-  '狮子座':{emoji:'♌',lucky:'金色',activity:'表演展示',tip:'今天宝宝渴望被关注和掌声！If You\'re Happy and You Know It 让TA尽情拍手跺脚，给大大的笑容和夸奖。录下宝宝的新技能会有惊喜！',mood:'🌟 自信闪耀',avoid:'忽视宝宝的展示'},
-  '处女座':{emoji:'♍',lucky:'米色',activity:'精细动作',tip:'完美小手今天特别灵巧！This Little Piggy 配合手指游戏效果拔群。堆叠杯、穿珠子类玩具今天格外吸引宝宝。保持环境整洁让TA更安心。',mood:'🧐 专注细致',avoid:'杂乱无序的环境'},
-  '天秤座':{emoji:'♎',lucky:'粉色',activity:'社交互动',tip:'社交小天使上线！安排和其他宝宝一起听儿歌，The More We Get Together 就是今日主题曲。宝宝今天对和谐声音特别敏感，避免大声争吵。',mood:'🎵 和谐愉悦',avoid:'嘈杂冲突的环境'},
-  '天蝎座':{emoji:'♏',lucky:'深红色',activity:'深度探索',tip:'好奇心爆棚！宝宝会盯着一个玩具研究很久。Old MacDonald 配合动物叫声模仿能让TA咯咯笑。今天适合引入一种新感官体验：新味道或新触感。',mood:'🔍 深度专注',avoid:'频繁打断探索'},
-  '射手座':{emoji:'♐',lucky:'紫色',activity:'大运动',tip:'冒险精神旺盛！The Wheels on the Bus 搭配腿部和手臂动作，为爬行和走路做准备。户外活动和新鲜空气是今天的最佳"营养剂"。',mood:'🚀 自由奔放',avoid:'长时间限制在围栏里'},
-  '摩羯座':{emoji:'♑',lucky:'棕色',activity:'规律作息',tip:'小建筑师今天喜欢按部就班。Row Row Row Your Boat 配合有节奏的摇动让宝宝感到安心。建立固定的儿歌+动作流程，宝宝会期待每天的"节目时间"。',mood:'🏔 踏实稳重',avoid:'突然改变日常节奏'},
-  '水瓶座':{emoji:'♒',lucky:'蓝色',activity:'创意音乐',tip:'小小发明家今天脑洞大开！用锅碗瓢盆做乐器配合儿歌节奏，Bingo 这类有拍手的歌最适合。宝宝可能用独特方式回应音乐——那是TA的独创舞蹈！',mood:'⚡ 古灵精怪',avoid:'限制创造性表达'},
-  '双鱼座':{emoji:'♓',lucky:'海蓝色',activity:'音乐律动',tip:'梦幻小天使今天格外感性。You Are My Sunshine 配合轻柔摇摆，眼神交流时深情哼唱。水中游戏 + 舒缓儿歌是最佳组合，宝宝仿佛回到了温暖的羊水中。',mood:'🌊 温柔敏感',avoid:'过度刺激和强光'},
-};
-
-function openHoroscope(con,emoji){
-  const h=HOROSCOPE[con]||HOROSCOPE['白羊座'];
-  document.getElementById('horo-icon').textContent=emoji||h.emoji;
-  document.getElementById('horo-title').textContent=con+' · 宝宝运势';
-  const n=new Date();
-  document.getElementById('horo-date').textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日`;
-  document.getElementById('horo-body').innerHTML=`
-    <div style="margin-bottom:8px">🎯 <b>今日主场：</b>${h.activity}</div>
-    <div style="margin-bottom:8px">😊 <b>宝宝心情：</b>${h.mood}</div>
-    <div style="margin-bottom:8px">🍀 <b>幸运色：</b>${h.lucky}</div>
-    <div style="margin-bottom:8px">💡 ${h.tip}</div>
-    <div>⚠️ <b>小提醒：</b>${h.avoid}</div>`;
-  document.getElementById('horo-tag').textContent='✨ 豆米运势 · 仅供娱乐';
-  document.getElementById('horo-overlay').classList.add('show');
-}
-
-function closeHoroscope(e){
-  if(e&&e.target!==document.getElementById('horo-overlay'))return;
-  document.getElementById('horo-overlay').classList.remove('show');
-}
-
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
 
 // Global error trap
@@ -1170,6 +843,5 @@ window.onerror=function(msg,url,line){
 
 init();
 </script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}</script>
 </body>
 </html>

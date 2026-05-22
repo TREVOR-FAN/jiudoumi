@@ -20,6 +20,10 @@ CACHE_TTL = 3600
 # Pre-generated CDN cache from China IP (loaded from netease_cache.json)
 _song_cache = {}
 _cache_file = os.path.join(BASE_DIR, 'netease_cache.json')
+
+# Local MP3 cache directory — once downloaded, served directly without CDN dependency
+AUDIO_CACHE_DIR = os.path.join(BASE_DIR, 'audio_cache')
+os.makedirs(AUDIO_CACHE_DIR, exist_ok=True)
 try:
     with open(_cache_file, 'r') as f:
         data = json.load(f)
@@ -38,11 +42,17 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
     def do_GET(self):
-        if self.path.startswith('/api/stream'):
+        parsed = urllib.parse.urlparse(self.path)
+        clean_path = parsed.path  # path without query string
+
+        if clean_path == '/' or clean_path == '/index.html':
+            clean_path = '/preview.html'
+        if clean_path.startswith('/api/stream'):
             self.handle_stream()
-        elif self.path == '/api/ping':
+        elif clean_path == '/api/ping':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
+            self.send_header('Cache-Control', 'no-cache')
             self.end_headers()
             cache_count = len([s for s in _song_cache.values() if s.get('url')])
             self.wfile.write(json.dumps({
@@ -50,14 +60,20 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 'cache_songs': cache_count,
                 'cache_file': os.path.basename(_cache_file),
             }).encode())
+        elif clean_path.endswith('.html'):
+            # HTML files — serve with no-cache for instant updates
+            fs_path = self.translate_path(clean_path)
+            if os.path.isfile(fs_path):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html; charset=utf-8')
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                self.end_headers()
+                with open(fs_path, 'rb') as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_error(404)
         else:
             super().do_GET()
-
-    def end_headers(self):
-        self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
-        self.send_header('Pragma', 'no-cache')
-        self.send_header('Expires', '0')
-        super().end_headers()
 
     def handle_stream(self):
         qs = urllib.parse.urlparse(self.path).query
@@ -72,17 +88,88 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             url = get_netease_url(song_key, title, ne_id)
-            if url:
-                self.send_response(302)
-                self.send_header('Location', url)
-                self.end_headers()
-            else:
+            if not url:
                 self.send_response(451)
                 self.send_header('Content-Type', 'text/plain; charset=utf-8')
                 self.end_headers()
                 self.wfile.write(b'Copyright restricted - no free stream available')
+                return
+
+            # Check local MP3 cache first — serves without CDN dependency
+            cache_path = os.path.join(AUDIO_CACHE_DIR, f'{song_key}.mp3')
+            if os.path.exists(cache_path) and os.path.getsize(cache_path) > 0:
+                self._serve_file(cache_path)
+                return
+
+            # Proxy audio from CDN and save to local cache
+            range_header = self.headers.get('Range', '')
+            req_headers = {'User-Agent': UA, 'Referer': REFERER}
+            if range_header:
+                req_headers['Range'] = range_header
+
+            try:
+                req = urllib.request.Request(url, headers=req_headers)
+                with urllib.request.urlopen(req, timeout=15) as upstream:
+                    ct = upstream.headers.get('Content-Type', 'audio/mpeg')
+                    cl = upstream.headers.get('Content-Length', '')
+                    code = 206 if range_header else 200
+                    self.send_response(code)
+                    self.send_header('Content-Type', ct)
+                    if cl:
+                        self.send_header('Content-Length', cl)
+                    self.send_header('Accept-Ranges', 'bytes')
+                    self.send_header('Cache-Control', 'public, max-age=86400')
+                    self.end_headers()
+                    # Stream to client while saving to local cache
+                    tmp_path = cache_path + '.tmp'
+                    try:
+                        with open(tmp_path, 'wb') as f:
+                            while True:
+                                chunk = upstream.read(65536)
+                                if not chunk:
+                                    break
+                                self.wfile.write(chunk)
+                                f.write(chunk)
+                        os.rename(tmp_path, cache_path)
+                        print(f'[stream] cached: {song_key} ({os.path.getsize(cache_path)} bytes)')
+                    except (BrokenPipeError, ConnectionResetError):
+                        pass  # client disconnected early
+            except Exception as e:
+                print(f'[stream] proxy error for {song_key}: {e}', file=sys.stderr)
+                # Remove stale URL from all caches
+                with _cache_lock:
+                    _url_cache.pop(song_key, None)
+                    _url_cache.pop(ne_id, None)
+                if song_key in _song_cache:
+                    del _song_cache[song_key]
+                try:
+                    self.send_response(451)
+                    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(b'CDN expired')
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
         except Exception as e:
             self.send_error(500, str(e))
+
+    def _serve_file(self, path):
+        """Serve a local file with appropriate headers."""
+        size = os.path.getsize(path)
+        self.send_response(200)
+        self.send_header('Content-Type', 'audio/mpeg')
+        self.send_header('Content-Length', str(size))
+        self.send_header('Accept-Ranges', 'bytes')
+        self.send_header('Cache-Control', 'public, max-age=86400')
+        self.end_headers()
+        with open(path, 'rb') as f:
+            while True:
+                chunk = f.read(65536)
+                if not chunk:
+                    break
+                try:
+                    self.wfile.write(chunk)
+                except (BrokenPipeError, ConnectionResetError):
+                    break
 
     def log_message(self, format, *args):
         if '/api/stream' in str(args):
