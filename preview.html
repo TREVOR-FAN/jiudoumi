@@ -52,6 +52,9 @@ body{
 .info-chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.8);padding:6px 14px;border-radius:24px;font-size:12px;color:#555}
 .no-profile-banner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);padding:14px 16px;border-radius:16px;font-size:14px;color:#555;margin-top:8px;cursor:pointer}
+.aqi-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.6);padding:4px 10px;border-radius:20px;font-size:12px;color:#555;margin-top:8px}
+.aqi-val{font-weight:700;font-size:14px}
+.aqi-good{color:#5CB85C}.aqi-moderate{color:#F0AD4E}.aqi-unhealthy{color:#EF476F}
 
 /* Sections */
 .section{margin-top:20px}
@@ -138,15 +141,9 @@ body{
 .progress-fill{height:100%;background:var(--secondary);width:0%;pointer-events:none}
 .progress-label{font-size:10px;color:rgba(255,255,255,0.35);text-align:center}
 
-/* Controls */
+/* Time */
 .song-time-row{display:flex;justify-content:space-between;padding:0 20px 4px;font-size:11px;color:rgba(255,255,255,0.4);font-variant-numeric:tabular-nums}
 .song-time{font-family:monospace}
-.next-btn{background:none;border:none;color:rgba(255,255,255,0.5);font-size:28px;cursor:pointer;padding:8px;transition:color .2s}
-.next-btn:hover{color:#fff}
-.next-btn:active{color:var(--secondary)}
-.player-controls{display:flex;align-items:center;justify-content:center;gap:24px;padding:8px 20px 16px}
-.main-play-btn{width:64px;height:64px;border-radius:50%;background:var(--secondary);border:none;cursor:pointer;font-size:24px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,209,102,0.4)}
-.main-play-btn:hover{opacity:.9}
 
 /* Lyrics */
 .lyrics-box{text-align:center;padding:8px 20px 0;max-height:120px;overflow:hidden}
@@ -213,6 +210,7 @@ body{
     <div class="welcome" id="welcome-line"></div>
     <div class="info-chips" id="info-chips"></div>
     <div class="no-profile-banner" id="no-profile-banner" onclick="switchTab('profile')"><span>📋</span> 点击设置宝宝档案，获得个性化推荐 →</div>
+    <div class="aqi-badge" id="aqi-badge" style="display:none">🌬 <span id="aqi-val"></span></div>
   </div>
 
   <div class="section" id="daily-quote-section">
@@ -264,7 +262,7 @@ body{
 
   <div class="now-playing">
     <div class="now-type" id="now-type">—</div>
-    <div class="now-art" id="now-art">🎵</div>
+    <div class="now-art" id="now-art" onclick="togglePlay()">🎵</div>
     <div class="now-title" id="now-title">—</div>
     <div class="now-title-zh" id="now-title-zh"></div>
     <div class="now-source" id="now-source"></div>
@@ -283,11 +281,6 @@ body{
   <div class="player-progress">
     <div class="progress-track" id="song-progress-track"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="progress-label" id="progress-label">0 / 20</div>
-  </div>
-
-  <div class="player-controls">
-    <button class="main-play-btn" id="main-play-btn" onclick="togglePlay()">▶</button>
-    <button class="ctrl-btn next-btn" onclick="nextSong()" title="下一首">⏭</button>
   </div>
 
   <div class="playlist-section">
@@ -549,20 +542,6 @@ function fmtTime(sec){
   return m+':'+String(s).padStart(2,'0');
 }
 
-function nextSong(){
-  stopPlayback();
-  advanceTrack();
-}
-
-function prevSong(){
-  stopPlayback();
-  currentIndex=currentIndex>0?currentIndex-1:playlist.length-1;
-  updatePlayerUI();
-  updatePlaylistHighlight();
-  scrollPlaylistToCurrent();
-  playCurrent();
-}
-
 function toggleShuffle(){
   isShuffle=!isShuffle;
   document.getElementById('shuffle-btn').classList.toggle('on',isShuffle);
@@ -663,6 +642,7 @@ function init(){
   lastDateStr=new Date().toDateString();
   updateTodayDate();
   renderHome();
+  fetchAQI();
   // Midnight refresh: check every 60s if date changed
   setInterval(()=>{
     const ds=new Date().toDateString();
@@ -824,8 +804,6 @@ function updatePlayerUI(){
   document.getElementById('now-title').innerHTML=item.title+' <button class="fav-btn" data-song-id="'+item.id+'" onclick="toggleFavorite(\''+item.id+'\',event)" style="font-size:20px;vertical-align:middle">'+(isFavorite(item.id)?'❤️':'🤍')+'</button>';
   document.getElementById('now-title-zh').textContent=item.titleZh||'';
   document.getElementById('now-source').textContent=item.source||'';
-  document.getElementById('main-play-btn').textContent=isPlaying?'⏸':'▶';
-
   // Lyrics: show first line as preview
   if(item.lyrics){
     const lines=item.lyrics.split('\n');
@@ -932,11 +910,23 @@ function switchTab(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   if(tab==='profile')loadProfilePage();
-  if(tab==='home')renderHome();
+  if(tab==='home'){renderHome();fetchAQI();}
 }
 document.querySelectorAll('.tab-item').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+
+function fetchAQI(){
+  fetch('/api/aqi').then(r=>r.json()).then(d=>{
+    const v=d.aqi;
+    if(v==='N/A')return;
+    let cls='aqi-good',desc='优';
+    if(v>150){cls='aqi-unhealthy';desc='污染';}
+    else if(v>50){cls='aqi-moderate';desc='良';}
+    document.getElementById('aqi-val').innerHTML='AQI <span class="aqi-val '+cls+'">'+v+'</span> '+desc+' · '+d.city;
+    document.getElementById('aqi-badge').style.display='inline-flex';
+  }).catch(()=>{});
+}
 
 // Global error trap
 window.onerror=function(msg,url,line){
@@ -960,18 +950,18 @@ function toggleDays(){
 }
 
 const babyHoroscopes={
-  '白羊座':['今天是充满活力的一天！宝宝会展现出强烈的好奇心，多给TA探索的机会。','宝宝今天可能有些急性子，温柔的拥抱是最好的安抚。','适合带宝宝接触新事物，TA的勇气会让你惊喜。'],
-  '金牛座':['宝宝今天对声音特别敏感，播放轻柔的音乐让TA安心。','今天是建立安全感的好日子，多抱抱宝宝。','宝宝可能对新食物感兴趣，可以尝试新的辅食口味。'],
-  '双子座':['宝宝今天语言敏感度很高，多和TA说话吧！','宝宝可能注意力容易转移，用鲜艳的颜色吸引TA。','今天适合社交互动，带宝宝见见其他小朋友。'],
-  '巨蟹座':['宝宝今天特别需要妈妈的抱抱，多给TA安全感。','宝宝的情绪可能比较敏感，温柔的摇篮曲是最好的陪伴。','今天适合在家里安静地玩耍，宝宝会感到特别舒适。'],
-  '狮子座':['宝宝今天表现欲很强，多给TA展示自己的机会。','用夸张的表情和声音和宝宝互动，TA会咯咯笑。','宝宝今天喜欢被关注，给TA多一些掌声和赞美。'],
-  '处女座':['宝宝今天对细节很专注，给TA一些精细动作的玩具。','保持规律的作息会让宝宝今天心情愉快。','宝宝可能对整洁有要求，保持环境干净TA会更开心。'],
-  '天秤座':['宝宝今天特别喜欢和谐的旋律，播放优雅的古典乐。','宝宝可能对美的事物感兴趣，给TA看色彩柔和的绘本。','今天适合亲子互动游戏，宝宝会很享受和你的时光。'],
-  '天蝎座':['宝宝今天的眼神特别专注，给TA一些需要观察的玩具。','宝宝可能情绪比较强烈，耐心陪伴是最好的回应。','今天适合玩躲猫猫游戏，宝宝会特别投入。'],
-  '射手座':['宝宝今天精力旺盛，多带TA活动身体。','宝宝可能对新环境特别好奇，可以带TA出门散步。','今天适合自由的探索，不要限制宝宝的行动。'],
-  '摩羯座':['宝宝今天特别有耐心，可以尝试稍微复杂的玩具。','建立规律的作息会让宝宝更有安全感。','宝宝今天可能表现得比平时更安静，这是正常的成长节奏。'],
-  '水瓶座':['宝宝今天想象力丰富，给TA一些创意玩具。','宝宝可能有些独特的举动，这是TA在探索世界。','今天适合自由玩耍，不要打扰宝宝的独立思考。'],
-  '双鱼座':['宝宝今天特别需要温柔的安抚，摇篮曲是最好的礼物。','宝宝可能做了个好梦，醒来的笑容格外甜美。','今天适合水中游戏，宝宝对流动的水特别着迷。']
+  '白羊座':['今天宝宝精力充沛，适合进行肢体互动游戏，多让TA爬行和探索。','宝宝可能表现出强烈的好奇心，给TA安全的探索空间很重要。','尝试用明亮的颜色和音乐刺激宝宝的感官发展。','宝宝今天胃口可能特别好，注意营养均衡的辅食搭配。','拥抱和亲吻是今天最好的情感交流方式。'],
+  '金牛座':['宝宝今天对声音特别敏感，播放轻柔的古典音乐让TA安心。','触觉体验很重要，给TA不同材质的玩具触摸。','今天是建立安全感的好日子，规律作息让宝宝情绪稳定。','宝宝可能对新食物感兴趣，可以尝试新的辅食口味。','温暖的沐浴时光会让宝宝特别放松和开心。'],
+  '双子座':['宝宝今天语言敏感度很高，多和TA说话、唱歌。','用丰富的面部表情和手势与宝宝交流，TA会模仿你。','宝宝可能注意力容易转移，用绘本吸引TA的专注力。','今天适合社交互动，带宝宝见见其他小朋友。','多换几种玩具轮流玩，保持新鲜感。'],
+  '巨蟹座':['宝宝今天特别需要妈妈的抱抱，多给TA安全感。','温柔的眼神交流是最好的沟通方式。','宝宝的情绪可能比较敏感，摇篮曲是最好的安抚。','今天适合在家里安静地玩耍，熟悉的环境让宝宝舒适。','亲子阅读时光会让宝宝感到被爱包围。'],
+  '狮子座':['宝宝今天表现欲很强，多给TA展示自己的机会。','用夸张的表情和声音和宝宝互动，TA会咯咯笑个不停。','今天宝宝喜欢被关注和赞美，多给TA正面的反馈。','欢快的音乐和舞蹈会让宝宝特别兴奋。','让宝宝尝试自己完成一件小事，TA会很有成就感。'],
+  '处女座':['宝宝今天对细节很专注，给TA一些精细动作的玩具。','保持规律的作息会让宝宝今天心情愉快。','宝宝可能对整洁有要求，玩耍后一起收拾玩具。','今天适合玩分类和配对游戏，培养逻辑思维。','安静的环境有助于宝宝集中注意力。'],
+  '天秤座':['宝宝今天特别喜欢和谐的旋律，播放优雅的音乐。','宝宝可能对美的事物感兴趣，给TA看色彩柔和的绘本。','今天适合亲子互动游戏，宝宝会很享受陪伴时光。','带宝宝接触大自然，花草树木会让TA心情愉悦。','和宝宝一起拍手唱歌，培养节奏感。'],
+  '天蝎座':['宝宝今天的眼神特别专注，给TA一些需要观察的玩具。','宝宝的情绪体验很深，耐心陪伴是最好的回应。','今天适合玩躲猫猫游戏，宝宝会特别投入。','用温柔的声音讲故事，宝宝的听觉专注力会很高。','宝宝今天可能特别粘人，这是建立依恋的好时机。'],
+  '射手座':['宝宝今天精力旺盛，多带TA活动身体。','宝宝对新环境特别好奇，可以带TA出门散步。','今天适合自由的探索，不要太限制宝宝的行动。','尝试新的户外活动，宝宝会特别兴奋。','欢快的儿歌和舞蹈能让宝宝释放能量。'],
+  '摩羯座':['宝宝今天做事特别有耐心，可以尝试稍复杂的游戏。','建立规律的作息让宝宝更有安全感。','宝宝今天可能表现得比平时安静，内心在快速成长。','给宝宝设定小目标并及时表扬，培养自信心。','堆积木和拼图类游戏今天特别适合。'],
+  '水瓶座':['宝宝今天想象力丰富，给TA一些创意玩具。','宝宝可能有些独特的举动，这是创造力的萌芽。','今天适合自由玩耍，不要打断宝宝的专注。','给宝宝一些不寻常的材料探索（安全的），激发好奇心。','音乐和艺术活动会让宝宝展现出特别的兴趣。'],
+  '双鱼座':['宝宝今天特别需要温柔的安抚，摇篮曲是最好的礼物。','宝宝可能做了个好梦，醒来的笑容格外甜美。','今天适合水中游戏，宝宝对流动的水特别着迷。','轻柔的抚摸和按摩能让宝宝身心放松。','用梦幻的故事和音乐营造温馨的睡前氛围。']
 };
 
 function showBabyHoroscope(){

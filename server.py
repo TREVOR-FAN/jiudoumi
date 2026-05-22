@@ -49,6 +49,8 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             clean_path = '/preview.html'
         if clean_path.startswith('/api/stream'):
             self.handle_stream()
+        elif clean_path == '/api/aqi':
+            self.handle_aqi()
         elif clean_path == '/api/ping':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -74,6 +76,29 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404)
         else:
             super().do_GET()
+
+    def handle_aqi(self):
+        try:
+            req = urllib.request.Request(
+                'https://api.waqi.info/feed/here/?token=demo',
+                headers={'User-Agent': UA}
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read())
+            aqi_data = data.get('data', {})
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Cache-Control', 'public, max-age=1800')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'city': aqi_data.get('city', {}).get('name', 'Unknown'),
+                'aqi': aqi_data.get('aqi', 'N/A'),
+                'level': aqi_data.get('dominentpol', ''),
+                'ts': time.time(),
+            }).encode())
+        except Exception as e:
+            print(f'[aqi] fetch error: {e}', file=sys.stderr)
+            self.send_error(502, 'AQI unavailable')
 
     def handle_stream(self):
         qs = urllib.parse.urlparse(self.path).query
