@@ -251,7 +251,7 @@ body{
 </div>
 
 <div class="tab-bar">
-  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>今日推荐</div>
+  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>Harvard/Oxford每日推荐</div>
   <div class="tab-item" data-tab="profile"><span class="tab-icon">👶</span>宝宝档案</div>
 </div>
 
@@ -273,7 +273,7 @@ body{
   <div class="section" id="daily-quote-section">
     <div class="section-title"><span>💡</span> 豆米成长语录</div>
     <div class="daily-quote-card" id="daily-quote-card">
-      <img class="daily-quote-icon" src="images/doudou.png" alt="豆米">
+      <span class="daily-quote-icon">🌱</span>
       <div class="daily-quote-text" id="daily-quote-text"></div>
       <div class="daily-quote-source" id="daily-quote-source"></div>
     </div>
@@ -281,7 +281,7 @@ body{
 
 
   <div class="section">
-    <div class="section-title"><span>🎧</span> 今日推荐 <span class="item-count" id="item-count"></span></div>
+    <div class="section-title"><span>🎧</span> Harvard/Oxford每日推荐 <span class="item-count" id="item-count"></span></div>
     <!-- Play-All Bar -->
     <div class="play-all-bar">
       <button class="play-all-btn" id="play-all-btn" onclick="openPlayer(0)">▶ 全部播放 · 20首</button>
@@ -295,7 +295,7 @@ body{
 <!-- ========== PROFILE PAGE ========== -->
 <div class="page" id="page-profile">
   <div style="display:flex;justify-content:center;padding:12px 0 4px">
-    <div class="brand-logo"><div class="logo-mark" style="width:56px;height:56px"><img src="images/logo.png" class="logo-img" alt="九豆米"></div></div>
+    <div class="brand-logo"><div class="logo-mark" style="width:80px;height:80px"><img src="images/doudou.png" class="logo-img" alt="豆米" style="border-radius:50%;background:linear-gradient(135deg,#FFD166,#FFE599)"></div></div>
   </div>
   <div class="profile-title" id="profile-header-title">设置宝宝档案</div>
   <div class="profile-subtitle">完善信息以获得个性化每日推荐</div>
@@ -722,7 +722,7 @@ function renderHome(){
 
   if(profile){
     const gr=getTimeGreeting();
-document.getElementById('welcome-line').innerHTML=`${gr}，<span class="baby-name">${profile.name}</span>的家长`;
+const ge={'早安':'🌅','午安':'☀️','下午好':'🌤️','晚安':'🌙','夜深了':'✨'};document.getElementById('welcome-line').innerHTML=`<span style="font-size:28px">${ge[gr]||'🌟'}</span> ${gr}，<span class="baby-name">${profile.name}</span>的家长`;
     document.getElementById('no-profile-banner').style.display='none';
     const ad=getAgeMonthsAndDays(profile.birthDate);
     const e=Z_EMOJI[profile.zodiac]||'⭐';
@@ -734,7 +734,7 @@ document.getElementById('welcome-line').innerHTML=`${gr}，<span class="baby-nam
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
       <div class="chip chip-clickable" onclick="event.stopPropagation();openHoroscope('${con}','${ce}')"><span>${ce}</span> ${con} ▸</div>`;
   }else{
-    document.getElementById('welcome-line').innerHTML='<span class="baby-name">欢迎来到豆比爸比电台</span>';
+    document.getElementById('welcome-line').innerHTML='<span style="font-size:24px">📻</span> <span class="baby-name">欢迎来到豆比爸比电台</span>';
     document.getElementById('no-profile-banner').style.display='flex';
     document.getElementById('info-chips').innerHTML='';
   }
