@@ -12,10 +12,22 @@ import threading
 PORT = int(os.environ.get('PORT', 8767))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Cache: { neteaseId -> (url, expiry_timestamp) }
+# In-memory cache: { song_id -> (url, expiry_timestamp) }
 _url_cache = {}
 _cache_lock = threading.Lock()
-CACHE_TTL = 3600  # 1 hour
+CACHE_TTL = 3600
+
+# Pre-generated CDN cache from China IP (loaded from netease_cache.json)
+_song_cache = {}
+_cache_file = os.path.join(BASE_DIR, 'netease_cache.json')
+try:
+    with open(_cache_file, 'r') as f:
+        data = json.load(f)
+        _song_cache = data.get('songs', {})
+    ct = len([s for s in _song_cache.values() if s.get('url')])
+    print(f'[cache] Loaded {ct} cached song URLs')
+except Exception:
+    pass
 
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -40,15 +52,16 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def handle_stream(self):
         qs = urllib.parse.urlparse(self.path).query
         params = urllib.parse.parse_qs(qs)
-        ne_id = params.get('id', [None])[0]
+        song_key = params.get('id', [None])[0]  # e.g. "s001"
         title = params.get('title', [None])[0]
+        ne_id = params.get('neid', [None])[0]
 
-        if not ne_id:
+        if not song_key:
             self.send_error(400, 'Missing id parameter')
             return
 
         try:
-            url = get_netease_url(ne_id, title)
+            url = get_netease_url(song_key, title, ne_id)
             if url:
                 self.send_response(302)
                 self.send_header('Location', url)
@@ -81,7 +94,6 @@ def _api_request(url, timeout=10):
 
 
 def get_url_by_id(song_id):
-    """Try to get a free MP3 URL for a specific song ID."""
     data = _api_request(
         f'https://music.163.com/api/song/enhance/player/url?id={song_id}'
         f'&ids=%5B{song_id}%5D&br=128000'
@@ -93,15 +105,10 @@ def get_url_by_id(song_id):
 
 
 def search_free_song(title):
-    """Search NetEase for a free nursery rhyme version of the given title.
-    Returns (url, song_id) or (None, None)."""
     if not title:
         return None, None
-
-    # Strip special characters and use first few words as search query
     clean = title.split('(')[0].split('（')[0].strip()
-    query = urllib.parse.quote(f'{clean} nursery rhymes')
-
+    query = urllib.parse.quote(f'{clean} 儿歌')
     try:
         data = _api_request(
             f'https://music.163.com/api/search/get?type=1&limit=8&s={query}'
@@ -109,8 +116,6 @@ def search_free_song(title):
         songs = data.get('result', {}).get('songs', [])
     except Exception:
         return None, None
-
-    # Try each search result until we find a free one
     for song in songs:
         sid = str(song['id'])
         url = get_url_by_id(sid)
@@ -119,43 +124,41 @@ def search_free_song(title):
     return None, None
 
 
-def get_netease_url(song_id, title=None):
-    """Get a free streaming MP3 URL from NetEase API.
-    First tries the exact song ID, then falls back to search."""
+def get_netease_url(song_key, title=None, ne_id=None):
     now = time.time()
 
-    # Check cache
+    # 1. Check in-memory cache
+    cache_key = song_key or ne_id
     with _cache_lock:
-        cached = _url_cache.get(song_id)
+        cached = _url_cache.get(cache_key)
         if cached and cached[1] > now:
             return cached[0]
 
-    # 1. Try the specific ID
-    url = get_url_by_id(song_id)
-    if url:
-        with _cache_lock:
-            _url_cache[song_id] = (url, now + CACHE_TTL)
-        return url
+    # 2. Check pre-generated file cache (from China IP)
+    if song_key and song_key in _song_cache:
+        cached_url = _song_cache[song_key].get('url')
+        if cached_url:
+            with _cache_lock:
+                _url_cache[cache_key] = (cached_url, now + CACHE_TTL)
+            print(f'[stream] file cache hit: {song_key}')
+            return cached_url
 
-    # 2. Fallback: search by title
+    # 3. Try the specific NetEase ID
+    if ne_id and ne_id.isdigit():
+        url = get_url_by_id(ne_id)
+        if url:
+            with _cache_lock:
+                _url_cache[cache_key] = (url, now + CACHE_TTL)
+            return url
+
+    # 4. Search by title
     if title:
         url, found_id = search_free_song(title)
         if url:
-            # Cache under BOTH the original ID and the found ID
             with _cache_lock:
-                _url_cache[song_id] = (url, now + CACHE_TTL)
+                _url_cache[cache_key] = (url, now + CACHE_TTL)
                 _url_cache[found_id] = (url, now + CACHE_TTL)
-            print(f'[stream] fallback search: "{title}" -> id={found_id}')
-            return url
-
-    # 3. Try search on just "nursery rhymes" + cleaned title to cast a wider net
-    if title:
-        clean = title.split('(')[0].split('（')[0].strip()
-        url, found_id = search_free_song(clean)
-        if url:
-            with _cache_lock:
-                _url_cache[song_id] = (url, now + CACHE_TTL)
-                _url_cache[found_id] = (url, now + CACHE_TTL)
+            print(f'[stream] search fallback: "{title}" -> id={found_id}')
             return url
 
     return None

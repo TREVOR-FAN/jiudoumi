@@ -206,11 +206,43 @@ body{
 .voice-preview-btn:hover{opacity:.9}
 .yt-open-btn{display:block;width:100%;margin-top:12px;padding:10px;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .yt-open-btn:hover{background:rgba(255,0,0,0.3);border-color:#f00}
+
+/* Circular Song Icon */
+.song-icon-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;position:relative;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.song-icon-circle::before{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0}
+.song-icon-circle.playing{animation:iconRotate 3s linear infinite}
+.song-icon-circle.playing::before{opacity:1;animation:iconRipple 1.5s ease-out infinite}
+.song-icon-circle .play-dot{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--primary)}
+@keyframes iconRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes iconRipple{0%{box-shadow:0 0 0 0 rgba(255,209,102,0.6)}100%{box-shadow:0 0 0 16px rgba(255,209,102,0)}}
+
+/* Mini Player Bar */
+.mini-player{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;background:rgba(26,26,46,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:10px 14px;display:none;align-items:center;gap:12px;z-index:150;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.mini-player.show{display:flex}
+.mini-player-art{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mini-player-art.playing{animation:iconRotate 3s linear infinite}
+.mini-player-info{flex:1;min-width:0}
+.mini-player-title{font-size:13px;font-weight:600;color:#fff;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-player-sub{font-size:10px;color:rgba(255,255,255,0.5)}
+.mini-player-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0;background:rgba(255,255,255,0.15)}
+.mini-player-close{background:none;border:none;color:rgba(255,255,255,0.3);font-size:16px;cursor:pointer;padding:4px}
 </style>
 </head>
 <body>
 
 <!-- Tab Bar -->
+
+<!-- Mini Player Bar -->
+<div class="mini-player" id="mini-player" onclick="openPlayerFull()">
+  <div class="mini-player-art" id="mini-player-art">🎵</div>
+  <div class="mini-player-info">
+    <span class="mini-player-title" id="mini-player-title">—</span>
+    <span class="mini-player-sub" id="mini-player-sub"></span>
+  </div>
+  <button class="mini-player-btn" id="mini-player-play-btn" onclick="event.stopPropagation();toggleMiniPlay()">▶</button>
+  <button class="mini-player-close" onclick="closeMiniPlayer(event)">✕</button>
+</div>
+
 <div class="tab-bar">
   <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>今日推荐</div>
   <div class="tab-item" data-tab="profile"><span class="tab-icon">👶</span>宝宝档案</div>
@@ -347,66 +379,66 @@ const C_EMOJI={'白羊座':'♈','金牛座':'♉','双子座':'♊','巨蟹座'
 
 // 60 songs
 const songs=[
-  {id:'s001',title:'Twinkle Twinkle Little Star',titleZh:'小星星',source:'Oxford University Press — "Very First Reading" Series',ageRange:[0,36],tags:['lullaby','classic','soothing'],zodiacAffinity:['兔','羊','猪'],lyrics:'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!',duration:95,neteaseId:2085770188},
-  {id:'s002',title:'The Wheels on the Bus',titleZh:'公交车上的轮子',source:'Harvard Center on the Developing Child — "Early Rhythm & Movement"',ageRange:[6,36],tags:['action','movement','rhythm'],zodiacAffinity:['猴','虎','狗'],lyrics:'The wheels on the bus go round and round,\nRound and round, round and round.\nThe wheels on the bus go round and round,\nAll through the town!\nThe wipers on the bus go swish, swish, swish...\nThe horn on the bus goes beep, beep, beep...\nThe people on the bus go up and down...',duration:120,neteaseId:2678702021},
-  {id:'s003',title:'Old MacDonald Had a Farm',titleZh:'老麦克唐纳有个农场',source:'Cambridge Early Years — "Phonics & Animal Sounds"',ageRange:[6,36],tags:['animals','phonics','interactive'],zodiacAffinity:['牛','马','鸡'],lyrics:'Old MacDonald had a farm, E-I-E-I-O!\nAnd on his farm he had a cow, E-I-E-I-O!\nWith a moo-moo here and a moo-moo there,\nHere a moo, there a moo, everywhere a moo-moo.\nOld MacDonald had a farm, E-I-E-I-O!',duration:135,neteaseId:1416557247},
-  {id:'s004',title:'Row Row Row Your Boat',titleZh:'划船歌',source:'Oxford Early Learning — "Gentle Action Songs"',ageRange:[0,24],tags:['gentle','action','classic'],zodiacAffinity:['鱼','蛇','兔'],lyrics:'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.',duration:45,neteaseId:1416555825},
-  {id:'s005',title:'If You\'re Happy and You Know It',titleZh:'如果感到幸福你就拍拍手',source:'Harvard Graduate School of Education — "Social-Emotional Learning"',ageRange:[6,36],tags:['emotion','action','social'],zodiacAffinity:['虎','马','狗'],lyrics:'If you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, then your face will surely show it.\nIf you\'re happy and you know it, clap your hands! (clap clap)',duration:80,neteaseId:5166466},
-  {id:'s006',title:'Baa Baa Black Sheep',titleZh:'咩咩小黑羊',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[0,30],tags:['lullaby','rhyme','gentle'],zodiacAffinity:['羊','猪','牛'],lyrics:'Baa, baa, black sheep, have you any wool?\nYes sir, yes sir, three bags full.\nOne for the master, one for the dame,\nAnd one for the little boy who lives down the lane.',duration:50,neteaseId:383767},
-  {id:'s007',title:'Head, Shoulders, Knees and Toes',titleZh:'头肩膝脚',source:'Montessori Early Childhood — "Body Awareness Through Song"',ageRange:[8,36],tags:['body','action','vocabulary'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Head, shoulders, knees and toes, knees and toes.\nHead, shoulders, knees and toes, knees and toes.\nAnd eyes and ears and mouth and nose.\nHead, shoulders, knees and toes, knees and toes!',duration:60,neteaseId:1436594241},
-  {id:'s008',title:'Itsy Bitsy Spider',titleZh:'小小蜘蛛',source:'Harvard Language Acquisition Lab — "Finger Play & Fine Motor"',ageRange:[6,30],tags:['fingerplay','fine-motor','rhyme'],zodiacAffinity:['蛇','猴','兔'],lyrics:'The itsy bitsy spider climbed up the water spout.\nDown came the rain and washed the spider out.\nOut came the sun and dried up all the rain,\nAnd the itsy bitsy spider climbed up the spout again.',duration:55,neteaseId:22508995},
-  {id:'s009',title:'Five Little Ducks',titleZh:'五只小鸭子',source:'Oxford Reading Tree — "Numbers & Counting Rhymes"',ageRange:[12,36],tags:['counting','numbers','animals'],zodiacAffinity:['鸡','鸭','兔'],lyrics:'Five little ducks went out one day,\nOver the hill and far away.\nMother duck said, "Quack, quack, quack, quack."\nBut only four little ducks came back.',duration:70,neteaseId:1416557245},
-  {id:'s010',title:'Rain Rain Go Away',titleZh:'雨啊雨啊快走开',source:'Yale Child Study Center — "Weather & Nature Songs"',ageRange:[0,36],tags:['weather','nature','gentle'],zodiacAffinity:['龙','鼠','猪'],lyrics:'Rain, rain, go away,\nCome again another day.\nLittle baby wants to play.\nRain, rain, go away.',duration:35,neteaseId:1416555844},
-  {id:'s011',title:'The Alphabet Song',titleZh:'字母歌',source:'Harvard Graduate School of Education — "Early Literacy Foundations"',ageRange:[12,36],tags:['alphabet','phonics','literacy'],zodiacAffinity:['鸡','猴','虎'],lyrics:'A-B-C-D-E-F-G,\nH-I-J-K-L-M-N-O-P,\nQ-R-S, T-U-V,\nW-X, Y and Z.\nNow I know my ABCs,\nNext time won\'t you sing with me?',duration:65,neteaseId:20330674},
-  {id:'s012',title:'You Are My Sunshine',titleZh:'你是我的阳光',source:'Oxford University Press — "Bonding & Attachment Songs"',ageRange:[0,36],tags:['love','bonding','lullaby'],zodiacAffinity:['兔','羊','猪','狗'],lyrics:'You are my sunshine, my only sunshine.\nYou make me happy when skies are grey.\nYou\'ll never know, dear, how much I love you.\nPlease don\'t take my sunshine away.',duration:85,neteaseId:1339805651},
-  {id:'s013',title:'Mary Had a Little Lamb',titleZh:'玛丽有只小羊羔',source:'Stanford Early Learning — "Narrative Songs for Language Development"',ageRange:[6,36],tags:['story','animals','classic'],zodiacAffinity:['羊','牛','马'],lyrics:'Mary had a little lamb, little lamb, little lamb.\nMary had a little lamb, its fleece was white as snow.\nAnd everywhere that Mary went, Mary went, Mary went,\nEverywhere that Mary went, the lamb was sure to go.',duration:70,neteaseId:28707964},
-  {id:'s014',title:'The Hokey Pokey',titleZh:'变戏法舞',source:'Montessori International — "Body Schema & Spatial Awareness"',ageRange:[12,36],tags:['body','action','coordination'],zodiacAffinity:['猴','虎','马'],lyrics:'You put your right hand in, you put your right hand out.\nYou put your right hand in and you shake it all about.\nYou do the Hokey Pokey and you turn yourself around.\nThat\'s what it\'s all about!',duration:110,neteaseId:28707948},
-  {id:'s015',title:'Hush Little Baby',titleZh:'安静吧宝贝',source:'Harvard Medical School — "Sleep & Bedtime Routines"',ageRange:[0,18],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊'],lyrics:'Hush, little baby, don\'t say a word,\nMama\'s going to buy you a mockingbird.\nAnd if that mockingbird won\'t sing,\nMama\'s going to buy you a diamond ring.',duration:100,neteaseId:4025354},
-  {id:'s016',title:'One Two Three Four Five',titleZh:'一二三四五',source:'Oxford Numicon — "Mathematical Songs for Early Years"',ageRange:[8,36],tags:['counting','numbers','math'],zodiacAffinity:['鼠','猴','鸡'],lyrics:'One, two, three, four, five,\nOnce I caught a fish alive.\nSix, seven, eight, nine, ten,\nThen I let it go again.\nWhy did you let it go?\nBecause it bit my finger so!',duration:55,neteaseId:2155807735},
-  {id:'s017',title:'This Little Piggy',titleZh:'这只小猪',source:'Harvard Center on the Developing Child — "Touch & Bonding Games"',ageRange:[0,18],tags:['fingerplay','touch','bonding'],zodiacAffinity:['猪','牛','羊'],lyrics:'This little piggy went to market,\nThis little piggy stayed home,\nThis little piggy had roast beef,\nThis little piggy had none,\nAnd this little piggy went wee wee wee all the way home!',duration:40,neteaseId:1444908038},
-  {id:'s018',title:'Five Little Monkeys',titleZh:'五只小猴子',source:'Yale Child Study Center — "Cause & Effect Learning Songs"',ageRange:[12,36],tags:['counting','animals','fun'],zodiacAffinity:['猴','虎','蛇'],lyrics:'Five little monkeys jumping on the bed,\nOne fell off and bumped his head.\nMama called the doctor and the doctor said,\n"No more monkeys jumping on the bed!"',duration:75,neteaseId:1416557248},
-  {id:'s019',title:'The Muffin Man',titleZh:'松饼人',source:'Oxford University Press — "Community & Role Play Songs"',ageRange:[10,36],tags:['community','food','rhyme'],zodiacAffinity:['牛','猪','狗'],lyrics:'Do you know the Muffin Man, the Muffin Man, the Muffin Man?\nDo you know the Muffin Man who lives on Drury Lane?\nYes, I know the Muffin Man, the Muffin Man, the Muffin Man.\nYes, I know the Muffin Man who lives on Drury Lane.',duration:65,neteaseId:1443538672},
-  {id:'s020',title:'Pat-a-Cake',titleZh:'拍拍蛋糕',source:'Montessori Infant-Toddler — "Clapping & Rhythm Songs"',ageRange:[0,24],tags:['clapping','rhythm','interactive'],zodiacAffinity:['兔','羊','鸡'],lyrics:'Pat-a-cake, pat-a-cake, baker\'s man,\nBake me a cake as fast as you can.\nPat it and prick it and mark it with B,\nAnd put it in the oven for baby and me.',duration:35,neteaseId:1304372197},
-  {id:'s021',title:'The Grand Old Duke of York',titleZh:'老约克公爵',source:'Cambridge Music & Movement — "Gross Motor Skill Development"',ageRange:[12,36],tags:['movement','marching','action'],zodiacAffinity:['马','虎','狗'],lyrics:'Oh, the grand old Duke of York,\nHe had ten thousand men.\nHe marched them up to the top of the hill,\nAnd he marched them down again.\nAnd when they\'re up, they\'re up,\nAnd when they\'re down, they\'re down,\nAnd when they\'re only half-way up,\nThey\'re neither up nor down!',duration:70,neteaseId:2146882537},
-  {id:'s022',title:'I\'m a Little Teapot',titleZh:'我是一个小茶壶',source:'Harvard Project Zero — "Creative Movement & Expression"',ageRange:[8,30],tags:['action','imagination','body'],zodiacAffinity:['猪','兔','蛇'],lyrics:'I\'m a little teapot, short and stout.\nHere is my handle, here is my spout.\nWhen I get all steamed up, hear me shout:\n"Tip me over and pour me out!"',duration:40,neteaseId:2711955502},
-  {id:'s023',title:'Skip to My Lou',titleZh:'跳向我的路',source:'Stanford Dance & Movement Lab — "Rhythmic Movement for Toddlers"',ageRange:[14,36],tags:['dance','movement','rhythm'],zodiacAffinity:['马','猴','虎'],lyrics:'Skip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip to my Lou, my darling.',duration:55,neteaseId:1344094561},
-  {id:'s024',title:'Teddy Bear Teddy Bear',titleZh:'泰迪熊泰迪熊',source:'Oxford Early Years — "Imagination & Comfort Songs"',ageRange:[6,28],tags:['action','comfort','imagination'],zodiacAffinity:['牛','猪','羊'],lyrics:'Teddy bear, teddy bear, turn around.\nTeddy bear, teddy bear, touch the ground.\nTeddy bear, teddy bear, show your shoe.\nTeddy bear, teddy bear, that will do!',duration:50,neteaseId:863769365},
-  {id:'s025',title:'Humpty Dumpty',titleZh:'矮胖子',source:'Oxford University Press — "Story Rhymes Collection"',ageRange:[0,36],tags:['rhyme','story','classic'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Humpty Dumpty sat on a wall.\nHumpty Dumpty had a great fall.\nAll the king\'s horses and all the king\'s men\nCouldn\'t put Humpty together again.',duration:40,neteaseId:3341078750},
-  {id:'s026',title:'Jack and Jill',titleZh:'杰克和吉尔',source:'Harvard Literacy Lab — "Narrative Rhyme & Sequencing"',ageRange:[6,36],tags:['story','rhyme','classic'],zodiacAffinity:['鼠','蛇','虎'],lyrics:'Jack and Jill went up the hill,\nTo fetch a pail of water.\nJack fell down and broke his crown,\nAnd Jill came tumbling after.',duration:45,neteaseId:863769357},
-  {id:'s027',title:'Little Bo Peep',titleZh:'小牧羊女',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6,36],tags:['story','animals','gentle'],zodiacAffinity:['羊','牛','马'],lyrics:'Little Bo Peep has lost her sheep,\nAnd doesn\'t know where to find them.\nLeave them alone, and they\'ll come home,\nWagging their tails behind them.',duration:50,neteaseId:556969724},
-  {id:'s028',title:'Hey Diddle Diddle',titleZh:'嘿摇啊摇',source:'Cambridge Imagination Lab — "Absurd Humor & Language Play"',ageRange:[6,36],tags:['imagination','fun','rhyme'],zodiacAffinity:['猴','龙','马'],lyrics:'Hey diddle diddle, the cat and the fiddle,\nThe cow jumped over the moon.\nThe little dog laughed to see such fun,\nAnd the dish ran away with the spoon.',duration:40,neteaseId:429564379},
-  {id:'s029',title:'Rock-a-Bye Baby',titleZh:'睡吧宝贝',source:'Harvard Sleep Medicine — "Certified Bedtime Lullabies"',ageRange:[0,12],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊','牛'],lyrics:'Rock-a-bye baby, on the treetop,\nWhen the wind blows, the cradle will rock.\nWhen the bough breaks, the cradle will fall,\nAnd down will come baby, cradle and all.',duration:55,neteaseId:3383831294},
-  {id:'s030',title:'London Bridge Is Falling Down',titleZh:'伦敦桥要塌了',source:'Oxford World History — "Cultural Heritage Nursery Rhymes"',ageRange:[8,36],tags:['history','rhyme','group-play'],zodiacAffinity:['龙','虎','蛇'],lyrics:'London Bridge is falling down,\nFalling down, falling down.\nLondon Bridge is falling down,\nMy fair lady.',duration:55,neteaseId:1416555827},
-  {id:'s031',title:'Bingo',titleZh:'宾果歌',source:"Harvard Center on the Developing Child — \"Spelling & Rhythm Songs\"",ageRange:[6,36],tags:['animals','spelling','action'],zodiacAffinity:['狗','猴','虎'],lyrics:'There was a farmer had a dog,\nAnd Bingo was his name-o.\nB-I-N-G-O, B-I-N-G-O, B-I-N-G-O,\nAnd Bingo was his name-o!',duration:60,neteaseId:567512419},
-  {id:'s032',title:'Baby Shark',titleZh:'鲨鱼宝宝',source:"Harvard Language Acquisition Lab — \"Repetitive Pattern Songs\"",ageRange:[0,36],tags:['animals','action','movement'],zodiacAffinity:['鱼','龙','猴'],lyrics:'Baby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark!',duration:90,neteaseId:1350263842},
-  {id:'s033',title:'Finger Family',titleZh:'手指家族',source:"Montessori Early Childhood — \"Family & Body Awareness Songs\"",ageRange:[6,30],tags:['family','fingerplay','body'],zodiacAffinity:['兔','羊','猪'],lyrics:'Daddy finger, daddy finger, where are you?\nHere I am, here I am. How do you do?\nMommy finger, mommy finger, where are you?\nHere I am, here I am. How do you do?',duration:80,neteaseId:2118679235},
-  {id:'s034',title:'Jingle Bells',titleZh:'铃儿响叮当',source:"Oxford World Holidays — \"Seasonal Songs Collection\"",ageRange:[8,36],tags:['holiday','winter','classic'],zodiacAffinity:['马','虎','龙'],lyrics:'Jingle bells, jingle bells, jingle all the way!\nOh what fun it is to ride\nIn a one-horse open sleigh, hey!\nJingle bells, jingle bells, jingle all the way!',duration:75,neteaseId:2160011504},
-  {id:'s035',title:'This Old Man',titleZh:'这位老先生',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[12,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鼠','牛','狗'],lyrics:'This old man, he played one,\nHe played knick-knack on my thumb.\nWith a knick-knack paddy whack,\nGive the dog a bone,\nThis old man came rolling home.',duration:85,neteaseId:569437341},
-  {id:'s036',title:'Three Little Kittens',titleZh:'三只小猫',source:"Cambridge Early Years — \"Animal Story Songs\"",ageRange:[6,30],tags:['animals','story','rhyme'],zodiacAffinity:['猫','兔','羊'],lyrics:'Three little kittens, they lost their mittens,\nAnd they began to cry.\n"Oh mother dear, we sadly fear,\nOur mittens we have lost."',duration:65,neteaseId:1445692899},
-  {id:'s037',title:'Hickory Dickory Dock',titleZh:'滴答滴答钟',source:"Oxford University Press — \"Nursery Rhyme Treasury\"",ageRange:[0,30],tags:['animals','numbers','rhyme'],zodiacAffinity:['鼠','蛇','猴'],lyrics:'Hickory dickory dock,\nThe mouse ran up the clock.\nThe clock struck one,\nThe mouse ran down,\nHickory dickory dock.',duration:40,neteaseId:4024524},
-  {id:'s038',title:'Little Miss Muffet',titleZh:'小玛菲特小姐',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','rhyme','animals'],zodiacAffinity:['蛇','兔','猪'],lyrics:'Little Miss Muffet sat on a tuffet,\nEating her curds and whey.\nAlong came a spider who sat down beside her,\nAnd frightened Miss Muffet away.',duration:40,neteaseId:1404982755},
-  {id:'s039',title:'Ring Around the Rosie',titleZh:'玫瑰花环',source:"Harvard Movement & Play Lab — \"Circle Game Songs\"",ageRange:[12,36],tags:['circle-game','group-play','action'],zodiacAffinity:['猴','虎','马'],lyrics:'Ring around the rosie,\nA pocket full of posies.\nAshes! Ashes!\nWe all fall down!',duration:35,neteaseId:540301696},
-  {id:'s040',title:'Pop Goes the Weasel',titleZh:'砰地跳出黄鼠狼',source:"Oxford Early Learning — \"Action & Surprise Songs\"",ageRange:[8,36],tags:['action','surprise','rhyme'],zodiacAffinity:['猴','鼠','虎'],lyrics:'All around the mulberry bush,\nThe monkey chased the weasel.\nThe monkey thought twas all in fun,\nPop! goes the weasel.',duration:45,neteaseId:28707961},
-  {id:'s041',title:'Are You Sleeping',titleZh:'两只老虎',source:"Stanford Early Learning — \"Round & Canon Songs\"",ageRange:[0,24],tags:['lullaby','classic','round'],zodiacAffinity:['猪','兔','牛'],lyrics:'Are you sleeping, are you sleeping,\nBrother John? Brother John?\nMorning bells are ringing,\nMorning bells are ringing,\nDing ding dong! Ding ding dong!',duration:50,neteaseId:526657941},
-  {id:'s042',title:'One Two Buckle My Shoe',titleZh:'一二扣好鞋',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[8,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鸡','鼠','猴'],lyrics:'One, two, buckle my shoe.\nThree, four, shut the door.\nFive, six, pick up sticks.\nSeven, eight, lay them straight.\nNine, ten, a big fat hen!',duration:55,neteaseId:567177646},
-  {id:'s043',title:'Hot Cross Buns',titleZh:'热十字面包',source:"Oxford University Press — \"Food & Culture Rhymes\"",ageRange:[6,36],tags:['food','rhyme','classic'],zodiacAffinity:['牛','猪','鸡'],lyrics:'Hot cross buns! Hot cross buns!\nOne a penny, two a penny, hot cross buns!\nIf you have no daughters,\nGive them to your sons.\nOne a penny, two a penny, hot cross buns!',duration:45,neteaseId:406907162},
-  {id:'s044',title:'Polly Put the Kettle On',titleZh:'波莉烧水',source:"Cambridge Culture & Play — \"Tea Party Rhymes\"",ageRange:[8,36],tags:['tea','rhyme','classic'],zodiacAffinity:['猪','牛','羊'],lyrics:'Polly, put the kettle on,\nPolly, put the kettle on,\nPolly, put the kettle on,\nWe will all have tea.\nSukey, take it off again,\nSukey, take it off again,\nSukey, take it off again,\nThey have all gone away.',duration:55,neteaseId:429564381},
-  {id:'s045',title:'Little Jack Horner',titleZh:'小杰克霍纳',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','food','rhyme'],zodiacAffinity:['鼠','猪','牛'],lyrics:'Little Jack Horner sat in the corner,\nEating a Christmas pie.\nHe put in his thumb and pulled out a plum,\nAnd said, "What a good boy am I!"',duration:35,neteaseId:5180043},
-  {id:'s046',title:'Sing a Song of Sixpence',titleZh:'唱首六便士歌',source:"Oxford World Classics — \"Traditional English Rhymes\"",ageRange:[8,36],tags:['rhyme','story','classic'],zodiacAffinity:['鸡','龙','猴'],lyrics:'Sing a song of sixpence,\nA pocket full of rye.\nFour and twenty blackbirds,\nBaked in a pie.',duration:45,neteaseId:3551683},
-  {id:'s047',title:'Yankee Doodle',titleZh:'扬基歌',source:"Oxford World History — \"Cultural Heritage Songs\"",ageRange:[10,36],tags:['patriotic','history','march'],zodiacAffinity:['马','虎','龙'],lyrics:'Yankee Doodle went to town,\nRiding on a pony.\nHe stuck a feather in his cap,\nAnd called it macaroni.',duration:50,neteaseId:4025272},
-  {id:'s048',title:'She\'ll Be Coming Round the Mountain',titleZh:'她从山那边来',source:"Montessori International — \"Gross Motor Skill Songs\"",ageRange:[8,36],tags:['action','movement','classic'],zodiacAffinity:['马','虎','狗'],lyrics:'She\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain when she comes.',duration:70,neteaseId:28707950},
-  {id:'s049',title:'Down by the Bay',titleZh:'在海湾边',source:"Harvard Imagination Lab — \"Nonsense Rhyme Songs\"",ageRange:[12,36],tags:['rhyme','imagination','animals'],zodiacAffinity:['鱼','猴','龙'],lyrics:'Down by the bay, where the watermelons grow,\nBack to my home, I dare not go.\nFor if I do, my mother will say:\n"Did you ever see a goose kissing a moose?"\nDown by the bay!',duration:80,neteaseId:3366423},
-  {id:'s050',title:'The Farmer in the Dell',titleZh:'山谷里的农夫',source:"Cambridge Community & Role Play — \"Village Songs\"",ageRange:[6,36],tags:['community','animals','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'The farmer in the dell, the farmer in the dell,\nHi-ho, the derry-o, the farmer in the dell.\nThe farmer takes a wife, the farmer takes a wife,\nHi-ho, the derry-o, the farmer takes a wife.',duration:65,neteaseId:22508374},
-  {id:'s051',title:'Walking Walking',titleZh:'走走走',source:"Montessori Infant-Toddler — \"Movement & Body Awareness\"",ageRange:[6,24],tags:['action','movement','body'],zodiacAffinity:['虎','猴','马'],lyrics:'Walking, walking, walking, walking.\nHop, hop, hop! Hop, hop, hop!\nRunning, running, running, running, running, running.\nNow let us stop! Now let us stop!',duration:50,neteaseId:1963312636},
-  {id:'s052',title:'Ten in the Bed',titleZh:'床上有十个',source:"Oxford Numicon — \"Subtraction & Counting Songs\"",ageRange:[8,36],tags:['counting','numbers','bedtime'],zodiacAffinity:['猪','羊','鼠'],lyrics:'There were ten in the bed\nAnd the little one said,\n"Roll over! Roll over!"\nSo they all rolled over and one fell out.',duration:65,neteaseId:2706691638},
-  {id:'s053',title:'Looby Loo',titleZh:'噜比噜',source:"Harvard Movement & Play Lab — \"Dance & Coordination Songs\"",ageRange:[12,36],tags:['dance','body','action'],zodiacAffinity:['猴','马','虎'],lyrics:'Here we go Looby Loo,\nHere we go Looby Light.\nHere we go Looby Loo,\nAll on a Saturday night.',duration:60,neteaseId:540041536},
-  {id:'s054',title:'The More We Get Together',titleZh:'我们在一起越多',source:"Harvard Social-Emotional Learning — \"Friendship Songs\"",ageRange:[6,36],tags:['friendship','social','love'],zodiacAffinity:['兔','羊','狗'],lyrics:'The more we get together, together, together,\nThe more we get together, the happier we will be!\nFor your friends are my friends,\nAnd my friends are your friends.\nThe more we get together, the happier we will be!',duration:70,neteaseId:22508976},
-  {id:'s055',title:'I Can Sing a Rainbow',titleZh:'我能唱彩虹',source:"Stanford Early Learning — \"Color & Nature Songs\"",ageRange:[8,36],tags:['colors','nature','rhyme'],zodiacAffinity:['龙','兔','鸡'],lyrics:'Red and yellow and pink and green,\nPurple and orange and blue.\nI can sing a rainbow, sing a rainbow,\nSing a rainbow too.',duration:55,neteaseId:561565340},
-  {id:'s056',title:'Apples and Bananas',titleZh:'苹果和香蕉',source:"Harvard Phonics Lab — \"Vowel Sound Play Songs\"",ageRange:[8,36],tags:['food','phonics','vowel-play'],zodiacAffinity:['猴','鸡','鼠'],lyrics:'I like to eat, eat, eat apples and bananas.\nI like to eat, eat, eat apples and bananas.\nI like to ate, ate, ate ay-ples and ba-nay-nays.\nI like to ate, ate, ate ay-ples and ba-nay-nays.',duration:75,neteaseId:2251011},
-  {id:'s057',title:'Round and Round the Garden',titleZh:'绕着花园转',source:"Montessori Infant-Toddler — \"Touch & Bonding Fingerplays\"",ageRange:[0,18],tags:['fingerplay','touch','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Round and round the garden,\nLike a teddy bear.\nOne step, two step,\nTickle you under there!',duration:30,neteaseId:1311209993},
-  {id:'s058',title:'Pease Porridge Hot',titleZh:'热豆粥',source:"Oxford University Press — \"Food Rhymes Collection\"",ageRange:[6,30],tags:['food','rhyme','classic'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Pease porridge hot, pease porridge cold,\nPease porridge in the pot, nine days old.\nSome like it hot, some like it cold,\nSome like it in the pot, nine days old.',duration:40,neteaseId:529443852},
-  {id:'s059',title:'Two Little Dickie Birds',titleZh:'两只小鸟',source:"Montessori Infant-Toddler — \"Fingerplay & Animal Songs\"",ageRange:[0,24],tags:['fingerplay','animals','rhyme'],zodiacAffinity:['鸡','兔','猴'],lyrics:'Two little dickie birds sitting on a wall,\nOne named Peter, one named Paul.\nFly away Peter! Fly away Paul!\nCome back Peter! Come back Paul!',duration:35,neteaseId:1325305846},
-  {id:'s060',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865}
+  {id:'s001',icon:'⭐',iconBg:'#FFD166,#FFA000',title:'Twinkle Twinkle Little Star',titleZh:'小星星',source:'Oxford University Press — "Very First Reading" Series',ageRange:[0,36],tags:['lullaby','classic','soothing'],zodiacAffinity:['兔','羊','猪'],lyrics:'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!',duration:95,neteaseId:2085770188},
+  {id:'s002',icon:'🚌',iconBg:'#EF476F,#E8384F',title:'The Wheels on the Bus',titleZh:'公交车上的轮子',source:'Harvard Center on the Developing Child — "Early Rhythm & Movement"',ageRange:[6,36],tags:['action','movement','rhythm'],zodiacAffinity:['猴','虎','狗'],lyrics:'The wheels on the bus go round and round,\nRound and round, round and round.\nThe wheels on the bus go round and round,\nAll through the town!\nThe wipers on the bus go swish, swish, swish...\nThe horn on the bus goes beep, beep, beep...\nThe people on the bus go up and down...',duration:120,neteaseId:2678702021},
+  {id:'s003',icon:'🐄',iconBg:'#06D6A0,#00B87A',title:'Old MacDonald Had a Farm',titleZh:'老麦克唐纳有个农场',source:'Cambridge Early Years — "Phonics & Animal Sounds"',ageRange:[6,36],tags:['animals','phonics','interactive'],zodiacAffinity:['牛','马','鸡'],lyrics:'Old MacDonald had a farm, E-I-E-I-O!\nAnd on his farm he had a cow, E-I-E-I-O!\nWith a moo-moo here and a moo-moo there,\nHere a moo, there a moo, everywhere a moo-moo.\nOld MacDonald had a farm, E-I-E-I-O!',duration:135,neteaseId:1416557247},
+  {id:'s004',icon:'🚣',iconBg:'#118AB2,#0D6B8A',title:'Row Row Row Your Boat',titleZh:'划船歌',source:'Oxford Early Learning — "Gentle Action Songs"',ageRange:[0,24],tags:['gentle','action','classic'],zodiacAffinity:['鱼','蛇','兔'],lyrics:'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.',duration:45,neteaseId:1416555825},
+  {id:'s005',icon:'👏',iconBg:'#FFD166,#FF9500',title:'If You\'re Happy and You Know It',titleZh:'如果感到幸福你就拍拍手',source:'Harvard Graduate School of Education — "Social-Emotional Learning"',ageRange:[6,36],tags:['emotion','action','social'],zodiacAffinity:['虎','马','狗'],lyrics:'If you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, clap your hands! (clap clap)\nIf you\'re happy and you know it, then your face will surely show it.\nIf you\'re happy and you know it, clap your hands! (clap clap)',duration:80,neteaseId:5166466},
+  {id:'s006',icon:'🐑',iconBg:'#8338EC,#6A24CC',title:'Baa Baa Black Sheep',titleZh:'咩咩小黑羊',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[0,30],tags:['lullaby','rhyme','gentle'],zodiacAffinity:['羊','猪','牛'],lyrics:'Baa, baa, black sheep, have you any wool?\nYes sir, yes sir, three bags full.\nOne for the master, one for the dame,\nAnd one for the little boy who lives down the lane.',duration:50,neteaseId:383767},
+  {id:'s007',icon:'🦶',iconBg:'#FF6B6B,#EE4444',title:'Head, Shoulders, Knees and Toes',titleZh:'头肩膝脚',source:'Montessori Early Childhood — "Body Awareness Through Song"',ageRange:[8,36],tags:['body','action','vocabulary'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Head, shoulders, knees and toes, knees and toes.\nHead, shoulders, knees and toes, knees and toes.\nAnd eyes and ears and mouth and nose.\nHead, shoulders, knees and toes, knees and toes!',duration:60,neteaseId:1436594241},
+  {id:'s008',icon:'🕷️',iconBg:'#3A86FF,#2260DD',title:'Itsy Bitsy Spider',titleZh:'小小蜘蛛',source:'Harvard Language Acquisition Lab — "Finger Play & Fine Motor"',ageRange:[6,30],tags:['fingerplay','fine-motor','rhyme'],zodiacAffinity:['蛇','猴','兔'],lyrics:'The itsy bitsy spider climbed up the water spout.\nDown came the rain and washed the spider out.\nOut came the sun and dried up all the rain,\nAnd the itsy bitsy spider climbed up the spout again.',duration:55,neteaseId:22508995},
+  {id:'s009',icon:'🦆',iconBg:'#FFB703,#FB8B24',title:'Five Little Ducks',titleZh:'五只小鸭子',source:'Oxford Reading Tree — "Numbers & Counting Rhymes"',ageRange:[12,36],tags:['counting','numbers','animals'],zodiacAffinity:['鸡','鸭','兔'],lyrics:'Five little ducks went out one day,\nOver the hill and far away.\nMother duck said, "Quack, quack, quack, quack."\nBut only four little ducks came back.',duration:70,neteaseId:1416557245},
+  {id:'s010',icon:'🌧️',iconBg:'#5E9ED6,#3B7EC0',title:'Rain Rain Go Away',titleZh:'雨啊雨啊快走开',source:'Yale Child Study Center — "Weather & Nature Songs"',ageRange:[0,36],tags:['weather','nature','gentle'],zodiacAffinity:['龙','鼠','猪'],lyrics:'Rain, rain, go away,\nCome again another day.\nLittle baby wants to play.\nRain, rain, go away.',duration:35,neteaseId:1416555844},
+  {id:'s011',icon:'🔤',iconBg:'#E63946,#CC2233',title:'The Alphabet Song',titleZh:'字母歌',source:'Harvard Graduate School of Education — "Early Literacy Foundations"',ageRange:[12,36],tags:['alphabet','phonics','literacy'],zodiacAffinity:['鸡','猴','虎'],lyrics:'A-B-C-D-E-F-G,\nH-I-J-K-L-M-N-O-P,\nQ-R-S, T-U-V,\nW-X, Y and Z.\nNow I know my ABCs,\nNext time won\'t you sing with me?',duration:65,neteaseId:20330674},
+  {id:'s012',icon:'☀️',iconBg:'#FFD166,#FFB700',title:'You Are My Sunshine',titleZh:'你是我的阳光',source:'Oxford University Press — "Bonding & Attachment Songs"',ageRange:[0,36],tags:['love','bonding','lullaby'],zodiacAffinity:['兔','羊','猪','狗'],lyrics:'You are my sunshine, my only sunshine.\nYou make me happy when skies are grey.\nYou\'ll never know, dear, how much I love you.\nPlease don\'t take my sunshine away.',duration:85,neteaseId:1339805651},
+  {id:'s013',icon:'🐑',iconBg:'#F4A261,#E07B39',title:'Mary Had a Little Lamb',titleZh:'玛丽有只小羊羔',source:'Stanford Early Learning — "Narrative Songs for Language Development"',ageRange:[6,36],tags:['story','animals','classic'],zodiacAffinity:['羊','牛','马'],lyrics:'Mary had a little lamb, little lamb, little lamb.\nMary had a little lamb, its fleece was white as snow.\nAnd everywhere that Mary went, Mary went, Mary went,\nEverywhere that Mary went, the lamb was sure to go.',duration:70,neteaseId:28707964},
+  {id:'s014',icon:'💃',iconBg:'#E36488,#D04A6E',title:'The Hokey Pokey',titleZh:'变戏法舞',source:'Montessori International — "Body Schema & Spatial Awareness"',ageRange:[12,36],tags:['body','action','coordination'],zodiacAffinity:['猴','虎','马'],lyrics:'You put your right hand in, you put your right hand out.\nYou put your right hand in and you shake it all about.\nYou do the Hokey Pokey and you turn yourself around.\nThat\'s what it\'s all about!',duration:110,neteaseId:28707948},
+  {id:'s015',icon:'🌙',iconBg:'#6C5CE7,#503FC4',title:'Hush Little Baby',titleZh:'安静吧宝贝',source:'Harvard Medical School — "Sleep & Bedtime Routines"',ageRange:[0,18],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊'],lyrics:'Hush, little baby, don\'t say a word,\nMama\'s going to buy you a mockingbird.\nAnd if that mockingbird won\'t sing,\nMama\'s going to buy you a diamond ring.',duration:100,neteaseId:4025354},
+  {id:'s016',icon:'🔢',iconBg:'#00B4D8,#008AAA',title:'One Two Three Four Five',titleZh:'一二三四五',source:'Oxford Numicon — "Mathematical Songs for Early Years"',ageRange:[8,36],tags:['counting','numbers','math'],zodiacAffinity:['鼠','猴','鸡'],lyrics:'One, two, three, four, five,\nOnce I caught a fish alive.\nSix, seven, eight, nine, ten,\nThen I let it go again.\nWhy did you let it go?\nBecause it bit my finger so!',duration:55,neteaseId:2155807735},
+  {id:'s017',icon:'🐷',iconBg:'#FF85A1,#E05A7A',title:'This Little Piggy',titleZh:'这只小猪',source:'Harvard Center on the Developing Child — "Touch & Bonding Games"',ageRange:[0,18],tags:['fingerplay','touch','bonding'],zodiacAffinity:['猪','牛','羊'],lyrics:'This little piggy went to market,\nThis little piggy stayed home,\nThis little piggy had roast beef,\nThis little piggy had none,\nAnd this little piggy went wee wee wee all the way home!',duration:40,neteaseId:1444908038},
+  {id:'s018',icon:'🐵',iconBg:'#F4A261,#D88A40',title:'Five Little Monkeys',titleZh:'五只小猴子',source:'Yale Child Study Center — "Cause & Effect Learning Songs"',ageRange:[12,36],tags:['counting','animals','fun'],zodiacAffinity:['猴','虎','蛇'],lyrics:'Five little monkeys jumping on the bed,\nOne fell off and bumped his head.\nMama called the doctor and the doctor said,\n"No more monkeys jumping on the bed!"',duration:75,neteaseId:1416557248},
+  {id:'s019',icon:'🧁',iconBg:'#FF9500,#E07B00',title:'The Muffin Man',titleZh:'松饼人',source:'Oxford University Press — "Community & Role Play Songs"',ageRange:[10,36],tags:['community','food','rhyme'],zodiacAffinity:['牛','猪','狗'],lyrics:'Do you know the Muffin Man, the Muffin Man, the Muffin Man?\nDo you know the Muffin Man who lives on Drury Lane?\nYes, I know the Muffin Man, the Muffin Man, the Muffin Man.\nYes, I know the Muffin Man who lives on Drury Lane.',duration:65,neteaseId:1443538672},
+  {id:'s020',icon:'🎂',iconBg:'#FF6B6B,#E05555',title:'Pat-a-Cake',titleZh:'拍拍蛋糕',source:'Montessori Infant-Toddler — "Clapping & Rhythm Songs"',ageRange:[0,24],tags:['clapping','rhythm','interactive'],zodiacAffinity:['兔','羊','鸡'],lyrics:'Pat-a-cake, pat-a-cake, baker\'s man,\nBake me a cake as fast as you can.\nPat it and prick it and mark it with B,\nAnd put it in the oven for baby and me.',duration:35,neteaseId:1304372197},
+  {id:'s021',icon:'🎖️',iconBg:'#2D6A4F,#1B4D35',title:'The Grand Old Duke of York',titleZh:'老约克公爵',source:'Cambridge Music & Movement — "Gross Motor Skill Development"',ageRange:[12,36],tags:['movement','marching','action'],zodiacAffinity:['马','虎','狗'],lyrics:'Oh, the grand old Duke of York,\nHe had ten thousand men.\nHe marched them up to the top of the hill,\nAnd he marched them down again.\nAnd when they\'re up, they\'re up,\nAnd when they\'re down, they\'re down,\nAnd when they\'re only half-way up,\nThey\'re neither up nor down!',duration:70,neteaseId:2146882537},
+  {id:'s022',icon:'🫖',iconBg:'#06D6A0,#00B87A',title:'I\'m a Little Teapot',titleZh:'我是一个小茶壶',source:'Harvard Project Zero — "Creative Movement & Expression"',ageRange:[8,30],tags:['action','imagination','body'],zodiacAffinity:['猪','兔','蛇'],lyrics:'I\'m a little teapot, short and stout.\nHere is my handle, here is my spout.\nWhen I get all steamed up, hear me shout:\n"Tip me over and pour me out!"',duration:40,neteaseId:2711955502},
+  {id:'s023',icon:'💫',iconBg:'#FF006E,#DD005A',title:'Skip to My Lou',titleZh:'跳向我的路',source:'Stanford Dance & Movement Lab — "Rhythmic Movement for Toddlers"',ageRange:[14,36],tags:['dance','movement','rhythm'],zodiacAffinity:['马','猴','虎'],lyrics:'Skip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip, skip, skip to my Lou,\nSkip to my Lou, my darling.',duration:55,neteaseId:1344094561},
+  {id:'s024',icon:'🧸',iconBg:'#D4A017,#B0860E',title:'Teddy Bear Teddy Bear',titleZh:'泰迪熊泰迪熊',source:'Oxford Early Years — "Imagination & Comfort Songs"',ageRange:[6,28],tags:['action','comfort','imagination'],zodiacAffinity:['牛','猪','羊'],lyrics:'Teddy bear, teddy bear, turn around.\nTeddy bear, teddy bear, touch the ground.\nTeddy bear, teddy bear, show your shoe.\nTeddy bear, teddy bear, that will do!',duration:50,neteaseId:863769365},
+  {id:'s025',icon:'🥚',iconBg:'#8338EC,#6A24CC',title:'Humpty Dumpty',titleZh:'矮胖子',source:'Oxford University Press — "Story Rhymes Collection"',ageRange:[0,36],tags:['rhyme','story','classic'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Humpty Dumpty sat on a wall.\nHumpty Dumpty had a great fall.\nAll the king\'s horses and all the king\'s men\nCouldn\'t put Humpty together again.',duration:40,neteaseId:3341078750},
+  {id:'s026',icon:'⛰️',iconBg:'#3A86FF,#2260DD',title:'Jack and Jill',titleZh:'杰克和吉尔',source:'Harvard Literacy Lab — "Narrative Rhyme & Sequencing"',ageRange:[6,36],tags:['story','rhyme','classic'],zodiacAffinity:['鼠','蛇','虎'],lyrics:'Jack and Jill went up the hill,\nTo fetch a pail of water.\nJack fell down and broke his crown,\nAnd Jill came tumbling after.',duration:45,neteaseId:863769357},
+  {id:'s027',icon:'🐑',iconBg:'#FFB703,#E09B00',title:'Little Bo Peep',titleZh:'小牧羊女',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6,36],tags:['story','animals','gentle'],zodiacAffinity:['羊','牛','马'],lyrics:'Little Bo Peep has lost her sheep,\nAnd doesn\'t know where to find them.\nLeave them alone, and they\'ll come home,\nWagging their tails behind them.',duration:50,neteaseId:556969724},
+  {id:'s028',icon:'😸',iconBg:'#E36488,#D04A6E',title:'Hey Diddle Diddle',titleZh:'嘿摇啊摇',source:'Cambridge Imagination Lab — "Absurd Humor & Language Play"',ageRange:[6,36],tags:['imagination','fun','rhyme'],zodiacAffinity:['猴','龙','马'],lyrics:'Hey diddle diddle, the cat and the fiddle,\nThe cow jumped over the moon.\nThe little dog laughed to see such fun,\nAnd the dish ran away with the spoon.',duration:40,neteaseId:429564379},
+  {id:'s029',icon:'🛏️',iconBg:'#6C5CE7,#503FC4',title:'Rock-a-Bye Baby',titleZh:'睡吧宝贝',source:'Harvard Sleep Medicine — "Certified Bedtime Lullabies"',ageRange:[0,12],tags:['lullaby','bedtime','calming'],zodiacAffinity:['兔','猪','羊','牛'],lyrics:'Rock-a-bye baby, on the treetop,\nWhen the wind blows, the cradle will rock.\nWhen the bough breaks, the cradle will fall,\nAnd down will come baby, cradle and all.',duration:55,neteaseId:3383831294},
+  {id:'s030',icon:'🌉',iconBg:'#118AB2,#0D6B8A',title:'London Bridge Is Falling Down',titleZh:'伦敦桥要塌了',source:'Oxford World History — "Cultural Heritage Nursery Rhymes"',ageRange:[8,36],tags:['history','rhyme','group-play'],zodiacAffinity:['龙','虎','蛇'],lyrics:'London Bridge is falling down,\nFalling down, falling down.\nLondon Bridge is falling down,\nMy fair lady.',duration:55,neteaseId:1416555827},
+  {id:'s031',icon:'🐶',iconBg:'#EF476F,#D63855',title:'Bingo',titleZh:'宾果歌',source:"Harvard Center on the Developing Child — \"Spelling & Rhythm Songs\"",ageRange:[6,36],tags:['animals','spelling','action'],zodiacAffinity:['狗','猴','虎'],lyrics:'There was a farmer had a dog,\nAnd Bingo was his name-o.\nB-I-N-G-O, B-I-N-G-O, B-I-N-G-O,\nAnd Bingo was his name-o!',duration:60,neteaseId:567512419},
+  {id:'s032',icon:'🦈',iconBg:'#00B4D8,#008AAA',title:'Baby Shark',titleZh:'鲨鱼宝宝',source:"Harvard Language Acquisition Lab — \"Repetitive Pattern Songs\"",ageRange:[0,36],tags:['animals','action','movement'],zodiacAffinity:['鱼','龙','猴'],lyrics:'Baby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark, doo doo doo doo doo doo.\nBaby shark!',duration:90,neteaseId:1350263842},
+  {id:'s033',icon:'👆',iconBg:'#FFD166,#FF9500',title:'Finger Family',titleZh:'手指家族',source:"Montessori Early Childhood — \"Family & Body Awareness Songs\"",ageRange:[6,30],tags:['family','fingerplay','body'],zodiacAffinity:['兔','羊','猪'],lyrics:'Daddy finger, daddy finger, where are you?\nHere I am, here I am. How do you do?\nMommy finger, mommy finger, where are you?\nHere I am, here I am. How do you do?',duration:80,neteaseId:2118679235},
+  {id:'s034',icon:'🛷',iconBg:'#E63946,#CC2233',title:'Jingle Bells',titleZh:'铃儿响叮当',source:"Oxford World Holidays — \"Seasonal Songs Collection\"",ageRange:[8,36],tags:['holiday','winter','classic'],zodiacAffinity:['马','虎','龙'],lyrics:'Jingle bells, jingle bells, jingle all the way!\nOh what fun it is to ride\nIn a one-horse open sleigh, hey!\nJingle bells, jingle bells, jingle all the way!',duration:75,neteaseId:2160011504},
+  {id:'s035',icon:'👴',iconBg:'#F4A261,#D88A40',title:'This Old Man',titleZh:'这位老先生',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[12,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鼠','牛','狗'],lyrics:'This old man, he played one,\nHe played knick-knack on my thumb.\nWith a knick-knack paddy whack,\nGive the dog a bone,\nThis old man came rolling home.',duration:85,neteaseId:569437341},
+  {id:'s036',icon:'🐱',iconBg:'#FF85A1,#E05A7A',title:'Three Little Kittens',titleZh:'三只小猫',source:"Cambridge Early Years — \"Animal Story Songs\"",ageRange:[6,30],tags:['animals','story','rhyme'],zodiacAffinity:['猫','兔','羊'],lyrics:'Three little kittens, they lost their mittens,\nAnd they began to cry.\n"Oh mother dear, we sadly fear,\nOur mittens we have lost."',duration:65,neteaseId:1445692899},
+  {id:'s037',icon:'🕐',iconBg:'#8338EC,#6A24CC',title:'Hickory Dickory Dock',titleZh:'滴答滴答钟',source:"Oxford University Press — \"Nursery Rhyme Treasury\"",ageRange:[0,30],tags:['animals','numbers','rhyme'],zodiacAffinity:['鼠','蛇','猴'],lyrics:'Hickory dickory dock,\nThe mouse ran up the clock.\nThe clock struck one,\nThe mouse ran down,\nHickory dickory dock.',duration:40,neteaseId:4024524},
+  {id:'s038',icon:'🕸️',iconBg:'#06D6A0,#00B87A',title:'Little Miss Muffet',titleZh:'小玛菲特小姐',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','rhyme','animals'],zodiacAffinity:['蛇','兔','猪'],lyrics:'Little Miss Muffet sat on a tuffet,\nEating her curds and whey.\nAlong came a spider who sat down beside her,\nAnd frightened Miss Muffet away.',duration:40,neteaseId:1404982755},
+  {id:'s039',icon:'🌹',iconBg:'#E36488,#D04A6E',title:'Ring Around the Rosie',titleZh:'玫瑰花环',source:"Harvard Movement & Play Lab — \"Circle Game Songs\"",ageRange:[12,36],tags:['circle-game','group-play','action'],zodiacAffinity:['猴','虎','马'],lyrics:'Ring around the rosie,\nA pocket full of posies.\nAshes! Ashes!\nWe all fall down!',duration:35,neteaseId:540301696},
+  {id:'s040',icon:'🎪',iconBg:'#FF6B6B,#E05555',title:'Pop Goes the Weasel',titleZh:'砰地跳出黄鼠狼',source:"Oxford Early Learning — \"Action & Surprise Songs\"",ageRange:[8,36],tags:['action','surprise','rhyme'],zodiacAffinity:['猴','鼠','虎'],lyrics:'All around the mulberry bush,\nThe monkey chased the weasel.\nThe monkey thought twas all in fun,\nPop! goes the weasel.',duration:45,neteaseId:28707961},
+  {id:'s041',icon:'🔔',iconBg:'#6C5CE7,#503FC4',title:'Are You Sleeping',titleZh:'两只老虎',source:"Stanford Early Learning — \"Round & Canon Songs\"",ageRange:[0,24],tags:['lullaby','classic','round'],zodiacAffinity:['猪','兔','牛'],lyrics:'Are you sleeping, are you sleeping,\nBrother John? Brother John?\nMorning bells are ringing,\nMorning bells are ringing,\nDing ding dong! Ding ding dong!',duration:50,neteaseId:526657941},
+  {id:'s042',icon:'👞',iconBg:'#D4A017,#B0860E',title:'One Two Buckle My Shoe',titleZh:'一二扣好鞋',source:"Oxford Numicon — \"Mathematical Songs for Early Years\"",ageRange:[8,36],tags:['counting','numbers','rhyme'],zodiacAffinity:['鸡','鼠','猴'],lyrics:'One, two, buckle my shoe.\nThree, four, shut the door.\nFive, six, pick up sticks.\nSeven, eight, lay them straight.\nNine, ten, a big fat hen!',duration:55,neteaseId:567177646},
+  {id:'s043',icon:'🍞',iconBg:'#FF9500,#E07B00',title:'Hot Cross Buns',titleZh:'热十字面包',source:"Oxford University Press — \"Food & Culture Rhymes\"",ageRange:[6,36],tags:['food','rhyme','classic'],zodiacAffinity:['牛','猪','鸡'],lyrics:'Hot cross buns! Hot cross buns!\nOne a penny, two a penny, hot cross buns!\nIf you have no daughters,\nGive them to your sons.\nOne a penny, two a penny, hot cross buns!',duration:45,neteaseId:406907162},
+  {id:'s044',icon:'🫖',iconBg:'#06D6A0,#00B87A',title:'Polly Put the Kettle On',titleZh:'波莉烧水',source:"Cambridge Culture & Play — \"Tea Party Rhymes\"",ageRange:[8,36],tags:['tea','rhyme','classic'],zodiacAffinity:['猪','牛','羊'],lyrics:'Polly, put the kettle on,\nPolly, put the kettle on,\nPolly, put the kettle on,\nWe will all have tea.\nSukey, take it off again,\nSukey, take it off again,\nSukey, take it off again,\nThey have all gone away.',duration:55,neteaseId:429564381},
+  {id:'s045',icon:'🥧',iconBg:'#FFB703,#E09B00',title:'Little Jack Horner',titleZh:'小杰克霍纳',source:"Oxford Treasury of Nursery Rhymes",ageRange:[6,36],tags:['story','food','rhyme'],zodiacAffinity:['鼠','猪','牛'],lyrics:'Little Jack Horner sat in the corner,\nEating a Christmas pie.\nHe put in his thumb and pulled out a plum,\nAnd said, "What a good boy am I!"',duration:35,neteaseId:5180043},
+  {id:'s046',icon:'🐦',iconBg:'#3A86FF,#2260DD',title:'Sing a Song of Sixpence',titleZh:'唱首六便士歌',source:"Oxford World Classics — \"Traditional English Rhymes\"",ageRange:[8,36],tags:['rhyme','story','classic'],zodiacAffinity:['鸡','龙','猴'],lyrics:'Sing a song of sixpence,\nA pocket full of rye.\nFour and twenty blackbirds,\nBaked in a pie.',duration:45,neteaseId:3551683},
+  {id:'s047',icon:'🎠',iconBg:'#E63946,#CC2233',title:'Yankee Doodle',titleZh:'扬基歌',source:"Oxford World History — \"Cultural Heritage Songs\"",ageRange:[10,36],tags:['patriotic','history','march'],zodiacAffinity:['马','虎','龙'],lyrics:'Yankee Doodle went to town,\nRiding on a pony.\nHe stuck a feather in his cap,\nAnd called it macaroni.',duration:50,neteaseId:4025272},
+  {id:'s048',icon:'🏔️',iconBg:'#2D6A4F,#1B4D35',title:'She\'ll Be Coming Round the Mountain',titleZh:'她从山那边来',source:"Montessori International — \"Gross Motor Skill Songs\"",ageRange:[8,36],tags:['action','movement','classic'],zodiacAffinity:['马','虎','狗'],lyrics:'She\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain when she comes.\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain,\nShe\'ll be coming round the mountain when she comes.',duration:70,neteaseId:28707950},
+  {id:'s049',icon:'🏖️',iconBg:'#00B4D8,#008AAA',title:'Down by the Bay',titleZh:'在海湾边',source:"Harvard Imagination Lab — \"Nonsense Rhyme Songs\"",ageRange:[12,36],tags:['rhyme','imagination','animals'],zodiacAffinity:['鱼','猴','龙'],lyrics:'Down by the bay, where the watermelons grow,\nBack to my home, I dare not go.\nFor if I do, my mother will say:\n"Did you ever see a goose kissing a moose?"\nDown by the bay!',duration:80,neteaseId:3366423},
+  {id:'s050',icon:'👨‍🌾',iconBg:'#F4A261,#D88A40',title:'The Farmer in the Dell',titleZh:'山谷里的农夫',source:"Cambridge Community & Role Play — \"Village Songs\"",ageRange:[6,36],tags:['community','animals','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'The farmer in the dell, the farmer in the dell,\nHi-ho, the derry-o, the farmer in the dell.\nThe farmer takes a wife, the farmer takes a wife,\nHi-ho, the derry-o, the farmer takes a wife.',duration:65,neteaseId:22508374},
+  {id:'s051',icon:'🚶',iconBg:'#118AB2,#0D6B8A',title:'Walking Walking',titleZh:'走走走',source:"Montessori Infant-Toddler — \"Movement & Body Awareness\"",ageRange:[6,24],tags:['action','movement','body'],zodiacAffinity:['虎','猴','马'],lyrics:'Walking, walking, walking, walking.\nHop, hop, hop! Hop, hop, hop!\nRunning, running, running, running, running, running.\nNow let us stop! Now let us stop!',duration:50,neteaseId:1963312636},
+  {id:'s052',icon:'🛏️',iconBg:'#8338EC,#6A24CC',title:'Ten in the Bed',titleZh:'床上有十个',source:"Oxford Numicon — \"Subtraction & Counting Songs\"",ageRange:[8,36],tags:['counting','numbers','bedtime'],zodiacAffinity:['猪','羊','鼠'],lyrics:'There were ten in the bed\nAnd the little one said,\n"Roll over! Roll over!"\nSo they all rolled over and one fell out.',duration:65,neteaseId:2706691638},
+  {id:'s053',icon:'🕺',iconBg:'#FF006E,#DD005A',title:'Looby Loo',titleZh:'噜比噜',source:"Harvard Movement & Play Lab — \"Dance & Coordination Songs\"",ageRange:[12,36],tags:['dance','body','action'],zodiacAffinity:['猴','马','虎'],lyrics:'Here we go Looby Loo,\nHere we go Looby Light.\nHere we go Looby Loo,\nAll on a Saturday night.',duration:60,neteaseId:540041536},
+  {id:'s054',icon:'🤝',iconBg:'#06D6A0,#00B87A',title:'The More We Get Together',titleZh:'我们在一起越多',source:"Harvard Social-Emotional Learning — \"Friendship Songs\"",ageRange:[6,36],tags:['friendship','social','love'],zodiacAffinity:['兔','羊','狗'],lyrics:'The more we get together, together, together,\nThe more we get together, the happier we will be!\nFor your friends are my friends,\nAnd my friends are your friends.\nThe more we get together, the happier we will be!',duration:70,neteaseId:22508976},
+  {id:'s055',icon:'🌈',iconBg:'#FF006E,#FF9500',title:'I Can Sing a Rainbow',titleZh:'我能唱彩虹',source:"Stanford Early Learning — \"Color & Nature Songs\"",ageRange:[8,36],tags:['colors','nature','rhyme'],zodiacAffinity:['龙','兔','鸡'],lyrics:'Red and yellow and pink and green,\nPurple and orange and blue.\nI can sing a rainbow, sing a rainbow,\nSing a rainbow too.',duration:55,neteaseId:561565340},
+  {id:'s056',icon:'🍎',iconBg:'#E63946,#CC2233',title:'Apples and Bananas',titleZh:'苹果和香蕉',source:"Harvard Phonics Lab — \"Vowel Sound Play Songs\"",ageRange:[8,36],tags:['food','phonics','vowel-play'],zodiacAffinity:['猴','鸡','鼠'],lyrics:'I like to eat, eat, eat apples and bananas.\nI like to eat, eat, eat apples and bananas.\nI like to ate, ate, ate ay-ples and ba-nay-nays.\nI like to ate, ate, ate ay-ples and ba-nay-nays.',duration:75,neteaseId:2251011},
+  {id:'s057',icon:'🌳',iconBg:'#2D6A4F,#1B4D35',title:'Round and Round the Garden',titleZh:'绕着花园转',source:"Montessori Infant-Toddler — \"Touch & Bonding Fingerplays\"",ageRange:[0,18],tags:['fingerplay','touch','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Round and round the garden,\nLike a teddy bear.\nOne step, two step,\nTickle you under there!',duration:30,neteaseId:1311209993},
+  {id:'s058',icon:'🥣',iconBg:'#D4A017,#B0860E',title:'Pease Porridge Hot',titleZh:'热豆粥',source:"Oxford University Press — \"Food Rhymes Collection\"",ageRange:[6,30],tags:['food','rhyme','classic'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Pease porridge hot, pease porridge cold,\nPease porridge in the pot, nine days old.\nSome like it hot, some like it cold,\nSome like it in the pot, nine days old.',duration:40,neteaseId:529443852},
+  {id:'s059',icon:'🐦',iconBg:'#3A86FF,#2260DD',title:'Two Little Dickie Birds',titleZh:'两只小鸟',source:"Montessori Infant-Toddler — \"Fingerplay & Animal Songs\"",ageRange:[0,24],tags:['fingerplay','animals','rhyme'],zodiacAffinity:['鸡','兔','猴'],lyrics:'Two little dickie birds sitting on a wall,\nOne named Peter, one named Paul.\nFly away Peter! Fly away Paul!\nCome back Peter! Come back Paul!',duration:35,neteaseId:1325305846},
+  {id:'s060',icon:'👞',iconBg:'#F4A261,#D88A40',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865}
 ];
 
 const readings_null=[ // placeholder, all content now in songs
@@ -511,7 +543,7 @@ function getDailyTip(){
 // ==================== APP STATE ====================
 let profile=null, playlist=[], currentIndex=0;
 let synth=window.speechSynthesis, utterance=null;
-let isPlaying=false, isLooping=true;
+let isPlaying=false, isLooping=true, currentPlayingId=null;
 let speakingPhase=''; // 'title' | 'content' | ''
 let currentPage=0;
 let lastDateStr=''; // midnight refresh tracking
@@ -539,9 +571,9 @@ neAudio.addEventListener('ended',()=>{
   if(isPlaying)advanceTrack();
 });
 
-function playNetEase(id,title){
+function playNetEase(id,title,songId){
   if(!id)return;
-  neAudio.src='/api/stream?id='+id+'&title='+encodeURIComponent(title||'');
+  neAudio.src='/api/stream?id='+encodeURIComponent(songId||id)+'&neid='+id+'&title='+encodeURIComponent(title||'');
   showNetEaseStatus('加载中...','loading');
   neAudio.load();
   neAudio.play().catch(()=>{
@@ -704,9 +736,12 @@ function renderHome(){
   let list='';
   pageItems.forEach((item,i)=>{
     const globalIdx=start+i;
-    list+=`<div class="item-card" onclick="openPlayer(${globalIdx})">
-      <div class="item-type-icon icon-song"><span>🎵</span></div>
-      <div class="item-info">
+    list+=`<div class="item-card">
+      <div class="song-icon-circle${currentPlayingId===item.id?' playing':''}" style="background:linear-gradient(135deg,${item.iconBg||'#EF476F,#F06888'})" onclick="event.stopPropagation();toggleSongPlay('${item.id}',${globalIdx})">
+        <span>${item.icon||'🎵'}</span>
+        <div class="play-dot">${currentPlayingId===item.id?'⏸':'▶'}</div>
+      </div>
+      <div class="item-info" onclick="toggleSongPlay('${item.id}',${globalIdx})">
         <span class="item-title">${item.title} <text style="font-size:10px;color:#aaa">🕐${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</text></span>
         <span class="item-title-zh">${item.titleZh}</span>
         <div class="item-meta">
@@ -714,7 +749,6 @@ function renderHome(){
           <span class="item-source-short">${item.author||''}</span>
         </div>
       </div>
-      <div class="mini-play-btn play-song"><span>▶</span></div>
     </div>`;
   });
   // Pagination controls
@@ -737,14 +771,29 @@ function changePage(dir){
 function openPlayer(startIndex){
   if(playlist.length===0){showToast('暂无歌曲');return;}
   currentIndex=Math.max(0,Math.min(startIndex,playlist.length-1));
-  document.getElementById('player-overlay').classList.add('show');
-  renderPlaylist();
+  const item=playlist[currentIndex];
+  currentPlayingId=item?item.id:null;
   stopSpeech();
   isPlaying=true;
   updatePlayerUI();
   playCurrent();
+  showMiniPlayer();
+  renderHome();
 }
 
+function toggleMiniPlay(){
+  if(isPlaying){stopSpeech();isPlaying=false;currentPlayingId=null;hideMiniPlayer();}
+  else{isPlaying=true;playCurrent();showMiniPlayer();}
+  renderHome();
+}
+function openPlayerFull(){
+  if(!currentPlayingId)return;
+  document.getElementById('player-overlay').classList.add('show');
+  renderPlaylist();
+  updatePlayerUI();
+  updatePlaylistHighlight();
+  scrollPlaylistToCurrent();
+}
 function closePlayer(){
   stopSpeech();
   isPlaying=false;
@@ -789,10 +838,11 @@ function playCurrent(){
   updatePlaylistHighlight();
   scrollPlaylistToCurrent();
 
+  currentPlayingId=item.id;
   if(item.neteaseId){
     speakingPhase='content';
     updatePlayerUI();
-    playNetEase(item.neteaseId, item.title);
+    playNetEase(item.neteaseId, item.title, item.id);
     scheduleAdvance(item.duration||60);
   }else{
     speakLyrics();
@@ -825,7 +875,40 @@ function speakLyrics(){
   }, 1.3);
 }
 
-function advanceTrack(){
+function toggleSongPlay(songId,idx){
+  if(currentPlayingId===songId){
+    // Pause current
+    stopSpeech();
+    isPlaying=false;
+    currentPlayingId=null;
+    hideMiniPlayer();
+    renderHome();
+    return;
+  }
+  // Play new song
+  if(currentPlayingId) stopSpeech();
+  currentPlayingId=songId;
+  currentIndex=idx;
+  isPlaying=true;
+  playCurrent();
+  showMiniPlayer();
+  renderHome();
+}
+function showMiniPlayer(){
+  document.getElementById('mini-player').classList.add('show');
+}
+function hideMiniPlayer(){
+  document.getElementById('mini-player').classList.remove('show');
+}
+function closeMiniPlayer(e){
+  e.stopPropagation();
+  stopSpeech();
+  isPlaying=false;
+  currentPlayingId=null;
+  hideMiniPlayer();
+  renderHome();
+}
+function 
   if(currentIndex<playlist.length-1){
     currentIndex++;
     updatePlayerUI();
@@ -921,6 +1004,18 @@ function updatePlayerUI(){
   document.getElementById('progress-fill').style.width=((currentIndex/(playlist.length-1||1))*100)+'%';
   document.getElementById('progress-label').textContent=`${currentIndex+1} / ${playlist.length}`;
   document.getElementById('playlist-count').textContent=`共${playlist.length}首`;
+
+  // Update mini player
+  const mp=document.getElementById('mini-player');
+  if(mp&&mp.classList.contains('show')){
+    document.getElementById('mini-player-art').textContent=item.icon||'🎵';
+    document.getElementById('mini-player-art').style.background='linear-gradient(135deg,'+(item.iconBg||'#EF476F,#F06888')+')';
+    const artEl=document.getElementById('mini-player-art');
+    artEl.className=isPlaying?'mini-player-art playing':'mini-player-art';
+    document.getElementById('mini-player-title').textContent=item.title;
+    document.getElementById('mini-player-sub').textContent='🎵 播放中...';
+    document.getElementById('mini-player-play-btn').textContent=isPlaying?'⏸':'▶';
+  }
 
   const ytBtn=document.getElementById('yt-open-btn');
   if(item.neteaseId&&isPlaying&&speakingPhase==='content'){
