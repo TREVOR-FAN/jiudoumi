@@ -63,6 +63,9 @@ body{
 .daily-quote-source::before{content:'— '}
 .info-chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.8);padding:6px 14px;border-radius:24px;font-size:12px;color:#555}
+.chip-clickable{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.chip-clickable:active{transform:scale(0.95)}
+.chip-clickable:hover{box-shadow:0 2px 12px rgba(108,92,231,0.2)}
 .no-profile-banner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);padding:14px 16px;border-radius:16px;font-size:14px;color:#555;margin-top:8px;cursor:pointer}
 
 /* Sections */
@@ -219,6 +222,17 @@ body{
 .mini-player-sub{font-size:10px;color:rgba(255,255,255,0.5)}
 .mini-player-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0;background:rgba(255,255,255,0.15)}
 .mini-player-close{background:none;border:none;color:rgba(255,255,255,0.3);font-size:16px;cursor:pointer;padding:4px}
+
+/* Horoscope Modal */
+.horo-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;justify-content:center;align-items:center}
+.horo-overlay.show{display:flex}
+.horo-card{background:linear-gradient(145deg,#1A1A2E,#252540);border-radius:24px;padding:28px 24px 20px;width:calc(100% - 48px);max-width:340px;text-align:center;position:relative;box-shadow:0 16px 48px rgba(0,0,0,0.5)}
+.horo-close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:22px;cursor:pointer;padding:4px}
+.horo-icon{font-size:48px;margin-bottom:8px;display:block}
+.horo-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
+.horo-date{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:16px}
+.horo-body{font-size:14px;line-height:1.8;color:rgba(255,255,255,0.65);text-align:left;padding:16px;background:rgba(255,255,255,0.04);border-radius:14px}
+.horo-tag{display:inline-block;background:rgba(108,92,231,0.2);color:#A78BFA;border-radius:12px;padding:3px 10px;font-size:11px;margin-top:12px}
 </style>
 </head>
 <body>
@@ -337,6 +351,18 @@ body{
   <div class="playlist-section">
     <div class="playlist-header"><span class="playlist-title">播放列表</span><span class="playlist-count" id="playlist-count">共20首</span></div>
     <div class="playlist-scroll" id="playlist-scroll"></div>
+  </div>
+</div>
+
+<!-- Horoscope Modal -->
+<div class="horo-overlay" id="horo-overlay" onclick="closeHoroscope(event)">
+  <div class="horo-card" onclick="event.stopPropagation()">
+    <button class="horo-close" onclick="closeHoroscope()">✕</button>
+    <span class="horo-icon" id="horo-icon"></span>
+    <div class="horo-title" id="horo-title"></div>
+    <div class="horo-date" id="horo-date"></div>
+    <div class="horo-body" id="horo-body"></div>
+    <span class="horo-tag" id="horo-tag"></span>
   </div>
 </div>
 
@@ -697,7 +723,7 @@ function renderHome(){
       <div class="chip"><span>🎂</span> ${ad.months}个月${ad.days}天</div>
       <div class="chip"><span>${profile.gender==='boy'?'👦':'👧'}</span> ${profile.gender==='boy'?'男宝':'女宝'}</div>
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
-      <div class="chip"><span>${ce}</span> ${con}</div>`;
+      <div class="chip chip-clickable" onclick="event.stopPropagation();openHoroscope('${con}','${ce}')"><span>${ce}</span> ${con} ▸</div>`;
   }else{
     document.getElementById('welcome-line').innerHTML='<span class="baby-name">欢迎来到豆比爸比电台</span>';
     document.getElementById('no-profile-banner').style.display='flex';
@@ -1087,6 +1113,43 @@ function switchTab(tab){
   if(tab==='home')renderHome();
 }
 document.querySelectorAll('.tab-item').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
+
+// Baby horoscope data
+const HOROSCOPE={
+  '白羊座':{emoji:'♈',lucky:'红色',activity:'动作儿歌',tip:'今天宝宝像小勇士一样勇敢探索！多鼓励爬行和抓握，Head Shoulders Knees and Toes 是最佳BGM。精力旺盛时来一段 baby massage 帮助平静。',mood:'🔥 活力满满',avoid:'过度包裹限制活动'},
+  '金牛座':{emoji:'♉',lucky:'绿色',activity:'感官游戏',tip:'宝宝今天对触觉特别敏感，准备不同材质的玩具让TA探索。温柔哼唱 Twinkle Twinkle 配合轻轻摇动，是睡前仪式的最佳拍档。',mood:'🌿 温和专注',avoid:'频繁更换玩具打断专注'},
+  '双子座':{emoji:'♊',lucky:'黄色',activity:'语言互动',tip:'语言敏感日！多和宝宝说话、模仿TA的发声。The Alphabet Song 今天特别有魔力，宝宝可能咿呀学语回应你。绘本时间翻倍吧！',mood:'💬 叽叽喳喳',avoid:'长时间单一刺激'},
+  '巨蟹座':{emoji:'♋',lucky:'银白色',activity:'亲子依偎',tip:'今天需要更多的抱抱和安全感。Hush Little Baby 是最佳安抚曲，肌肤接触时轻轻哼唱。水宝宝喜欢温水浴，洗澡时唱歌加倍快乐！',mood:'🤗 粘人撒娇',avoid:'强行分离训练'},
+  '狮子座':{emoji:'♌',lucky:'金色',activity:'表演展示',tip:'今天宝宝渴望被关注和掌声！If You\'re Happy and You Know It 让TA尽情拍手跺脚，给大大的笑容和夸奖。录下宝宝的新技能会有惊喜！',mood:'🌟 自信闪耀',avoid:'忽视宝宝的展示'},
+  '处女座':{emoji:'♍',lucky:'米色',activity:'精细动作',tip:'完美小手今天特别灵巧！This Little Piggy 配合手指游戏效果拔群。堆叠杯、穿珠子类玩具今天格外吸引宝宝。保持环境整洁让TA更安心。',mood:'🧐 专注细致',avoid:'杂乱无序的环境'},
+  '天秤座':{emoji:'♎',lucky:'粉色',activity:'社交互动',tip:'社交小天使上线！安排和其他宝宝一起听儿歌，The More We Get Together 就是今日主题曲。宝宝今天对和谐声音特别敏感，避免大声争吵。',mood:'🎵 和谐愉悦',avoid:'嘈杂冲突的环境'},
+  '天蝎座':{emoji:'♏',lucky:'深红色',activity:'深度探索',tip:'好奇心爆棚！宝宝会盯着一个玩具研究很久。Old MacDonald 配合动物叫声模仿能让TA咯咯笑。今天适合引入一种新感官体验：新味道或新触感。',mood:'🔍 深度专注',avoid:'频繁打断探索'},
+  '射手座':{emoji:'♐',lucky:'紫色',activity:'大运动',tip:'冒险精神旺盛！The Wheels on the Bus 搭配腿部和手臂动作，为爬行和走路做准备。户外活动和新鲜空气是今天的最佳"营养剂"。',mood:'🚀 自由奔放',avoid:'长时间限制在围栏里'},
+  '摩羯座':{emoji:'♑',lucky:'棕色',activity:'规律作息',tip:'小建筑师今天喜欢按部就班。Row Row Row Your Boat 配合有节奏的摇动让宝宝感到安心。建立固定的儿歌+动作流程，宝宝会期待每天的"节目时间"。',mood:'🏔 踏实稳重',avoid:'突然改变日常节奏'},
+  '水瓶座':{emoji:'♒',lucky:'蓝色',activity:'创意音乐',tip:'小小发明家今天脑洞大开！用锅碗瓢盆做乐器配合儿歌节奏，Bingo 这类有拍手的歌最适合。宝宝可能用独特方式回应音乐——那是TA的独创舞蹈！',mood:'⚡ 古灵精怪',avoid:'限制创造性表达'},
+  '双鱼座':{emoji:'♓',lucky:'海蓝色',activity:'音乐律动',tip:'梦幻小天使今天格外感性。You Are My Sunshine 配合轻柔摇摆，眼神交流时深情哼唱。水中游戏 + 舒缓儿歌是最佳组合，宝宝仿佛回到了温暖的羊水中。',mood:'🌊 温柔敏感',avoid:'过度刺激和强光'},
+};
+
+function openHoroscope(con,emoji){
+  const h=HOROSCOPE[con]||HOROSCOPE['白羊座'];
+  document.getElementById('horo-icon').textContent=emoji||h.emoji;
+  document.getElementById('horo-title').textContent=con+' · 宝宝运势';
+  const n=new Date();
+  document.getElementById('horo-date').textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日`;
+  document.getElementById('horo-body').innerHTML=`
+    <div style="margin-bottom:8px">🎯 <b>今日主场：</b>${h.activity}</div>
+    <div style="margin-bottom:8px">😊 <b>宝宝心情：</b>${h.mood}</div>
+    <div style="margin-bottom:8px">🍀 <b>幸运色：</b>${h.lucky}</div>
+    <div style="margin-bottom:8px">💡 ${h.tip}</div>
+    <div>⚠️ <b>小提醒：</b>${h.avoid}</div>`;
+  document.getElementById('horo-tag').textContent='✨ 豆米运势 · 仅供娱乐';
+  document.getElementById('horo-overlay').classList.add('show');
+}
+
+function closeHoroscope(e){
+  if(e&&e.target!==document.getElementById('horo-overlay'))return;
+  document.getElementById('horo-overlay').classList.remove('show');
+}
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
 
