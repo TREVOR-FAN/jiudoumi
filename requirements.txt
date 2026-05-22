@@ -1,0 +1,2 @@
+# 九豆米 — Python stdlib only, no dependencies needed
+# Render.com requires this file to detect Python runtime

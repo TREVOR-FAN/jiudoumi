@@ -1,0 +1,100 @@
+<view class="player-container">
+  <!-- Top Bar -->
+  <view class="player-top-bar">
+    <view class="player-logo-row">
+      <text class="player-logo-icon">🎧</text>
+      <text class="player-logo-text">九豆米</text>
+    </view>
+    <view class="player-top-actions">
+      <text class="voice-gear-btn" bindtap="toggleVoicePanel">⚙</text>
+    </view>
+  </view>
+
+  <!-- Voice Settings Panel -->
+  <view class="voice-panel {{showVoicePanel ? 'voice-show' : ''}}">
+    <view class="voice-panel-title">🔊 语音设置</view>
+    <view class="voice-field">
+      <text class="voice-label">音色</text>
+      <picker class="voice-picker" mode="selector" range="{{['自动选择（推荐）']}}" value="0" bindchange="onVoiceChange">
+        <view class="voice-picker-view">自动选择（推荐）</view>
+      </picker>
+    </view>
+    <view class="voice-field">
+      <text class="voice-label">语速</text>
+      <slider class="voice-slider" min="0.5" max="1.5" step="0.05" value="{{voiceSettings.rate}}" bindchange="onVoiceRateChange" activeColor="#FFD166" block-size="18" />
+      <text class="voice-val">{{voiceSettings.rate}}</text>
+    </view>
+    <view class="voice-field">
+      <text class="voice-label">音调</text>
+      <slider class="voice-slider" min="0.5" max="2.0" step="0.05" value="{{voiceSettings.pitch}}" bindchange="onVoicePitchChange" activeColor="#FFD166" block-size="18" />
+      <text class="voice-val">{{voiceSettings.pitch}}</text>
+    </view>
+  </view>
+
+  <!-- Now Playing -->
+  <view class="now-playing" wx:if="{{currentItem}}">
+    <text class="now-type">🎵 儿歌</text>
+    <view class="now-art art-song">
+      <text class="art-icon">🎵</text>
+    </view>
+    <text class="now-title">{{currentItem.title}}</text>
+    <text class="now-title-zh">{{currentItem.titleZh}}</text>
+    <text class="now-source">{{currentItem.source}}</text>
+    <view class="now-status">
+      <view class="status-dot {{isPlaying ? '' : 'paused'}}"></view>
+      <text class="status-text">{{isPlaying ? '播放中' : '已暂停'}}</text>
+    </view>
+  </view>
+
+  <!-- Progress -->
+  <view class="progress-area">
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{total > 1 ? (progress / (total - 1) * 100) : 0}}%"></view>
+    </view>
+    <text class="progress-label">{{currentIndex + 1}} / {{total}}</text>
+  </view>
+
+  <!-- Controls -->
+  <view class="controls-row">
+    <view class="ctrl-btn {{isLooping ? 'ctrl-active' : ''}}" bindtap="toggleLoop">
+      <text>🔁</text>
+    </view>
+    <view class="ctrl-btn" bindtap="prevTrack">
+      <text>⏮</text>
+    </view>
+    <view class="main-play-btn" bindtap="togglePlay">
+      <text class="main-play-icon">{{isPlaying ? '⏸' : '▶'}}</text>
+    </view>
+    <view class="ctrl-btn" bindtap="nextTrack">
+      <text>⏭</text>
+    </view>
+    <view class="ctrl-btn" bindtap="restartTrack">
+      <text>🔄</text>
+    </view>
+  </view>
+
+  <!-- Playlist -->
+  <view class="playlist-section">
+    <view class="playlist-header">
+      <text class="playlist-title">📋 播放列表</text>
+      <text class="playlist-count">共{{total}}首</text>
+    </view>
+    <scroll-view class="playlist-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view
+        class="pl-item {{index === currentIndex ? 'pl-current' : ''}} {{index < currentIndex ? 'pl-played' : ''}}"
+        wx:for="{{playlist}}"
+        wx:key="id"
+        data-index="{{index}}"
+        bindtap="jumpToTrack"
+      >
+        <text class="pl-index">{{index < currentIndex ? '✓' : (index + 1)}}</text>
+        <text class="pl-type-icon">🎵</text>
+        <view class="pl-info">
+          <text class="pl-name">{{item.title}}</text>
+          <text class="pl-type-label label-song">儿歌</text>
+        </view>
+        <text class="pl-dur">{{Math.floor((item.duration || 0) / 60)}}′{{(item.duration || 0) % 60}}″</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>

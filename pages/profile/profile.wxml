@@ -1,0 +1,117 @@
+<view class="container">
+  <!-- Brand Logo -->
+  <view class="brand-logo brand-logo-top">
+    <view class="logo-mark logo-mark-sm">
+      <view class="logo-bg-circle logo-bg-circle-sm"></view>
+      <view class="logo-beans">
+        <view class="logo-shape rice-grain" style="transform:rotate(-30deg)"></view>
+        <view class="logo-shape bean bean-green"></view>
+        <view class="logo-shape bean bean-teal"></view>
+        <view class="logo-shape bean bean-teal"></view>
+        <view class="logo-shape bean-center"></view>
+        <view class="logo-shape bean bean-green"></view>
+        <view class="logo-shape bean bean-teal"></view>
+        <view class="logo-shape bean bean-green"></view>
+        <view class="logo-shape rice-grain" style="transform:rotate(30deg)"></view>
+      </view>
+    </view>
+    <view class="logo-text-group">
+      <text class="logo-text-cn logo-text-sm">九豆米</text>
+      <text class="logo-text-en logo-text-en-sm">Jiu Dou Mi</text>
+    </view>
+  </view>
+
+  <!-- Header illustration -->
+  <view class="profile-header">
+    <view class="avatar-area">
+      <text class="avatar-icon">{{gender === 'boy' ? '👦' : '👧'}}</text>
+    </view>
+    <text class="profile-title" wx:if="{{hasProfile}}">{{name}}的档案</text>
+    <text class="profile-title" wx:else>设置宝宝档案</text>
+    <text class="profile-subtitle">完善信息以获得个性化每日推荐</text>
+  </view>
+
+  <!-- Form Card -->
+  <view class="card">
+    <!-- Name -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-icon">✏️</text>
+        <text>宝宝名字</text>
+      </view>
+      <input
+        class="form-input"
+        placeholder="请输入宝宝的小名"
+        value="{{name}}"
+        bindinput="onNameInput"
+        maxlength="10"
+      />
+    </view>
+
+    <!-- Gender -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-icon">{{gender === 'boy' ? '👦' : '👧'}}</text>
+        <text>性别</text>
+      </view>
+      <radio-group class="gender-group" bindchange="onGenderChange">
+        <label class="gender-option {{gender === 'boy' ? 'active' : ''}}">
+          <radio value="boy" checked="{{gender === 'boy'}}" color="#EF476F" />
+          <text class="gender-text">👦 男宝</text>
+        </label>
+        <label class="gender-option {{gender === 'girl' ? 'active' : ''}}">
+          <radio value="girl" checked="{{gender === 'girl'}}" color="#EF476F" />
+          <text class="gender-text">👧 女宝</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <!-- Birth Date -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-icon">🎂</text>
+        <text>出生日期</text>
+      </view>
+      <picker
+        mode="date"
+        value="{{birthDate}}"
+        start="2020-01-01"
+        end="{{todayDate}}"
+        bindchange="onDateChange"
+      >
+        <view class="picker-view {{birthDate ? '' : 'placeholder'}}">
+          <text wx:if="{{birthDate}}">{{birthDate}}</text>
+          <text wx:else>请选择宝宝的出生日期</text>
+          <text class="picker-arrow">📅</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- Auto-calculated fields -->
+    <view class="calc-row" wx:if="{{birthDate}}">
+      <view class="calc-item">
+        <text class="calc-label">生肖</text>
+        <text class="calc-value zodiac-badge">{{zodiacEmoji}} {{zodiac}}</text>
+      </view>
+      <view class="calc-item">
+        <text class="calc-label">星座</text>
+        <text class="calc-value constellation-badge">{{constellationEmoji}} {{constellation}}</text>
+      </view>
+      <view class="calc-item">
+        <text class="calc-label">月龄</text>
+        <text class="calc-value">{{ageMonths}}个月{{ageDays}}天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Save Button -->
+  <button class="save-btn" bindtap="saveProfile">
+    {{hasProfile ? '更新档案' : '保存档案'}}
+  </button>
+
+  <!-- Quote -->
+  <view class="quote-section">
+    <text class="quote-text">每个宝宝都是独一无二的星星</text>
+    <text class="quote-source">—— 九豆米 · 个性化启蒙</text>
+  </view>
+</view>

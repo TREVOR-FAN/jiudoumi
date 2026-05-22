@@ -1,0 +1,126 @@
+<view class="container">
+  <!-- ====== Header with Brand Logo ====== -->
+  <view class="header">
+    <view class="header-top">
+      <view class="brand-logo-home">
+        <view class="brand-logo">
+          <view class="logo-mark">
+            <view class="logo-bg-circle"></view>
+            <view class="logo-beans">
+              <view class="logo-shape rice-grain" style="transform:rotate(-30deg)"></view>
+              <view class="logo-shape bean bean-green"></view>
+              <view class="logo-shape bean bean-teal"></view>
+              <view class="logo-shape bean bean-teal"></view>
+              <view class="logo-shape bean-center"></view>
+              <view class="logo-shape bean bean-green"></view>
+              <view class="logo-shape bean bean-teal"></view>
+              <view class="logo-shape bean bean-green"></view>
+              <view class="logo-shape rice-grain" style="transform:rotate(30deg)"></view>
+            </view>
+          </view>
+          <view class="logo-text-group">
+            <text class="logo-text-cn">九豆米</text>
+            <text class="logo-text-en">Jiu Dou Mi</text>
+          </view>
+        </view>
+        <text class="logo-tagline">欢迎来到九豆米的世界</text>
+      </view>
+      <view class="date-text">{{todayDate}}</view>
+    </view>
+
+    <view class="welcome-text" wx:if="{{hasProfile}}">
+      早安，<text class="baby-name">{{babyName}}</text>的家长
+    </view>
+
+    <view class="baby-info-row" wx:if="{{hasProfile}}">
+      <view class="info-chip">
+        <text class="info-icon">🎂</text>
+        <text>{{ageMonths}}个月{{ageDays}}天</text>
+      </view>
+      <view class="info-chip">
+        <text class="info-icon">{{profile.gender === 'boy' ? '👦' : '👧'}}</text>
+        <text>{{profile.gender === 'boy' ? '男宝' : '女宝'}}</text>
+      </view>
+      <view class="info-chip">
+        <text class="info-icon">{{zodiacEmoji}}</text>
+        <text>属{{zodiac}}</text>
+      </view>
+      <view class="info-chip">
+        <text class="info-icon">{{constellationEmoji}}</text>
+        <text>{{constellation}}</text>
+      </view>
+    </view>
+
+    <view class="no-profile-banner" wx:if="{{!hasProfile}}" bindtap="goToProfile">
+      <text class="banner-icon">📋</text>
+      <text>点击设置宝宝档案，获得个性化推荐 →</text>
+    </view>
+  </view>
+
+  <!-- ====== Daily Parenting Quote ====== -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">💡</text>
+      <text>每日育儿语录</text>
+    </view>
+    <view class="daily-quote-card">
+      <text class="quote-icon">🌱</text>
+      <text class="quote-text">{{dailyTipText}}</text>
+      <text class="quote-source">{{dailyTipSource}}</text>
+    </view>
+  </view>
+
+  <!-- ====== Today's Picks ====== -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">🎧</text>
+      <text>今日推荐</text>
+      <text class="item-count">共{{todayItems.length}}首</text>
+    </view>
+
+    <!-- Play-All Button -->
+    <view class="play-all-bar">
+      <view class="play-all-btn" bindtap="onPlayAll">
+        <text>▶ 全部播放 · {{todayItems.length}}首</text>
+      </view>
+    </view>
+
+    <view class="item-list">
+      <view
+        class="item-card"
+        wx:for="{{todayItems}}"
+        wx:key="id"
+        bindtap="onPlay"
+        data-id="{{item.id}}"
+      >
+        <view class="item-left">
+          <view class="item-type-icon icon-song">
+            <text>🎵</text>
+          </view>
+        </view>
+        <view class="item-center">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-title-zh">{{item.titleZh}}</text>
+          <view class="item-meta">
+            <text class="item-duration">🕐 {{Math.floor((item.duration || 0) / 60)}}′{{(item.duration || 0) % 60}}″</text>
+            <text class="item-type-label label-song">儿歌</text>
+            <text class="item-source-short">{{item.author || ''}}</text>
+          </view>
+        </view>
+        <view class="item-right">
+          <view class="mini-play-btn play-song">
+            <text class="mini-play-icon">▶</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Footer -->
+  <view class="footer">
+    <text class="footer-text">内容来自哈佛、牛津等世界顶级育儿专家推荐</text>
+    <text class="footer-text">每日更新 · 为宝宝精选最好的英语启蒙</text>
+  </view>
+
+  <view class="bottom-spacer"></view>
+</view>

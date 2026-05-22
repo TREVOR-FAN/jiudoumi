@@ -1,0 +1,245 @@
+.container {
+  padding: 24rpx;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFF3E6 50%, #FFF8F0 100%);
+}
+
+/* Brand logo at top */
+.brand-logo-top {
+  justify-content: center;
+  padding: 16rpx 0 8rpx;
+}
+
+.logo-mark-sm .logo-bg-circle {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.logo-mark-sm .logo-beans {
+  width: 52rpx;
+  height: 52rpx;
+  gap: 4rpx;
+}
+
+.logo-mark-sm .bean {
+  width: 11rpx;
+  height: 14rpx;
+}
+
+.logo-mark-sm .rice-grain {
+  width: 8rpx;
+  height: 16rpx;
+}
+
+.logo-mark-sm .bean-center {
+  width: 18rpx;
+  height: 18rpx;
+}
+
+.logo-text-sm {
+  font-size: 28rpx !important;
+}
+
+.logo-text-en-sm {
+  font-size: 15rpx !important;
+}
+
+/* Header */
+.profile-header {
+  text-align: center;
+  padding: 24rpx 0 32rpx;
+}
+
+.avatar-area {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.avatar-icon {
+  font-size: 80rpx;
+  background: #FFD166;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 120rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(255,209,102,0.4);
+}
+
+.profile-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.profile-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* Card */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 36rpx 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 14rpx;
+}
+
+.label-icon {
+  font-size: 30rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 88rpx;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+/* Gender */
+.gender-group {
+  display: flex;
+  gap: 16rpx;
+}
+
+.gender-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.gender-option.active {
+  background: #FFF0F3;
+  border-color: #EF476F;
+}
+
+.gender-text {
+  font-size: 28rpx;
+  color: #555;
+  margin-left: 8rpx;
+}
+
+/* Date Picker */
+.picker-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 88rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-view.placeholder {
+  color: #bbb;
+}
+
+.picker-arrow {
+  font-size: 28rpx;
+}
+
+/* Calculated Row */
+.calc-row {
+  display: flex;
+  gap: 16rpx;
+  background: #FFFAF0;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #F0E6DA;
+}
+
+.calc-item {
+  flex: 1;
+  text-align: center;
+}
+
+.calc-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 6rpx;
+}
+
+.calc-value {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.zodiac-badge {
+  color: #D4A017;
+}
+
+.constellation-badge {
+  color: #6C5CE7;
+}
+
+/* Save Button */
+.save-btn {
+  margin-top: 36rpx;
+  background: linear-gradient(135deg, #EF476F, #F06888);
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  text-align: center;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(239,71,111,0.3);
+}
+
+/* Quote */
+.quote-section {
+  text-align: center;
+  margin-top: 48rpx;
+  padding: 32rpx;
+}
+
+.quote-text {
+  display: block;
+  font-size: 26rpx;
+  color: #ccc;
+  font-style: italic;
+  margin-bottom: 8rpx;
+}
+
+.quote-source {
+  font-size: 22rpx;
+  color: #ddd;
+}

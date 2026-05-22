@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/profile/profile",
+    "pages/player/player"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFD166",
+    "navigationBarTitleText": "九豆米 · 宝宝英语启蒙",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF8F0",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#EF476F",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "今日推荐",
+        "iconPath": "images/star.png",
+        "selectedIconPath": "images/star-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "宝宝档案",
+        "iconPath": "images/baby.png",
+        "selectedIconPath": "images/baby-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

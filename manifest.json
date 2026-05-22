@@ -1,0 +1,25 @@
+{
+  "name": "九豆米 · 宝宝英语启蒙",
+  "short_name": "九豆米",
+  "description": "0-3岁宝宝英语儿歌每日推荐，哈佛牛津育儿专家精选",
+  "start_url": "/preview.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8F0",
+  "theme_color": "#FFD166",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
