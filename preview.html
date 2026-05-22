@@ -11,6 +11,9 @@
 <meta name="apple-mobile-web-app-title" content="九豆米">
 <meta name="theme-color" content="#FFD166">
 <meta name="description" content="0-3岁宝宝英语儿歌每日推荐">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <style>
@@ -37,18 +40,18 @@ body{
 .page.active{display:block}
 
 /* Brand Logo */
-.brand-logo{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.logo-mark{position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center}
-.logo-img{width:100%;height:100%;object-fit:cover;border-radius:18px}
-.logo-tagline{font-size:12px;color:#B8860B;font-weight:500;letter-spacing:1px}
+.brand-logo{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.logo-mark{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 4px 16px rgba(255,170,0,0.3))}
+.logo-img{width:100%;height:100%;object-fit:cover;border-radius:24px}
+.logo-tagline{font-size:20px;color:#B8860B;font-weight:600;letter-spacing:2px;font-family:'Great Vibes','Tangerine',cursive}
 
 
 /* Header */
-.header{background:linear-gradient(135deg,#FFD166,#FFE599 60%,#FFF0C0);border-radius:0 0 48px 48px;padding:24px 16px 20px;margin:-16px -16px 0}
-.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-.date-text{font-size:12px;color:rgba(51,51,51,0.5);margin-top:6px;white-space:nowrap}
-.welcome{font-size:18px;font-weight:600;color:#333;margin-bottom:6px}
-.baby-name{color:var(--primary)}
+.header{background:linear-gradient(135deg,#FFD166,#FFE599 60%,#FFF0C0);border-radius:0 0 48px 48px;padding:20px 16px 18px;margin:-16px -16px 0}
+.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.date-text{font-size:13px;color:#fff;background:rgba(0,0,0,0.10);padding:8px 16px;border-radius:20px;font-weight:500;letter-spacing:0.5px;white-space:nowrap;backdrop-filter:blur(4px);display:inline-flex;align-items:center;gap:6px}
+.welcome{font-size:36px;font-weight:500;color:#4A3000;margin-bottom:8px;font-family:'Tangerine','Great Vibes',cursive;letter-spacing:1px;line-height:1.2}
+.baby-name{color:var(--primary);font-family:'Tangerine','Great Vibes',cursive;font-size:42px;font-weight:700}
 /* Daily Parenting Quote Card */
 .daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:20px 18px 16px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
 .daily-quote-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,152,0,0.08) 0%,transparent 70%);border-radius:50%}
@@ -669,7 +672,7 @@ function previewVoice(){
 
 function updateTodayDate(){
   const n=new Date(),wd=['日','一','二','三','四','五','六'];
-  document.getElementById('today-date').textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${wd[n.getDay()]}`;
+  document.getElementById('today-date').innerHTML=`<span style="font-size:16px">📅</span> ${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${wd[n.getDay()]}`;
 }
 
 
