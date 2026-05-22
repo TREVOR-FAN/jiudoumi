@@ -247,7 +247,7 @@ body{
     <div class="header-row">
       <div class="brand-logo">
         <div class="logo-mark"><img src="images/logo.png" class="logo-img" alt="九豆米"></div>
-        <span class="logo-tagline">欢迎来到九豆米的世界</span>
+        <span class="logo-tagline">欢迎来到豆比爸比电台</span>
       </div>
       <span class="date-text" id="today-date"></span>
     </div>
@@ -699,7 +699,7 @@ function renderHome(){
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
       <div class="chip"><span>${ce}</span> ${con}</div>`;
   }else{
-    document.getElementById('welcome-line').textContent='';
+    document.getElementById('welcome-line').innerHTML='<span class="baby-name">欢迎来到豆比爸比电台</span>';
     document.getElementById('no-profile-banner').style.display='flex';
     document.getElementById('info-chips').innerHTML='';
   }
