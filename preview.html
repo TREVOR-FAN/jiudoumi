@@ -41,10 +41,10 @@ body{
 .welcome{font-size:28px;font-weight:500;color:#333;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .baby-name{color:var(--primary)}
 /* Daily Parenting Quote Card */
-.daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:20px 18px 16px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
+.daily-quote-card{position:relative;background:linear-gradient(135deg,#FFF9F0,#FFF3E0,#FFECB3 95%);border-radius:20px;padding:12px 16px 10px;box-shadow:0 4px 20px rgba(255,152,0,0.12);overflow:hidden}
 .daily-quote-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,152,0,0.08) 0%,transparent 70%);border-radius:50%}
 .daily-quote-icon{font-size:28px;margin-bottom:8px;display:block}
-.daily-quote-text{font-size:15px;line-height:1.8;color:#5D4037;font-weight:500;position:relative;z-index:1}
+.daily-quote-text{font-size:14px;line-height:1.6;color:#5D4037;font-weight:500;position:relative;z-index:1}
 .daily-quote-text::before{content:'"';font-size:32px;color:rgba(255,152,0,0.2);position:absolute;left:-4px;top:-10px;font-family:Georgia,serif}
 .daily-quote-text::after{content:'"';font-size:32px;color:rgba(255,152,0,0.2);font-family:Georgia,serif}
 .daily-quote-source{margin-top:12px;font-size:12px;color:#A1887F;text-align:right;font-style:italic}
@@ -192,7 +192,7 @@ body{
 
 <!-- Tab Bar -->
 <div class="tab-bar">
-  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>今日推荐</div>
+  <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span>每日精选</div>
   <div class="tab-item" data-tab="profile"><span class="tab-icon">👶</span>宝宝档案</div>
 </div>
 
@@ -217,7 +217,6 @@ body{
   <div class="section" id="daily-quote-section">
     <div class="section-title"><span>💡</span> 每日育儿语录</div>
     <div class="daily-quote-card" id="daily-quote-card">
-      <span class="daily-quote-icon">🌱</span>
       <div class="daily-quote-text" id="daily-quote-text"></div>
       <div class="daily-quote-source" id="daily-quote-source"></div>
     </div>
@@ -225,7 +224,7 @@ body{
 
 
   <div class="section">
-    <div class="section-title"><span>🎧</span> 今日推荐 <span class="item-count" id="item-count"></span></div>
+    <div class="section-title"><span>🎧</span> Harvard/Oxford每日精选 <span class="item-count" id="item-count"></span></div>
     <!-- Play-All Bar -->
     <div class="play-all-bar">
       <button class="play-all-btn" id="play-all-btn" onclick="openPlayer(0)">▶ 全部播放 · 20首</button>
