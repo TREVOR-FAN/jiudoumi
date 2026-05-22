@@ -211,9 +211,7 @@ body{
       </div>
     </div>
     <div class="welcome" id="welcome-line"></div>
-    <div class="info-chips" id="info-chips">
-      <span id="info-chips-dynamic"></span>
-    </div>
+    <div class="info-chips" id="info-chips"></div>
     <div class="no-profile-banner" id="no-profile-banner" onclick="switchTab('profile')"><span>📋</span> 点击设置宝宝档案，获得个性化推荐 →</div>
   </div>
 
@@ -683,7 +681,7 @@ function renderHome(){
     const e=Z_EMOJI[profile.zodiac]||'⭐';
     const con=getConstellation(profile.birthDate);
     const ce=C_EMOJI[con]||'⭐';
-    document.getElementById('info-chips-dynamic').innerHTML=`
+    document.getElementById('info-chips').innerHTML=`
       <div class="chip chip-birthday" id="chip-birthday" onclick="toggleDays()" title="点击查看总天数" style="cursor:pointer"><span>🎂</span> <span id="birthday-text">${ad.months}个月${ad.days}天</span></div>
       <div class="chip"><span>${profile.gender==='boy'?'👦':'👧'}</span> ${profile.gender==='boy'?'男宝':'女宝'}</div>
       <div class="chip"><span>${e}</span> 属${profile.zodiac}</div>
@@ -691,7 +689,7 @@ function renderHome(){
   }else{
     document.getElementById('welcome-line').textContent='';
     document.getElementById('no-profile-banner').style.display='flex';
-    document.getElementById('info-chips-dynamic').innerHTML='';
+    document.getElementById('info-chips').innerHTML='';
   }
 
   // Play-all button text
