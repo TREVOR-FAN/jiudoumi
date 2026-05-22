@@ -531,12 +531,9 @@ neAudio.addEventListener('playing',()=>{
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
-  // Skip failed tracks (copyright-restricted, network error, etc.)
-  showNetEaseStatus('此歌曲暂无免费资源，自动跳过','error');
-  setTimeout(()=>{
-    hideNetEaseStatus();
-    if(isPlaying)advanceTrack();
-  },1500);
+  // Fall back to TTS when audio stream fails
+  stopNetEase();
+  if(isPlaying)speakLyrics();
 });
 neAudio.addEventListener('ended',()=>{
   if(isPlaying)advanceTrack();
@@ -760,13 +757,13 @@ function stopSpeech(){
   speakingPhase='';
 }
 
-function speak(text, rate, onEnd){
+function speak(text, rate, onEnd, pitchOverride){
   if(!synth){if(onEnd)onEnd();return;}
   stopSpeech();
   utterance=new SpeechSynthesisUtterance(text);
   utterance.lang='en-US';
   utterance.rate=rate||voiceSettings.rate;
-  utterance.pitch=voiceSettings.pitch;
+  utterance.pitch=(pitchOverride!==undefined)?pitchOverride:voiceSettings.pitch;
   // Voice selection: explicit > auto fallback chain
   const voices=synth.getVoices();
   if(voiceSettings.voiceName!=='auto'){
@@ -798,8 +795,34 @@ function playCurrent(){
     playNetEase(item.neteaseId, item.title);
     scheduleAdvance(item.duration||60);
   }else{
-    if(isPlaying)advanceTrack();
+    speakLyrics();
   }
+}
+
+function speakLyrics(){
+  if(!isPlaying||currentIndex>=playlist.length)return;
+  const item=playlist[currentIndex];
+  if(!item.lyrics){
+    if(isPlaying)advanceTrack();
+    return;
+  }
+  speakingPhase='content';
+  updatePlayerUI();
+  showNetEaseStatus('🔊 TTS朗读中...','loading');
+  // First speak the title
+  speak(item.title, voiceSettings.rate, ()=>{
+    hideNetEaseStatus();
+    if(!isPlaying)return;
+    // Schedule advance based on lyrics length (rough estimate: 4s per line)
+    const lines=item.lyrics.split(/[\n,.]/).filter(l=>l.trim());
+    const durationEst=Math.max(lines.length*3.5, 15);
+    scheduleAdvance(durationEst);
+    // Then speak lyrics at slightly slower rate
+    speak(item.lyrics, voiceSettings.rate*0.7, ()=>{
+      hideNetEaseStatus();
+      if(isPlaying)advanceTrack();
+    }, voiceSettings.pitch);
+  }, 1.3);
 }
 
 function advanceTrack(){
