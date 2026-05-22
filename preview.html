@@ -788,9 +788,9 @@ function openPlayer(startIndex){
   currentPlayingId=item?item.id:null;
   stopSpeech();
   isPlaying=true;
+  openPlayerFull();
   updatePlayerUI();
   playCurrent();
-  showMiniPlayer();
   renderHome();
 }
 
@@ -801,6 +801,7 @@ function toggleMiniPlay(){
 }
 function openPlayerFull(){
   if(!currentPlayingId)return;
+  hideMiniPlayer();
   document.getElementById('player-overlay').classList.add('show');
   renderPlaylist();
   updatePlayerUI();
@@ -808,9 +809,9 @@ function openPlayerFull(){
   scrollPlaylistToCurrent();
 }
 function closePlayer(){
-  stopSpeech();
-  isPlaying=false;
   document.getElementById('player-overlay').classList.remove('show');
+  if(isPlaying){showMiniPlayer();}
+  renderHome();
 }
 
 function stopSpeech(){
@@ -890,29 +891,35 @@ function speakLyrics(){
 
 function toggleSongPlay(songId,idx){
   if(currentPlayingId===songId){
-    // Pause current
-    stopSpeech();
-    isPlaying=false;
-    currentPlayingId=null;
-    hideMiniPlayer();
-    renderHome();
+    // Toggle play/pause on current song
+    if(isPlaying){stopSpeech();isPlaying=false;}
+    else{isPlaying=true;playCurrent();}
+    updatePlayerUI();
     return;
   }
-  // Play new song
-  if(currentPlayingId) stopSpeech();
+  // Play new song — build playlist from current recommendations
+  if(currentPlayingId)stopSpeech();
+  const recs=getDailyRecommendations(profile);
+  playlist=recs.items;
+  const found=playlist.findIndex(s=>s.id===songId);
+  currentIndex=found>=0?found:idx;
   currentPlayingId=songId;
-  currentIndex=idx;
   isPlaying=true;
+  openPlayerFull();
+  updatePlayerUI();
+  renderPlaylist();
+  updatePlaylistHighlight();
+  scrollPlaylistToCurrent();
   playCurrent();
-  showMiniPlayer();
-  renderHome();
 }
+
 function showMiniPlayer(){
   document.getElementById('mini-player').classList.add('show');
 }
 function hideMiniPlayer(){
   document.getElementById('mini-player').classList.remove('show');
 }
+
 function closeMiniPlayer(e){
   e.stopPropagation();
   stopSpeech();
