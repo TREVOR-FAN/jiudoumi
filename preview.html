@@ -150,9 +150,9 @@ body{
 
 /* Progress */
 .player-progress{padding:0 20px;margin-bottom:6px}
-.progress-track{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;cursor:pointer;padding:10px 0;-webkit-tap-highlight-color:transparent;background-clip:content-box}
-.progress-fill{height:100%;background:var(--secondary);width:0%;pointer-events:none;transition:width .1s linear;position:relative}
-.progress-fill::after{content:'';position:absolute;right:-6px;top:-4px;width:12px;height:12px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.progress-track{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;cursor:pointer;padding:10px 0;-webkit-tap-highlight-color:transparent;background-clip:content-box}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FFD166,#EF476F,#06D6A0);width:0%;pointer-events:none;transition:width .1s linear;position:relative;border-radius:2px}
+.progress-fill::after{content:'';position:absolute;right:-5px;top:-3px;width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 
 /* Time */
 .song-time-row{display:flex;justify-content:space-between;padding:0 20px 2px;font-size:11px;color:rgba(255,255,255,0.4);font-variant-numeric:tabular-nums}
@@ -161,22 +161,18 @@ body{
 /* Lyrics */
 .lyrics-box{text-align:center;padding:4px 20px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;scroll-behavior:smooth}
 .lyrics-box:empty{display:none}
-.lyrics-line{font-size:13px;color:rgba(255,255,255,0.25);padding:5px 0;transition:color .3s,font-size .3s}
-.lyrics-line.active{color:#FFD166;font-size:15px;font-weight:600}
-
-/* Player Controls */
-.player-controls{display:flex;align-items:center;justify-content:center;gap:16px;padding:6px 20px 10px;flex-shrink:0}
-.ctrl-btn{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:8px;transition:all .15s;display:flex;align-items:center;justify-content:center}
-.ctrl-btn:active{color:#fff;transform:scale(.92)}
-.ctrl-btn.side-btn{font-size:18px;width:36px;height:36px;border-radius:50%}
-.ctrl-btn.side-btn:active{background:rgba(255,255,255,0.08)}
-.ctrl-btn.play-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(255,255,255,0.08));font-size:20px;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
-.ctrl-btn.play-btn:active{background:linear-gradient(135deg,rgba(255,255,255,0.22),rgba(255,255,255,0.12))}
-.ctrl-btn.fav-ctrl{font-size:16px;width:32px;height:32px;border-radius:50%}
-.ctrl-btn.fav-ctrl.on{color:#EF476F}
+.lyrics-line{font-size:16px;color:rgba(255,255,255,0.25);padding:6px 0;transition:color .3s,font-size .3s}
+.lyrics-line.active{color:#FFD166;font-size:20px;font-weight:600}
 
 /* Shuffle & Fav */
-.shuffle-btn.on,.ctrl-btn.side-btn.on{color:var(--secondary);background:rgba(255,209,102,0.15)}
+.shuffle-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;color:rgba(255,255,255,0.35)}
+.shuffle-btn.on{color:var(--secondary);background:rgba(255,209,102,0.15)}
+.ctrl-btn.fav-ctrl{background:none;border:none;font-size:16px;cursor:pointer;padding:2px 6px;color:rgba(255,255,255,0.3);border-radius:50%}
+.ctrl-btn.fav-ctrl.on{color:#EF476F}
+
+/* Vinyl play hint */
+.vinyl-play-hint{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,0.7);pointer-events:none;transition:all .3s}
+.vinyl-container:active .vinyl-play-hint{transform:translateX(-50%) scale(.85);background:rgba(255,255,255,0.25)}
 .fav-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px;color:rgba(255,255,255,0.25)}
 .fav-btn.on{color:#EF476F}
 .fav-btn.mini{font-size:14px;padding:2px 6px}
@@ -303,18 +299,20 @@ body{
   <div class="player-top-bar">
     <div></div>
     <div style="display:flex;align-items:center;gap:8px">
+      <button class="shuffle-btn" id="shuffle-btn" onclick="toggleShuffle();event.stopPropagation()" title="随机播放">🔀</button>
       <button class="close-player-btn" onclick="closePlayer()">✕</button>
     </div>
   </div>
 
   <div class="now-playing">
-    <div class="vinyl-container">
+    <div class="vinyl-container" onclick="togglePlay()">
       <div class="tonearm" id="tonearm"></div>
       <div class="vinyl-disc" id="vinyl-disc">
         <div class="vinyl-center" id="now-art">🎵</div>
       </div>
+      <div class="vinyl-play-hint" id="vinyl-play-hint">▶</div>
     </div>
-    <div class="now-title" id="now-title">—</div>
+    <div class="now-title" id="now-title">— <button class="ctrl-btn fav-ctrl" id="now-fav-btn" data-song-id="" onclick="event.stopPropagation();toggleFavorite(currentSongId(),event)" title="收藏" style="vertical-align:middle">☆</button></div>
     <div class="now-title-zh" id="now-title-zh"></div>
     <div class="now-source" id="now-source"></div>
   </div>
@@ -330,15 +328,6 @@ body{
   </div>
   <div class="player-progress">
     <div class="progress-track" id="song-progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-  </div>
-
-  <!-- Controls -->
-  <div class="player-controls">
-    <button class="ctrl-btn side-btn" id="shuffle-btn" onclick="toggleShuffle()" title="随机播放">🔀</button>
-    <button class="ctrl-btn side-btn" onclick="prevSong()" title="上一曲">⏮</button>
-    <button class="ctrl-btn play-btn" id="play-btn" onclick="togglePlay()" title="播放/暂停">▶</button>
-    <button class="ctrl-btn side-btn" onclick="nextSong()" title="下一曲">⏭</button>
-    <button class="ctrl-btn fav-ctrl" id="now-fav-btn" data-song-id="" onclick="event.stopPropagation();toggleFavorite(currentSongId(),event)" title="收藏">☆</button>
   </div>
 
   <div class="playlist-section" id="playlist-section">
@@ -543,20 +532,20 @@ neAudio.addEventListener('play',()=>{
   hideNetEaseStatus();
   document.getElementById('vinyl-disc').classList.add('playing');
   document.getElementById('tonearm').classList.add('playing');
-  document.getElementById('play-btn').textContent='⏸';
+  document.getElementById('vinyl-play-hint').textContent='⏸';
   const item=playlist[currentIndex];
   scheduleAdvance(item?item.duration:60);
 });
 neAudio.addEventListener('pause',()=>{
   document.getElementById('vinyl-disc').classList.remove('playing');
   document.getElementById('tonearm').classList.remove('playing');
-  document.getElementById('play-btn').textContent='▶';
+  document.getElementById('vinyl-play-hint').textContent='▶';
 });
 neAudio.addEventListener('playing',()=>{
   hideNetEaseStatus();
   document.getElementById('vinyl-disc').classList.add('playing');
   document.getElementById('tonearm').classList.add('playing');
-  document.getElementById('play-btn').textContent='⏸';
+  document.getElementById('vinyl-play-hint').textContent='⏸';
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
@@ -840,6 +829,7 @@ function closePlayer(){
   isPlaying=false;
   document.getElementById('vinyl-disc').classList.remove('playing');
   document.getElementById('tonearm').classList.remove('playing');
+  document.getElementById('vinyl-play-hint').textContent='▶';
   document.getElementById('player-overlay').classList.remove('show');
 }
 
@@ -910,7 +900,7 @@ function togglePlay(){
     stopPlayback();
     document.getElementById('vinyl-disc').classList.remove('playing');
     document.getElementById('tonearm').classList.remove('playing');
-    document.getElementById('play-btn').textContent='▶';
+    document.getElementById('vinyl-play-hint').textContent='▶';
   }
   updatePlayerUI();
 }
@@ -939,7 +929,7 @@ function updatePlayerUI(){
   fb.textContent=isFavorite(item.id)?'♥':'♡';
   fb.classList.toggle('on',isFavorite(item.id));
   // Play button state
-  document.getElementById('play-btn').textContent=isPlaying?'⏸':'▶';
+  document.getElementById('vinyl-play-hint').textContent=isPlaying?'⏸':'▶';
 
   // Lyrics: render DOM once, keep it stable for scrolling
   const lb=document.getElementById('lyrics-box');
