@@ -676,12 +676,17 @@ function playNetEase(neId, songKey, title){
   const url='/api/stream?'+params.toString();
   if(neAudio.src.endsWith(params.toString())){
     // Same song — just resume if paused
-    if(neAudio.paused)neAudio.play().catch(()=>{});
+    if(neAudio.paused)neAudio.play().catch(e=>{console.error('Resume rejected:',e);showToast('请点击唱片继续播放');});
     return;
   }
   neAudio.src=url;
   neAudio.load();
-  neAudio.play().catch(()=>{});
+  neAudio.play().catch(e=>{
+    console.error('Audio play rejected:',e);
+    isPlaying=false;
+    updatePlayerUI();
+    showToast('请点击唱片开始播放');
+  });
 }
 
 function stopNetEase(){
@@ -893,16 +898,21 @@ function currentSongId(){
 
 
 function togglePlay(){
-  isPlaying=!isPlaying;
-  if(isPlaying){
-    playCurrent();
-  }else{
-    stopPlayback();
-    document.getElementById('vinyl-disc').classList.remove('playing');
-    document.getElementById('tonearm').classList.remove('playing');
-    document.getElementById('vinyl-play-hint').textContent='▶';
-  }
-  updatePlayerUI();
+  try{
+    isPlaying=!isPlaying;
+    if(isPlaying){
+      playCurrent();
+    }else{
+      stopPlayback();
+      const disc=document.getElementById('vinyl-disc');
+      const arm=document.getElementById('tonearm');
+      const hint=document.getElementById('vinyl-play-hint');
+      if(disc)disc.classList.remove('playing');
+      if(arm)arm.classList.remove('playing');
+      if(hint)hint.textContent='▶';
+    }
+    updatePlayerUI();
+  }catch(e){showToast('播放出错，请重试');console.error(e);}
 }
 
 
@@ -1086,7 +1096,8 @@ function showAQIInfo(e){
 
 // Global error trap
 window.onerror=function(msg,url,line){
-  showToast('JS Error: '+msg+' (line '+line+')');
+  showToast('出错了：'+msg);
+  console.error('JS Error:',msg,'line',line);
   return false;
 };
 
