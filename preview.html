@@ -676,13 +676,16 @@ function playNetEase(neId, songKey, title){
   const url='/api/stream?'+params.toString();
   if(neAudio.src.endsWith(params.toString())){
     // Same song — just resume if paused
-    if(neAudio.paused)neAudio.play().catch(e=>{console.error('Resume rejected:',e);showToast('请点击唱片继续播放');});
+    if(neAudio.paused)neAudio.play().then(()=>{hideNetEaseStatus();}).catch(e=>{console.error('Resume rejected:',e);hideNetEaseStatus();showToast('请点击唱片继续播放');});
     return;
   }
   neAudio.src=url;
   neAudio.load();
-  neAudio.play().catch(e=>{
+  neAudio.play().then(()=>{
+    hideNetEaseStatus();
+  }).catch(e=>{
     console.error('Audio play rejected:',e);
+    hideNetEaseStatus();
     isPlaying=false;
     updatePlayerUI();
     showToast('请点击唱片开始播放');
