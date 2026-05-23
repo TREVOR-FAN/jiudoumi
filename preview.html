@@ -182,7 +182,7 @@ body{
 .pl-reading-label{color:#06D6A0;background:rgba(6,214,160,0.15)}
 .pl-dur{font-size:11px;color:rgba(255,255,255,0.3);flex-shrink:0}
 
-.footer{text-align:center;padding:28px 0 12px;font-size:11px;color:#ccc;line-height:1.8}
+.section-subtitle{text-align:center;padding:0 0 14px;font-size:11px;color:#999;line-height:1.7}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:300;display:none}
 .toast.show{display:block;animation:toastIn .3s ease}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.9)}}
@@ -226,14 +226,13 @@ body{
 
   <div class="section">
     <div class="section-title"><span>🎧</span> Harvard/Oxford每日精选 <span class="item-count" id="item-count"></span></div>
-    <!-- Play-All Bar -->
+    <div class="section-subtitle">内容来自哈佛、牛津等世界顶级育儿专家推荐<br>每日更新 · 为宝宝精选最好的英语启蒙</div>
     <div class="play-all-bar">
       <button class="play-all-btn" id="play-all-btn" onclick="openPlayer(0)">▶ 全部播放 · 20首</button>
     </div>
     <div class="item-list" id="item-list"></div>
   </div>
 
-  <div class="footer">内容来自哈佛、牛津等世界顶级育儿专家推荐<br>每日更新 · 为宝宝精选最好的英语启蒙</div>
 </div>
 
 <!-- ========== PROFILE PAGE ========== -->
