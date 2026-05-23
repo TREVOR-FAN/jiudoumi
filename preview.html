@@ -129,45 +129,47 @@ body{
 
 .close-player-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:28px;cursor:pointer;padding:4px}
 
-/* Now Playing */
-.now-playing{padding:0 20px 16px;text-align:center}
-.now-type{font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:8px}
-.now-art{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 14px;position:relative}
-.now-art.song{background:linear-gradient(135deg,#EF476F,#F5958E);box-shadow:0 8px 32px rgba(239,71,111,0.35)}
-.now-art.reading{background:linear-gradient(135deg,#06D6A0,#4ECDC4);box-shadow:0 8px 32px rgba(6,214,160,0.35)}
-.now-art.playing{animation:artPulse 1.5s ease-in-out infinite}
-.now-art.playing::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);animation:rippleOut 1.5s ease-out infinite}
-.now-art.playing::after{content:'';position:absolute;inset:-14px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);animation:rippleOut 1.5s ease-out .5s infinite}
-@keyframes artPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-@keyframes rippleOut{0%{opacity:1;transform:scale(.9)}100%{opacity:0;transform:scale(1.15)}}
-.now-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px}
-.now-title-zh{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:4px}
-.now-source{font-size:11px;color:rgba(255,255,255,0.35);font-style:italic}
-/* Visualizer */
-.visualizer{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:18px;margin:10px auto 0;opacity:0;transition:opacity .3s}
-.now-art.playing~.visualizer{opacity:1}
-.eq-bar{width:3px;min-height:4px;background:var(--secondary);border-radius:2px;animation:none}
-.now-art.playing~.visualizer .eq-bar:nth-child(1){animation:eqBounce .5s ease-in-out infinite alternate;animation-delay:0s}
-.now-art.playing~.visualizer .eq-bar:nth-child(2){animation:eqBounce .55s ease-in-out infinite alternate;animation-delay:.12s}
-.now-art.playing~.visualizer .eq-bar:nth-child(3){animation:eqBounce .45s ease-in-out infinite alternate;animation-delay:.25s}
-.now-art.playing~.visualizer .eq-bar:nth-child(4){animation:eqBounce .6s ease-in-out infinite alternate;animation-delay:.08s}
-.now-art.playing~.visualizer .eq-bar:nth-child(5){animation:eqBounce .5s ease-in-out infinite alternate;animation-delay:.35s}
-@keyframes eqBounce{0%{height:4px}100%{height:18px}}
+/* Now Playing — vinyl style */
+.now-playing{padding:10px 20px 0;text-align:center;flex-shrink:0}
+.vinyl-container{position:relative;width:200px;height:200px;margin:0 auto 12px}
+.vinyl-disc{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 50%,#2a2a2a 0%,#1a1a1a 30%,#111 60%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(0,0,0,0.5);position:relative}
+.vinyl-disc::before{content:'';position:absolute;inset:14px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06)}
+.vinyl-disc::after{content:'';position:absolute;inset:28px;border-radius:50%;border:1px solid rgba(255,255,255,0.04)}
+.vinyl-disc.playing{animation:spinDisc 3s linear infinite}
+@keyframes spinDisc{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.vinyl-center{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#EF476F,#F5958E);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;z-index:1;box-shadow:0 4px 16px rgba(239,71,111,0.4)}
+.vinyl-center::after{content:'';position:absolute;width:8px;height:8px;background:#1A1A2E;border-radius:50%;border:2px solid rgba(255,255,255,0.2)}
+/* Tonearm */
+.tonearm{position:absolute;top:10px;right:10px;width:90px;height:5px;background:linear-gradient(90deg,#888,#555);border-radius:3px;transform:rotate(-35deg);transform-origin:100% 50%;transition:transform .6s cubic-bezier(.4,0,.2,1);z-index:2;box-shadow:0 2px 4px rgba(0,0,0,0.5)}
+.tonearm::before{content:'';position:absolute;right:-6px;top:-7px;width:18px;height:18px;background:linear-gradient(135deg,#999,#666);border-radius:50%}
+.tonearm::after{content:'';position:absolute;left:0;top:-6px;width:14px;height:14px;background:#777;border-radius:50%}
+.tonearm.playing{transform:rotate(-28deg)}
+.now-title{font-size:18px;font-weight:600;color:#fff;margin-bottom:2px}
+.now-title-zh{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:2px}
+.now-source{font-size:10px;color:rgba(255,255,255,0.3);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;margin:0 auto}
 
 /* Progress */
-.player-progress{padding:0 20px;margin-bottom:4px}
-.progress-track{height:6px;background:rgba(255,255,255,0.12);border-radius:3px;overflow:hidden;margin-bottom:4px;cursor:pointer;padding:8px 0;-webkit-tap-highlight-color:transparent;background-clip:content-box}
-.progress-fill{height:100%;background:var(--secondary);width:0%;pointer-events:none;transition:width .1s linear}
+.player-progress{padding:0 20px;margin-bottom:6px}
+.progress-track{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;cursor:pointer;padding:10px 0;-webkit-tap-highlight-color:transparent;background-clip:content-box}
+.progress-fill{height:100%;background:var(--secondary);width:0%;pointer-events:none;transition:width .1s linear;position:relative}
+.progress-fill::after{content:'';position:absolute;right:-6px;top:-4px;width:12px;height:12px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 
 /* Time */
-.song-time-row{display:flex;justify-content:space-between;padding:0 20px 2px;font-size:11px;color:rgba(255,255,255,0.5);font-variant-numeric:tabular-nums}
+.song-time-row{display:flex;justify-content:space-between;padding:0 20px 2px;font-size:11px;color:rgba(255,255,255,0.4);font-variant-numeric:tabular-nums}
 .song-time{font-family:monospace;font-size:12px}
 
 /* Lyrics */
 .lyrics-box{text-align:center;padding:4px 20px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;scroll-behavior:smooth}
 .lyrics-box:empty{display:none}
-.lyrics-line{font-size:13px;color:rgba(255,255,255,0.3);padding:5px 0;transition:color .3s,font-size .3s}
+.lyrics-line{font-size:13px;color:rgba(255,255,255,0.25);padding:5px 0;transition:color .3s,font-size .3s}
 .lyrics-line.active{color:#FFD166;font-size:15px;font-weight:600}
+
+/* Player Controls */
+.player-controls{display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 20px 12px;flex-shrink:0}
+.ctrl-btn{background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;padding:8px;transition:color .15s}
+.ctrl-btn:active{color:#fff}
+.ctrl-btn.play-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.1);font-size:24px;display:flex;align-items:center;justify-content:center}
+.ctrl-btn.play-btn:active{background:rgba(255,255,255,0.2)}
 
 /* Shuffle & Fav */
 .shuffle-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 8px;border-radius:8px;color:rgba(255,255,255,0.3)}
@@ -303,9 +305,12 @@ body{
   </div>
 
   <div class="now-playing">
-    <div class="now-type" id="now-type">—</div>
-    <div class="now-art" id="now-art" onclick="togglePlay()">🎵</div>
-    <div class="visualizer" id="visualizer"><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span></div>
+    <div class="vinyl-container">
+      <div class="tonearm" id="tonearm"></div>
+      <div class="vinyl-disc" id="vinyl-disc">
+        <div class="vinyl-center" id="now-art">🎵</div>
+      </div>
+    </div>
     <div class="now-title" id="now-title">—</div>
     <div class="now-title-zh" id="now-title-zh"></div>
     <div class="now-source" id="now-source"></div>
@@ -324,11 +329,19 @@ body{
     <div class="progress-track" id="song-progress-track"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
 
+  <!-- Controls -->
+  <div class="player-controls">
+    <button class="shuffle-btn" id="shuffle-btn" onclick="toggleShuffle()" title="随机播放" style="font-size:20px">🔀</button>
+    <button class="ctrl-btn" onclick="prevSong()" title="上一曲">⏮</button>
+    <button class="ctrl-btn play-btn" id="play-btn" onclick="togglePlay()" title="播放/暂停">▶</button>
+    <button class="ctrl-btn" onclick="nextSong()" title="下一曲">⏭</button>
+    <button class="fav-btn" id="now-fav-btn" data-song-id="" onclick="event.stopPropagation();toggleFavorite(currentSongId(),event)" title="收藏" style="font-size:22px">☆</button>
+  </div>
+
   <div class="playlist-section" id="playlist-section">
     <div class="playlist-header" onclick="togglePlaylist()">
       <span class="playlist-title" id="playlist-collapsed-label">📋 0 / 0</span>
       <div style="display:flex;align-items:center;gap:6px">
-        <button class="shuffle-btn" id="shuffle-btn" onclick="toggleShuffle();event.stopPropagation()" title="随机播放">🔀</button>
         <button class="fav-filter-btn" id="fav-filter-btn" onclick="toggleFavFilter();event.stopPropagation()" title="仅收藏">⭐</button>
         <span class="playlist-expand-icon" id="playlist-expand-icon">▸</span>
       </div>
@@ -525,16 +538,22 @@ let neAdvanceTimer=null;
 
 neAudio.addEventListener('play',()=>{
   hideNetEaseStatus();
-  document.getElementById('now-art').classList.add('playing');
+  document.getElementById('vinyl-disc').classList.add('playing');
+  document.getElementById('tonearm').classList.add('playing');
+  document.getElementById('play-btn').textContent='⏸';
   const item=playlist[currentIndex];
   scheduleAdvance(item?item.duration:60);
 });
 neAudio.addEventListener('pause',()=>{
-  document.getElementById('now-art').classList.remove('playing');
+  document.getElementById('vinyl-disc').classList.remove('playing');
+  document.getElementById('tonearm').classList.remove('playing');
+  document.getElementById('play-btn').textContent='▶';
 });
 neAudio.addEventListener('playing',()=>{
   hideNetEaseStatus();
-  document.getElementById('now-art').classList.add('playing');
+  document.getElementById('vinyl-disc').classList.add('playing');
+  document.getElementById('tonearm').classList.add('playing');
+  document.getElementById('play-btn').textContent='⏸';
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
@@ -816,6 +835,8 @@ function openPlayer(startIndex){
 function closePlayer(){
   stopPlayback();
   isPlaying=false;
+  document.getElementById('vinyl-disc').classList.remove('playing');
+  document.getElementById('tonearm').classList.remove('playing');
   document.getElementById('player-overlay').classList.remove('show');
 }
 
@@ -854,6 +875,27 @@ function advanceTrack(){
   playCurrent();
 }
 
+function prevSong(){
+  if(playlist.length===0)return;
+  if(currentIndex>0)currentIndex--;
+  else currentIndex=playlist.length-1;
+  stopPlayback();
+  playCurrent();
+  updatePlayerUI();
+  renderPlaylist();
+  updatePlaylistHighlight();
+}
+
+function nextSong(){
+  stopPlayback();
+  advanceTrack();
+}
+
+function currentSongId(){
+  if(currentIndex>=playlist.length)return'';
+  return playlist[currentIndex].id;
+}
+
 
 
 
@@ -863,6 +905,9 @@ function togglePlay(){
     playCurrent();
   }else{
     stopPlayback();
+    document.getElementById('vinyl-disc').classList.remove('playing');
+    document.getElementById('tonearm').classList.remove('playing');
+    document.getElementById('play-btn').textContent='▶';
   }
   updatePlayerUI();
 }
@@ -871,13 +916,18 @@ function togglePlay(){
 function updatePlayerUI(){
   if(currentIndex>=playlist.length)return;
   const item=playlist[currentIndex];
-  document.getElementById('now-type').textContent='🎵 儿歌';
   const art=document.getElementById('now-art');
-  art.className='now-art song'+(isPlaying?' playing':'');
   art.textContent='🎵';
-  document.getElementById('now-title').innerHTML=item.title+' <button class="fav-btn" data-song-id="'+item.id+'" onclick="toggleFavorite(\''+item.id+'\',event)" style="font-size:20px;vertical-align:middle">'+(isFavorite(item.id)?'⭐':'☆')+'</button>';
+  document.getElementById('now-title').textContent=item.title;
   document.getElementById('now-title-zh').textContent=item.titleZh||'';
   document.getElementById('now-source').textContent=item.source||'';
+  // Fav button
+  const fb=document.getElementById('now-fav-btn');
+  fb.dataset.songId=item.id;
+  fb.textContent=isFavorite(item.id)?'⭐':'☆';
+  fb.classList.toggle('on',isFavorite(item.id));
+  // Play button state
+  document.getElementById('play-btn').textContent=isPlaying?'⏸':'▶';
 
   // Lyrics: render DOM once, keep it stable for scrolling
   const lb=document.getElementById('lyrics-box');
@@ -889,7 +939,7 @@ function updatePlayerUI(){
 
   // Playlist collapsed label
   document.getElementById('playlist-collapsed-label').textContent=`📋 ${currentIndex+1} / ${playlist.length}`;
-  // Shuffle/fav button states
+  // Shuffle button state
   document.getElementById('shuffle-btn').classList.toggle('on',isShuffle);
   document.getElementById('fav-filter-btn').classList.toggle('on',favOnly);
 }
