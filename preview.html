@@ -907,6 +907,7 @@ function togglePlay(){
 
 
 function songColor(id){
+  if(!id)return 'linear-gradient(135deg,#EF476F,#F5958E)';
   let hash=0;for(let i=0;i<id.length;i++)hash=id.charCodeAt(i)+((hash<<5)-hash);
   const h=Math.abs(hash)%360;
   return `linear-gradient(135deg,hsl(${h},70%,55%),hsl(${(h+30)%360},65%,45%))`;
