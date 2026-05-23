@@ -244,29 +244,6 @@ body{
   </div>
 
   <div class="section">
-    <div class="section-title"><span>💤</span> 白噪音 · 助眠</div>
-    <div class="noise-grid" id="noise-grid">
-      <div class="noise-btn" data-noise="white" onclick="toggleNoise('white',this)"><span class="noise-icon">🌬</span><span class="noise-label">白噪音</span></div>
-      <div class="noise-btn" data-noise="pink" onclick="toggleNoise('pink',this)"><span class="noise-icon">🌿</span><span class="noise-label">粉红噪音</span></div>
-      <div class="noise-btn" data-noise="brown" onclick="toggleNoise('brown',this)"><span class="noise-icon">🌊</span><span class="noise-label">棕噪音</span></div>
-      <div class="noise-btn" data-noise="rain" onclick="toggleNoise('rain',this)"><span class="noise-icon">🌧</span><span class="noise-label">雨声</span></div>
-      <div class="noise-btn" data-noise="ocean" onclick="toggleNoise('ocean',this)"><span class="noise-icon">🏖</span><span class="noise-label">海浪</span></div>
-      <div class="noise-btn" data-noise="fan" onclick="toggleNoise('fan',this)"><span class="noise-icon">💨</span><span class="noise-label">风扇</span></div>
-    </div>
-    <div class="noise-timer-row">
-      <span>⏱ 定时关闭：</span>
-      <select id="noise-timer" onchange="onNoiseTimerChange()">
-        <option value="0">关闭定时</option>
-        <option value="15">15分钟</option>
-        <option value="30" selected>30分钟</option>
-        <option value="60">60分钟</option>
-        <option value="90">90分钟</option>
-      </select>
-    </div>
-    <div class="noise-status" id="noise-status"></div>
-  </div>
-
-  <div class="section">
     <div class="section-title"><span>🎧</span> Harvard/Oxford每日精选 <span class="item-count" id="item-count"></span></div>
     <div class="section-subtitle">内容来自哈佛、牛津等世界顶级育儿专家推荐<br>每日更新 · 为宝宝精选最好的英语启蒙</div>
     <div class="play-all-bar">
@@ -291,6 +268,29 @@ body{
     <div class="calc-row" id="calc-row" style="display:none"><div class="calc-item"><div class="calc-label">生肖</div><div class="calc-value zodiac-badge" id="zodiac-display">—</div></div><div class="calc-item"><div class="calc-label">星座</div><div class="calc-value" id="constellation-display" style="color:#6C5CE7">—</div></div><div class="calc-item"><div class="calc-label">月龄</div><div class="calc-value" id="age-display">—</div></div></div>
   </div>
   <button class="save-btn" onclick="saveProfile()">💾 保存档案</button>
+
+  <div class="section" style="margin-top:24px">
+    <div class="section-title"><span>💤</span> 白噪音 · 助眠</div>
+    <div class="noise-grid" id="noise-grid">
+      <div class="noise-btn" data-noise="white" onclick="toggleNoise('white',this)"><span class="noise-icon">🌬</span><span class="noise-label">白噪音</span></div>
+      <div class="noise-btn" data-noise="pink" onclick="toggleNoise('pink',this)"><span class="noise-icon">🌿</span><span class="noise-label">粉红噪音</span></div>
+      <div class="noise-btn" data-noise="brown" onclick="toggleNoise('brown',this)"><span class="noise-icon">🌊</span><span class="noise-label">棕噪音</span></div>
+      <div class="noise-btn" data-noise="rain" onclick="toggleNoise('rain',this)"><span class="noise-icon">🌧</span><span class="noise-label">雨声</span></div>
+      <div class="noise-btn" data-noise="ocean" onclick="toggleNoise('ocean',this)"><span class="noise-icon">🏖</span><span class="noise-label">海浪</span></div>
+      <div class="noise-btn" data-noise="fan" onclick="toggleNoise('fan',this)"><span class="noise-icon">💨</span><span class="noise-label">风扇</span></div>
+    </div>
+    <div class="noise-timer-row">
+      <span>⏱ 定时关闭：</span>
+      <select id="noise-timer" onchange="onNoiseTimerChange()">
+        <option value="0">关闭定时</option>
+        <option value="15">15分钟</option>
+        <option value="30" selected>30分钟</option>
+        <option value="60">60分钟</option>
+        <option value="90">90分钟</option>
+      </select>
+    </div>
+    <div class="noise-status" id="noise-status"></div>
+  </div>
 </div>
 
 <!-- ========== PLAYER OVERLAY ========== -->
