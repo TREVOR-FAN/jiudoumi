@@ -105,6 +105,22 @@ body{
 .save-btn{width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#EF476F,#F06888);color:#fff;font-size:16px;font-weight:600;border:none;border-radius:48px;cursor:pointer;box-shadow:0 6px 20px rgba(239,71,111,0.3)}
 .save-btn:hover{opacity:.92}
 
+/* Reminder */
+.reminder-card{background:#fff;border-radius:var(--radius-lg);padding:16px;box-shadow:0 2px 16px rgba(0,0,0,0.05);margin-top:14px}
+.reminder-header{display:flex;justify-content:space-between;align-items:center}
+.reminder-label{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.reminder-sub{font-size:11px;color:#999;margin-top:4px}
+.toggle-switch{position:relative;width:48px;height:28px;flex-shrink:0}
+.toggle-switch input{display:none}
+.toggle-slider{position:absolute;inset:0;background:#ddd;border-radius:28px;cursor:pointer;transition:background .25s}
+.toggle-slider::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.toggle-switch input:checked+.toggle-slider{background:var(--brand-green)}
+.toggle-switch input:checked+.toggle-slider::after{transform:translateX(20px)}
+.reminder-time-row{display:flex;align-items:center;gap:8px;margin-top:12px}
+.reminder-time-row select{height:34px;padding:0 8px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;background:#fafafa;outline:none}
+.reminder-time-row select:focus{border-color:var(--brand-green)}
+.reminder-time-colon{font-size:16px;font-weight:700;color:#333}
+
 /* ============ PLAYER OVERLAY ============ */
 .player-overlay{
   display:none;position:fixed;top:0;left:0;width:100%;height:100%;
@@ -254,6 +270,21 @@ body{
     <div class="form-group"><div class="form-label"><span id="gender-icon">👦</span> 性别</div><div class="gender-group"><div class="gender-opt selected" data-gender="boy" onclick="selectGender('boy',this)">👦 男宝</div><div class="gender-opt" data-gender="girl" onclick="selectGender('girl',this)">👧 女宝</div></div></div>
     <div class="form-group"><div class="form-label"><span>🎂</span> 出生日期</div><input type="date" class="date-input" id="input-birthdate" onchange="onDateChange()"></div>
     <div class="calc-row" id="calc-row" style="display:none"><div class="calc-item"><div class="calc-label">生肖</div><div class="calc-value zodiac-badge" id="zodiac-display">—</div></div><div class="calc-item"><div class="calc-label">星座</div><div class="calc-value" id="constellation-display" style="color:#6C5CE7">—</div></div><div class="calc-item"><div class="calc-label">月龄</div><div class="calc-value" id="age-display">—</div></div></div>
+  </div>
+  <div class="reminder-card" id="reminder-card">
+    <div class="reminder-header">
+      <div>
+        <div class="reminder-label">🔔 每日推送提醒</div>
+        <div class="reminder-sub">每天固定时间提醒查看今日精选</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="reminder-toggle" onchange="onReminderToggle()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="reminder-time-row" id="reminder-time-row" style="display:none">
+      <span style="font-size:13px;color:#666">⏰</span>
+      <select id="reminder-hour"></select>
+      <span class="reminder-time-colon">:</span>
+      <select id="reminder-minute"></select>
+    </div>
   </div>
   <button class="save-btn" onclick="saveProfile()">💾 保存档案</button>
 </div>
@@ -933,6 +964,8 @@ function saveProfile(){
   if(!birthDate){showToast('请选择宝宝的生日');return;}
   profile={name,birthDate,gender,zodiac:getZodiac(birthDate)};
   localStorage.setItem('babyProfile',JSON.stringify(profile));
+  // Save reminder settings
+  saveReminderSettings();
   document.getElementById('profile-header-title').textContent=`${name}的档案`;
   showToast('保存成功 ✅');
   setTimeout(()=>{switchTab('home');renderHome();},800);
@@ -940,7 +973,71 @@ function saveProfile(){
 function loadProfilePage(){
   const s=localStorage.getItem('babyProfile');
   if(s){profile=JSON.parse(s);document.getElementById('input-name').value=profile.name||'';document.getElementById('input-birthdate').value=profile.birthDate||'';document.getElementById('profile-header-title').textContent=`${profile.name}的档案`;document.querySelectorAll('.gender-opt').forEach(e=>e.classList.toggle('selected',e.dataset.gender===profile.gender));onDateChange();}
+  loadReminderUI();
 }
+
+// ==================== REMINDER ====================
+function getReminderSettings(){
+  try{return JSON.parse(localStorage.getItem('reminderSettings'))||{};}catch(e){return{};}
+}
+function saveReminderSettings(){
+  const s={
+    enabled: document.getElementById('reminder-toggle').checked,
+    hour: parseInt(document.getElementById('reminder-hour').value)||9,
+    minute: parseInt(document.getElementById('reminder-minute').value)||0,
+    lastNotifiedDate: getReminderSettings().lastNotifiedDate||''
+  };
+  localStorage.setItem('reminderSettings',JSON.stringify(s));
+}
+function loadReminderUI(){
+  const s=getReminderSettings();
+  const tog=document.getElementById('reminder-toggle');
+  const row=document.getElementById('reminder-time-row');
+  // Populate selects
+  const hSel=document.getElementById('reminder-hour');
+  const mSel=document.getElementById('reminder-minute');
+  if(!hSel.options.length){
+    for(let i=0;i<24;i++)hSel.innerHTML+=`<option value="${i}">${String(i).padStart(2,'0')}</option>`;
+    for(let i=0;i<60;i+=5)mSel.innerHTML+=`<option value="${i}">${String(i).padStart(2,'0')}</option>`;
+  }
+  hSel.value=String(s.hour||9);
+  mSel.value=String(s.minute||0);
+  tog.checked=!!s.enabled;
+  row.style.display=s.enabled?'flex':'none';
+}
+function onReminderToggle(){
+  const checked=document.getElementById('reminder-toggle').checked;
+  document.getElementById('reminder-time-row').style.display=checked?'flex':'none';
+  if(checked&&Notification.permission==='default'){
+    Notification.requestPermission().then(p=>{
+      if(p==='denied')showToast('请在浏览器设置中允许通知权限');
+    });
+  }
+}
+function checkReminder(){
+  const s=getReminderSettings();
+  if(!s.enabled)return;
+  const now=new Date();
+  const today=`${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+  if(s.lastNotifiedDate===today)return;
+  const sh=parseInt(s.hour),sm=parseInt(s.minute);
+  if(now.getHours()===sh&&now.getMinutes()>=sm&&now.getMinutes()<sm+2){
+    s.lastNotifiedDate=today;
+    localStorage.setItem('reminderSettings',JSON.stringify(s));
+    sendReminderNotification();
+  }
+}
+function sendReminderNotification(){
+  if(Notification.permission!=='granted')return;
+  new Notification('九豆米 · 豆比爸比电台',{
+    body:'今日Harvard/Oxford精选已更新，点击查看为宝宝精选的英语启蒙内容~',
+    icon:'/images/logo.png',
+    tag:'daily-reminder'
+  }).onclick=()=>{window.focus();};
+}
+
+// Start reminder checker (every 30s)
+setInterval(checkReminder,30000);
 
 function switchTab(tab){
   document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
