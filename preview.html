@@ -979,12 +979,12 @@ function loadProfilePage(){
 
 // ==================== REMINDER ====================
 // Auto-request notification permission on first visit
-if(Notification&&Notification.permission==='default'){
+if(typeof Notification!=='undefined'&&Notification.permission==='default'){
   setTimeout(()=>{Notification.requestPermission();},3000);
 }
 
 function checkReminder(){
-  if(Notification.permission!=='granted')return;
+  if(typeof Notification==='undefined'||Notification.permission!=='granted')return;
   const now=new Date();
   if(now.getHours()!==8)return;
   if(now.getMinutes()<0||now.getMinutes()>=2)return;
