@@ -4,6 +4,7 @@ import http.server
 import urllib.request
 import urllib.parse
 import json
+import re
 import sys
 import os
 import time
@@ -47,7 +48,9 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
         if clean_path == '/' or clean_path == '/index.html':
             clean_path = '/preview.html'
-        if clean_path.startswith('/api/stream'):
+        if clean_path.startswith('/audio/'):
+            self.handle_audio()
+        elif clean_path.startswith('/api/stream'):
             self.handle_stream()
         elif clean_path == '/api/aqi':
             self.handle_aqi()
@@ -78,6 +81,18 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404)
         else:
             super().do_GET()
+
+    def handle_audio(self):
+        """Serve cached MP3 files directly from audio_cache/."""
+        filename = self.path.split('/')[-1].split('?')[0]  # e.g. "s001.mp3"
+        if not re.match(r'^[a-zA-Z0-9._-]+\.mp3$', filename):
+            self.send_error(404)
+            return
+        filepath = os.path.join(AUDIO_CACHE_DIR, filename)
+        if os.path.isfile(filepath) and os.path.getsize(filepath) > 0:
+            self._serve_file(filepath)
+        else:
+            self.send_error(404)
 
     def handle_aqi(self):
         try:

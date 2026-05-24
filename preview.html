@@ -297,8 +297,6 @@ to{transform:rotate(360deg)}
 
 <div class="toast" id="toast"></div>
 
-<!-- NetEase status overlay -->
-<div id="netease-status" style="display:none;position:fixed;bottom:200px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#fff;padding:8px 20px;border-radius:20px;font-size:12px;z-index:220;white-space:nowrap;pointer-events:none;"></div>
 
 <script>
 // ==================== DATA ====================
@@ -479,12 +477,9 @@ let currentPage=0;
 let lastDateStr='';
 let favorites=new Set(JSON.parse(localStorage.getItem('favorites')||'[]'));
 
-// ==================== AUDIO PLAYER (NetEase via local proxy) ====================
+// ==================== AUDIO PLAYER ====================
 const neAudio=document.getElementById('netease-audio');
 let neAdvanceTimer=null;
-let neLoadedId=null;  // track which song is loaded in the audio element
-let errorStreak=0;
-let syncSkipGuard=0;
 
 function clearTimers(){
   if(neAdvanceTimer){clearTimeout(neAdvanceTimer);neAdvanceTimer=null;}
@@ -506,29 +501,18 @@ function setVinylPlaying(on){
 }
 
 neAudio.addEventListener('play',()=>{
-  errorStreak=0;
-  hideNetEaseStatus();
   setVinylPlaying(true);
   const item=playlist[currentIndex];
   scheduleAdvance(item&&item.duration?item.duration:60);
 });
-neAudio.addEventListener('pause',()=>{
-  setVinylPlaying(false);
-});
+neAudio.addEventListener('pause',()=>{setVinylPlaying(false);});
 neAudio.addEventListener('playing',()=>{
-  hideNetEaseStatus();
   setVinylPlaying(true);
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
-  neLoadedId=null;
-  errorStreak++;
-  if(errorStreak>5){isPlaying=false;showToast('连续播放失败，请稍后重试');closePlayer();return;}
-  showNetEaseStatus('此歌曲暂无免费资源，自动跳过','error');
-  setTimeout(()=>{
-    hideNetEaseStatus();
-    if(isPlaying)advanceTrack();
-  },1500);
+  showToast('音频加载失败，自动跳过');
+  setTimeout(()=>{if(isPlaying)advanceTrack();},1500);
 });
 neAudio.addEventListener('ended',()=>{
   if(isPlaying)advanceTrack();
@@ -542,12 +526,6 @@ neAudio.addEventListener('timeupdate',()=>{
     updateLyrics();
   }
 });
-neAudio.addEventListener('loadstart',()=>{
-  const p=_progress(); if(p)p.style.width='0%';
-  showNetEaseStatus('加载中...','loading');
-});
-neAudio.addEventListener('canplay',()=>{hideNetEaseStatus();});
-neAudio.addEventListener('waiting',()=>{showNetEaseStatus('缓冲中...','loading');});
 
 // Progress track click/touch for seeking
 const _trk=_track();
@@ -647,23 +625,12 @@ function updateLyrics(){
   }
 }
 
-function playNetEase(neId, songKey, title){
-  if(!neId&&!songKey)return;
-  // Same song already loaded — just resume if paused
-  if(neLoadedId===songKey&&!neAudio.error){
-    if(neAudio.paused)neAudio.play().catch(()=>{});
-    return;
-  }
-  const params=new URLSearchParams();
-  if(songKey)params.set('id',songKey);
-  if(neId)params.set('neid',neId);
-  if(title)params.set('title',title);
-  neAudio.src='/api/stream?'+params.toString();
-  neLoadedId=songKey;
+function playSong(songKey){
+  neAudio.src='/audio/'+songKey+'.mp3';
   neAudio.play().catch(()=>{});
 }
 
-function stopNetEase(){
+function stopAudio(){
   neAudio.pause();
   if(neAdvanceTimer){clearTimeout(neAdvanceTimer);neAdvanceTimer=null;}
 }
@@ -675,14 +642,6 @@ function scheduleAdvance(durationSec){
   },(durationSec+2)*1000);
 }
 
-
-const neStatusEl=document.getElementById('netease-status');
-function showNetEaseStatus(msg,type){
-  neStatusEl.textContent=(type==='error'?'⚠️ ':'⏳ ')+msg;
-  neStatusEl.style.display='block';
-  neStatusEl.style.color=type==='error'?'#EF476F':'var(--secondary)';
-}
-function hideNetEaseStatus(){neStatusEl.style.display='none';}
 
 
 function init(){
@@ -786,8 +745,6 @@ function openPlayer(startIndex){
     const ps=document.getElementById('playlist-section'); if(ps)ps.classList.remove('expanded');
     const pe=document.getElementById('playlist-expand-icon'); if(pe)pe.textContent='▸';
     clearTimers();
-    errorStreak=0;
-    syncSkipGuard=0;
     playCurrent();
     const po=document.getElementById('player-overlay'); if(po)po.classList.add('show');
     renderPlaylist();
@@ -796,12 +753,11 @@ function openPlayer(startIndex){
 }
 
 function closePlayer(){
-  stopNetEase();
+  stopAudio();
   isPlaying=false;
   setVinylPlaying(false);
   const po=document.getElementById('player-overlay'); if(po)po.classList.remove('show');
 }
-
 
 function playCurrent(){
   if(!isPlaying||currentIndex>=playlist.length)return;
@@ -809,16 +765,8 @@ function playCurrent(){
   updatePlayerUI();
   updatePlaylistHighlight();
   scrollPlaylistToCurrent();
-
-  if(item.neteaseId){
-    syncSkipGuard=0;
-    playNetEase(item.neteaseId, item.id, item.title);
-    scheduleAdvance(item.duration||60);
-  }else{
-    syncSkipGuard++;
-    if(syncSkipGuard>playlist.length){showToast('没有可播放的歌曲');isPlaying=false;closePlayer();return;}
-    if(isPlaying)advanceTrack();
-  }
+  playSong(item.id);
+  scheduleAdvance(item.duration||60);
 }
 
 function advanceTrack(){
@@ -841,14 +789,12 @@ function prevSong(){
   if(currentIndex>0)currentIndex--;
   else currentIndex=playlist.length-1;
   clearTimers();
-  errorStreak=0;
   playCurrent();
   renderPlaylist();
 }
 
 function nextSong(){
   clearTimers();
-  errorStreak=0;
   advanceTrack();
   renderPlaylist();
 }
@@ -858,12 +804,11 @@ function currentSongId(){
   return playlist[currentIndex].id;
 }
 
-
 function togglePlay(){
   try{
     isPlaying=!isPlaying;
     if(isPlaying){playCurrent();}
-    else{stopNetEase();}
+    else{stopAudio();}
     updatePlayerUI();
   }catch(e){showToast('播放出错：'+e.message);console.error(e);}
 }
@@ -959,8 +904,6 @@ function scrollPlaylistToCurrent(){
 function jumpToTrack(i){
   clearTimers();
   currentIndex=i;
-  errorStreak=0;
-  syncSkipGuard=0;
   renderPlaylist();
   if(!isPlaying){isPlaying=true;}
   playCurrent();
