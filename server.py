@@ -42,6 +42,12 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
+    def do_POST(self):
+        if urllib.parse.urlparse(self.path).path == '/api/error':
+            self._handle_error_report()
+        else:
+            self.send_error(404)
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         clean_path = parsed.path  # path without query string
@@ -65,6 +71,8 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 'cache_songs': cache_count,
                 'cache_file': os.path.basename(_cache_file),
             }).encode())
+        elif clean_path == '/api/error':
+            self._handle_error_report()
         elif clean_path.endswith('.html'):
             # HTML files — serve with no-cache for instant updates
             fs_path = self.translate_path(clean_path)
@@ -81,6 +89,15 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404)
         else:
             super().do_GET()
+
+    def _handle_error_report(self):
+        length = int(self.headers.get('Content-Length', 0))
+        if length > 0 and length < 4096:
+            body = json.loads(self.rfile.read(length))
+            print(f'[client-error] {body.get("msg","?")} | line {body.get("line","?")} | url {body.get("url","?")}', file=sys.stderr, flush=True)
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'{"ok":true}')
 
     def handle_audio(self):
         """Serve cached MP3 files directly from audio_cache/."""

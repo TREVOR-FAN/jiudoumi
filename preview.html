@@ -297,6 +297,8 @@ to{transform:rotate(360deg)}
 
 <div class="toast" id="toast"></div>
 
+<div id="debug-err" style="display:none;position:fixed;bottom:80px;left:10px;right:10px;background:rgba(200,0,0,0.9);color:#fff;padding:10px 14px;border-radius:10px;font-size:11px;z-index:999;max-height:150px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;font-family:monospace"></div>
+
 
 <script>
 // ==================== DATA ====================
@@ -475,7 +477,7 @@ let profile=null, playlist=[], currentIndex=0;
 let isPlaying=false, isShuffle=false, favOnly=false, playlistExpanded=false;
 let currentPage=0;
 let lastDateStr='';
-let favorites=new Set(JSON.parse(localStorage.getItem('favorites')||'[]'));
+let favorites=new Set(function(){try{return JSON.parse(localStorage.getItem('favorites')||'[]');}catch(e){return[];}}());
 
 // ==================== AUDIO PLAYER ====================
 const neAudio=document.getElementById('netease-audio');
@@ -645,13 +647,15 @@ function scheduleAdvance(durationSec){
 
 
 function init(){
-  const s=localStorage.getItem('babyProfile');
-  if(s)profile=JSON.parse(s);
+  try{
+    const s=localStorage.getItem('babyProfile');
+    if(s)profile=JSON.parse(s);
+  }catch(e){profile=null;}
   lastDateStr=new Date().toDateString();
   updateTodayDate();
   renderHome();
   fetchAQI();
-  // Midnight refresh: check every 60s if date changed
+  // Midnight refresh
   setInterval(()=>{
     const ds=new Date().toDateString();
     if(ds!==lastDateStr){lastDateStr=ds; updateTodayDate(); renderHome();}
@@ -935,8 +939,17 @@ function saveProfile(){
   setTimeout(()=>{switchTab('home');renderHome();},800);
 }
 function loadProfilePage(){
-  const s=localStorage.getItem('babyProfile');
-  if(s){profile=JSON.parse(s);document.getElementById('input-name').value=profile.name||'';document.getElementById('input-birthdate').value=profile.birthDate||'';document.getElementById('profile-header-title').textContent=`${profile.name}的档案`;document.querySelectorAll('.gender-opt').forEach(e=>e.classList.toggle('selected',e.dataset.gender===profile.gender));onDateChange();}
+  try{
+    const s=localStorage.getItem('babyProfile');
+    if(s){profile=JSON.parse(s);}
+  }catch(e){profile=null;}
+  if(profile){
+    document.getElementById('input-name').value=profile.name||'';
+    document.getElementById('input-birthdate').value=profile.birthDate||'';
+    document.getElementById('profile-header-title').textContent=profile.name+'的档案';
+    document.querySelectorAll('.gender-opt').forEach(e=>e.classList.toggle('selected',e.dataset.gender===profile.gender));
+    onDateChange();
+  }
 }
 
 // ==================== REMINDER ====================
@@ -974,7 +987,7 @@ function switchTab(tab){
 }
 document.querySelectorAll('.tab-item').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)));
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+function showToast(msg){const t=document.getElementById('toast');if(!t)return;try{t.textContent=msg;t.classList.add('show');setTimeout(()=>{try{t.classList.remove('show');}catch(e){}},1800);}catch(e){}}
 
 function fetchAQI(){
   fetch('/api/aqi').then(r=>r.json()).then(d=>{
@@ -993,12 +1006,22 @@ function showAQIInfo(e){
   showToast('AQI空气质量指数：0-50优（绿），51-100良（黄），>100污染。数值越小对宝宝越友好，污染天建议减少户外活动。');
 }
 
-// Global error trap
+// Global error trap — reports to server and shows on page
 window.onerror=function(msg,url,line){
   showToast('出错了：'+msg);
   console.error('JS Error:',msg,'line',line);
+  var db=document.getElementById('debug-err');
+  if(db){db.style.display='block';db.textContent+=new Date().toLocaleTimeString()+' L'+line+': '+msg+'\n';}
+  try{fetch('/api/error',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:String(msg),url:String(url||''),line:line,ts:Date.now()})}).catch(()=>{});}catch(e){}
   return false;
 };
+window.addEventListener('unhandledrejection',function(e){
+  showToast('异步错误：'+e.reason);
+  console.error('Unhandled rejection:',e.reason);
+  var db=document.getElementById('debug-err');
+  if(db){db.style.display='block';db.textContent+=new Date().toLocaleTimeString()+' Promise: '+String(e.reason)+'\n';}
+  try{fetch('/api/error',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:'Promise: '+String(e.reason),url:'',line:0,ts:Date.now()})}).catch(()=>{});}catch(e2){}
+});
 
 function toggleDays(){
   if(!profile)return;
@@ -1109,6 +1132,11 @@ function toggleNoise(type,el){
 
 function onNoiseTimerChange(){
   if(activeNoise){startNoiseTimer();const min=parseInt(document.getElementById('noise-timer').value);if(min>0)showToast('⏰ 定时'+min+'分钟后关闭');else showToast('⏰ 定时已取消');}
+}
+
+// Service worker — just register; sw.js v2 handles caching correctly
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
 init();

@@ -1,16 +1,7 @@
 // 九豆米 — Service Worker for offline PWA
-const CACHE = 'jiudoumi-v1'
-const ASSETS = [
-  '/preview.html',
-  '/images/logo.png',
-  '/images/logo.jpg',
-  '/images/icon-192.png',
-  '/images/icon-512.png',
-  '/images/apple-touch-icon.png'
-]
+const CACHE = 'jiudoumi-v2'
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)))
   self.skipWaiting()
 })
 
@@ -22,16 +13,21 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-  // Don't cache API proxy requests — they must be live
-  if (e.request.url.includes('/api/stream')) return
-
+  // Never cache HTML — must always get latest version
+  // Never intercept API or audio requests
+  const url = new URL(e.request.url)
+  if (url.pathname === '/' || url.pathname.endsWith('.html') ||
+      url.pathname.startsWith('/api/') || url.pathname.startsWith('/audio/')) {
+    return
+  }
+  // Cache static assets (images, CSS, JS) network-first
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+    fetch(e.request).then(res => {
       if (res.ok && res.type === 'basic') {
         const clone = res.clone()
         caches.open(CACHE).then(c => c.put(e.request, clone))
       }
       return res
-    }))
+    }).catch(() => caches.match(e.request))
   )
 })
