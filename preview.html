@@ -1073,6 +1073,13 @@ let favorites=new Set(JSON.parse(localStorage.getItem('favorites')||'[]'));
 // ==================== AUDIO PLAYER (NetEase via local proxy) ====================
 const neAudio=document.getElementById('netease-audio');
 let neAdvanceTimer=null;
+let neLoadedId=null;  // track which song is loaded in the audio element
+let errorStreak=0;
+let skipCount=0;
+
+function clearTimers(){
+  if(neAdvanceTimer){clearTimeout(neAdvanceTimer);neAdvanceTimer=null;}
+}
 
 function _disc(){return document.getElementById('vinyl-disc');}
 function _arm(){return document.getElementById('tonearm');}
@@ -1090,6 +1097,7 @@ function setVinylPlaying(on){
 }
 
 neAudio.addEventListener('play',()=>{
+  errorStreak=0;
   hideNetEaseStatus();
   setVinylPlaying(true);
   const item=playlist[currentIndex];
@@ -1104,6 +1112,9 @@ neAudio.addEventListener('playing',()=>{
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
+  neLoadedId=null;
+  errorStreak++;
+  if(errorStreak>5){isPlaying=false;showToast('连续播放失败，请稍后重试');closePlayer();return;}
   showNetEaseStatus('此歌曲暂无免费资源，自动跳过','error');
   setTimeout(()=>{
     hideNetEaseStatus();
@@ -1229,36 +1240,23 @@ function updateLyrics(){
 
 function playNetEase(neId, songKey, title){
   if(!neId&&!songKey)return;
+  // Same song already loaded — just resume if paused
+  if(neLoadedId===songKey&&!neAudio.error){
+    if(neAudio.paused)neAudio.play().catch(()=>{});
+    return;
+  }
   const params=new URLSearchParams();
   if(songKey)params.set('id',songKey);
   if(neId)params.set('neid',neId);
   if(title)params.set('title',title);
-  const url='/api/stream?'+params.toString();
-  if(neAudio.src.endsWith(params.toString())){
-    // Same song — just resume if paused
-    if(neAudio.paused)neAudio.play().catch(()=>{});
-    return;
-  }
-  neAudio.src=url;
-  neAudio.load();
+  neAudio.src='/api/stream?'+params.toString();
+  neLoadedId=songKey;
   neAudio.play().catch(()=>{});
 }
 
 function stopNetEase(){
   neAudio.pause();
   if(neAdvanceTimer){clearTimeout(neAdvanceTimer);neAdvanceTimer=null;}
-}
-
-function preloadFirstSong(){
-  if(!playlist.length)return;
-  const item=playlist[0];
-  if(!item.neteaseId)return;
-  const params=new URLSearchParams();
-  params.set('id',item.id);
-  params.set('neid',item.neteaseId);
-  params.set('title',item.title);
-  neAudio.src='/api/stream?'+params.toString();
-  neAudio.load();  // start buffering, don't play — keeps data ready for first click
 }
 
 function scheduleAdvance(durationSec){
@@ -1360,7 +1358,8 @@ function renderHome(){
     <button class="page-btn" onclick="changePage(1)" ${currentPage===totalPages-1?'disabled':''}>下一页 ▶</button>
   </div>`;
   document.getElementById('item-list').innerHTML=list;
-  preloadFirstSong();
+  // No preload — we stream on first play click to preserve gesture authorization
+}
 }
 
 function changePage(dir){
@@ -1381,7 +1380,8 @@ function openPlayer(startIndex){
     playlistExpanded=false;
     const ps=document.getElementById('playlist-section'); if(ps)ps.classList.remove('expanded');
     const pe=document.getElementById('playlist-expand-icon'); if(pe)pe.textContent='▸';
-    stopPlayback();
+    clearTimers();
+    errorStreak=0;
     playCurrent();
     const po=document.getElementById('player-overlay'); if(po)po.classList.add('show');
     renderPlaylist();
@@ -1435,13 +1435,15 @@ function prevSong(){
   if(playlist.length===0)return;
   if(currentIndex>0)currentIndex--;
   else currentIndex=playlist.length-1;
-  stopPlayback();
+  clearTimers();
+  errorStreak=0;
   playCurrent();
   renderPlaylist();
 }
 
 function nextSong(){
-  stopPlayback();
+  clearTimers();
+  errorStreak=0;
   advanceTrack();
   renderPlaylist();
 }
