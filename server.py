@@ -68,7 +68,9 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             if os.path.isfile(fs_path):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html; charset=utf-8')
-                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                self.send_header('Pragma', 'no-cache')
+                self.send_header('Expires', '0')
                 self.end_headers()
                 with open(fs_path, 'rb') as f:
                     self.wfile.write(f.read())
@@ -178,8 +180,49 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(500, str(e))
 
     def _serve_file(self, path):
-        """Serve a local file with appropriate headers."""
+        """Serve a local file with Range support (required for iOS Safari)."""
         size = os.path.getsize(path)
+        range_header = self.headers.get('Range', '')
+
+        if range_header and range_header.startswith('bytes='):
+            try:
+                range_val = range_header[6:]
+                if '-' in range_val:
+                    parts = range_val.split('-', 1)
+                    start = int(parts[0]) if parts[0] else 0
+                    end = int(parts[1]) if parts[1] else size - 1
+                else:
+                    start = int(range_val)
+                    end = size - 1
+
+                start = max(0, min(start, size - 1))
+                end = max(start, min(end, size - 1))
+                length = end - start + 1
+
+                self.send_response(206)
+                self.send_header('Content-Type', 'audio/mpeg')
+                self.send_header('Content-Length', str(length))
+                self.send_header('Content-Range', f'bytes {start}-{end}/{size}')
+                self.send_header('Accept-Ranges', 'bytes')
+                self.send_header('Cache-Control', 'public, max-age=86400')
+                self.end_headers()
+
+                with open(path, 'rb') as f:
+                    f.seek(start)
+                    remaining = length
+                    while remaining > 0:
+                        chunk = f.read(min(65536, remaining))
+                        if not chunk:
+                            break
+                        try:
+                            self.wfile.write(chunk)
+                        except (BrokenPipeError, ConnectionResetError):
+                            return
+                        remaining -= len(chunk)
+                return
+            except (ValueError, IndexError):
+                pass
+
         self.send_response(200)
         self.send_header('Content-Type', 'audio/mpeg')
         self.send_header('Content-Length', str(size))

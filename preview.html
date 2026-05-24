@@ -167,7 +167,8 @@ body{
 /* Shuffle & Fav */
 .shuffle-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;color:rgba(255,255,255,0.35)}
 .shuffle-btn.on{color:var(--secondary);background:rgba(255,209,102,0.15)}
-.ctrl-btn.fav-ctrl{background:none;border:none;font-size:16px;cursor:pointer;padding:2px 6px;color:rgba(255,255,255,0.3);border-radius:50%}
+.ctrl-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;color:rgba(255,255,255,0.35)}
+.ctrl-btn.fav-ctrl{font-size:16px;padding:2px 6px;border-radius:50%;color:rgba(255,255,255,0.3)}
 .ctrl-btn.fav-ctrl.on{color:#EF476F}
 
 /* Vinyl play hint */
@@ -297,7 +298,10 @@ body{
 <!-- ========== PLAYER OVERLAY ========== -->
 <div class="player-overlay" id="player-overlay">
   <div class="player-top-bar">
-    <div></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="ctrl-btn" onclick="prevSong();event.stopPropagation()" title="上一首">⏮</button>
+      <button class="ctrl-btn" onclick="nextSong();event.stopPropagation()" title="下一首">⏭</button>
+    </div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="shuffle-btn" id="shuffle-btn" onclick="toggleShuffle();event.stopPropagation()" title="随机播放">🔀</button>
       <button class="close-player-btn" onclick="closePlayer()">✕</button>
@@ -312,7 +316,7 @@ body{
       </div>
       <div class="vinyl-play-hint" id="vinyl-play-hint">▶</div>
     </div>
-    <div class="now-title" id="now-title">— <button class="ctrl-btn fav-ctrl" id="now-fav-btn" data-song-id="" onclick="event.stopPropagation();toggleFavorite(currentSongId(),event)" title="收藏" style="vertical-align:middle">☆</button></div>
+    <div class="now-title"><span id="now-title-text">—</span> <button class="ctrl-btn fav-ctrl" id="now-fav-btn" data-song-id="" onclick="event.stopPropagation();toggleFavorite(currentSongId(),event)" title="收藏" style="vertical-align:middle">☆</button></div>
     <div class="now-title-zh" id="now-title-zh"></div>
     <div class="now-source" id="now-source"></div>
   </div>
@@ -357,7 +361,7 @@ function getAgeMonthsAndDays(d){const b=new Date(d),n=new Date();let m=(n.getFul
 function getConstellation(d){if(!d)return'';const[,m,dd]=d.split('-').map(Number);const b=[[1,20,'水瓶座'],[2,19,'双鱼座'],[3,21,'白羊座'],[4,20,'金牛座'],[5,21,'双子座'],[6,22,'巨蟹座'],[7,23,'狮子座'],[8,23,'处女座'],[9,23,'天秤座'],[10,24,'天蝎座'],[11,23,'射手座'],[12,22,'摩羯座']];for(let i=b.length-1;i>=0;i--){const[bm,bd,name]=b[i];if(m>bm||(m===bm&&dd>=bd))return name;}return'摩羯座';}
 const C_EMOJI={'白羊座':'♈','金牛座':'♉','双子座':'♊','巨蟹座':'♋','狮子座':'♌','处女座':'♍','天秤座':'♎','天蝎座':'♏','射手座':'♐','摩羯座':'♑','水瓶座':'♒','双鱼座':'♓'};
 
-// 60 songs
+// 600 songs
 const songs=[
   {id:'s001',title:'Twinkle Twinkle Little Star',titleZh:'小星星',source:'Oxford University Press — "Very First Reading" Series',ageRange:[0,36],tags:['lullaby','classic','soothing'],zodiacAffinity:['兔','羊','猪'],lyrics:'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!',duration:95,neteaseId:2085770188},
   {id:'s002',title:'The Wheels on the Bus',titleZh:'公交车上的轮子',source:'Harvard Center on the Developing Child — "Early Rhythm & Movement"',ageRange:[6,36],tags:['action','movement','rhythm'],zodiacAffinity:['猴','虎','狗'],lyrics:'The wheels on the bus go round and round,\nRound and round, round and round.\nThe wheels on the bus go round and round,\nAll through the town!\nThe wipers on the bus go swish, swish, swish...\nThe horn on the bus goes beep, beep, beep...\nThe people on the bus go up and down...',duration:120,neteaseId:2678702021},
@@ -418,7 +422,547 @@ const songs=[
   {id:'s057',title:'Round and Round the Garden',titleZh:'绕着花园转',source:"Montessori Infant-Toddler — \"Touch & Bonding Fingerplays\"",ageRange:[0,18],tags:['fingerplay','touch','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Round and round the garden,\nLike a teddy bear.\nOne step, two step,\nTickle you under there!',duration:30,neteaseId:1311209993},
   {id:'s058',title:'Pease Porridge Hot',titleZh:'热豆粥',source:"Oxford University Press — \"Food Rhymes Collection\"",ageRange:[6,30],tags:['food','rhyme','classic'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Pease porridge hot, pease porridge cold,\nPease porridge in the pot, nine days old.\nSome like it hot, some like it cold,\nSome like it in the pot, nine days old.',duration:40,neteaseId:529443852},
   {id:'s059',title:'Two Little Dickie Birds',titleZh:'两只小鸟',source:"Montessori Infant-Toddler — \"Fingerplay & Animal Songs\"",ageRange:[0,24],tags:['fingerplay','animals','rhyme'],zodiacAffinity:['鸡','兔','猴'],lyrics:'Two little dickie birds sitting on a wall,\nOne named Peter, one named Paul.\nFly away Peter! Fly away Paul!\nCome back Peter! Come back Paul!',duration:35,neteaseId:1325305846},
-  {id:'s060',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865}
+  {id:'s060',title:'Cobbler Cobbler Mend My Shoe',titleZh:'鞋匠鞋匠补我鞋',source:"Cambridge Community & Role Play — \"Occupation Songs\"",ageRange:[6,30],tags:['community','rhyme','classic'],zodiacAffinity:['牛','马','猪'],lyrics:'Cobbler, cobbler, mend my shoe,\nGet it done by half past two.\nHalf past two is much too late,\nGet it done by half past eight.',duration:35,neteaseId:556968865},
+  {id:'s061',title:'Little Boy Blue',titleZh:'小蓝男孩',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[6, 36],tags:['rhyme','classic','story'],zodiacAffinity:['羊','牛','猪'],lyrics:'Little Boy Blue, come blow your horn,\nThe sheep\'s in the meadow, the cow\'s in the corn.\nWhere is the boy who looks after the sheep?\nHe\'s under the haystack, fast asleep.',duration:45,neteaseId:0},
+  {id:'s062',title:'Georgie Porgie',titleZh:'乔治波吉',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6, 36],tags:['rhyme','story','classic'],zodiacAffinity:['鼠','蛇','猴'],lyrics:'Georgie Porgie, pudding and pie,\nKissed the girls and made them cry.\nWhen the boys came out to play,\nGeorgie Porgie ran away.',duration:35,neteaseId:0},
+  {id:'s063',title:'Little Jack Horner Extended',titleZh:'小杰克霍纳加长版',source:'Oxford World Classics — "Traditional English Rhymes"',ageRange:[8, 36],tags:['story','food','rhyme'],zodiacAffinity:['鼠','猪','牛'],lyrics:'Little Jack Horner sat in the corner,\nEating a Christmas pie.\nHe put in his thumb and pulled out a plum,\nAnd said, What a good boy am I!',duration:55,neteaseId:0},
+  {id:'s064',title:'Wee Willie Winkie',titleZh:'小威利温基',source:'Cambridge Early Years — "Bedtime Rhymes"',ageRange:[0, 30],tags:['lullaby','bedtime','rhyme'],zodiacAffinity:['兔','猪','羊'],lyrics:'Wee Willie Winkie runs through the town,\nUpstairs and downstairs in his nightgown.\nRapping at the window, crying through the lock,\nAre the children all in bed, for now it\'s eight o\'clock?',duration:42,neteaseId:0},
+  {id:'s065',title:'Star Light Star Bright',titleZh:'星光星光亮晶晶',source:'Harvard Sleep Medicine — "Bedtime Wishes"',ageRange:[0, 24],tags:['lullaby','wishing','night'],zodiacAffinity:['兔','羊','龙'],lyrics:'Star light, star bright,\nFirst star I see tonight.\nI wish I may, I wish I might,\nHave the wish I wish tonight.',duration:38,neteaseId:0},
+  {id:'s066',title:'Lavender's Blue',titleZh:'薰衣草蓝',source:'Oxford University Press — "Traditional Lullabies"',ageRange:[0, 18],tags:['lullaby','gentle','love'],zodiacAffinity:['兔','羊','猪'],lyrics:'Lavender\'s blue, dilly dilly,\nLavender\'s green.\nWhen I am king, dilly dilly,\nYou shall be queen.',duration:60,neteaseId:0},
+  {id:'s067',title:'Girls and Boys Come Out to Play',titleZh:'男孩女孩出来玩',source:'Cambridge Community & Role Play — "Playground Songs"',ageRange:[8, 36],tags:['play','action','classic'],zodiacAffinity:['猴','虎','马'],lyrics:'Girls and boys, come out to play,\nThe moon doth shine as bright as day.\nLeave your supper and leave your sleep,\nAnd come with your playfellows into the street.',duration:48,neteaseId:0},
+  {id:'s068',title:'Little Robin Redbreast',titleZh:'小红胸知更鸟',source:'Stanford Early Learning — "Nature Rhymes"',ageRange:[6, 30],tags:['animals','nature','rhyme'],zodiacAffinity:['鸡','兔','羊'],lyrics:'Little Robin Redbreast sat upon a tree,\nUp went Pussycat and down went he.\nDown came Pussycat, and away Robin ran,\nSays little Robin Redbreast, Catch me if you can!',duration:40,neteaseId:0},
+  {id:'s069',title:'Curly Locks',titleZh:'卷发姑娘',source:'Oxford Treasury of Nursery Rhymes',ageRange:[6, 30],tags:['rhyme','gentle','classic'],zodiacAffinity:['兔','羊','猪'],lyrics:'Curly Locks, Curly Locks, will you be mine?\nYou shall not wash dishes nor feed the swine.\nBut sit on a cushion and sew a fine seam,\nAnd feed upon strawberries, sugar, and cream.',duration:36,neteaseId:0},
+  {id:'s070',title:'Diddle Diddle Dumpling',titleZh:'叮咚叮咚饺子',source:'Oxford University Press — "Nursery Rhyme Treasury"',ageRange:[6, 30],tags:['rhyme','bedtime','fun'],zodiacAffinity:['猪','牛','兔'],lyrics:'Diddle, diddle, dumpling, my son John,\nWent to bed with his trousers on.\nOne shoe off and one shoe on,\nDiddle, diddle, dumpling, my son John.',duration:40,neteaseId:0},
+  {id:'s071',title:'Clap Your Hands',titleZh:'拍拍手',source:'Montessori Early Childhood — "Rhythm & Coordination"',ageRange:[6, 24],tags:['action','clapping','movement'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Clap your hands, clap your hands,\nClap them just like me.\nClap your hands, clap your hands,\nClap them one, two, three!',duration:42,neteaseId:0},
+  {id:'s072',title:'Stomp Your Feet',titleZh:'跺跺脚',source:'Harvard Movement & Play Lab — "Gross Motor Songs"',ageRange:[8, 30],tags:['action','movement','body'],zodiacAffinity:['虎','马','猴'],lyrics:'Stomp your feet, stomp your feet,\nStomp them on the ground.\nStomp your feet, stomp your feet,\nMake a stomping sound!',duration:40,neteaseId:0},
+  {id:'s073',title:'Turn Around',titleZh:'转圈圈',source:'Montessori Infant-Toddler — "Body Movement Songs"',ageRange:[6, 24],tags:['action','movement','coordination'],zodiacAffinity:['猴','虎','马'],lyrics:'Turn around, turn around,\nEverybody turn around.\nTouch the ground, touch the ground,\nEverybody touch the ground.',duration:36,neteaseId:0},
+  {id:'s074',title:'Jump Up High',titleZh:'跳高高',source:'Stanford Dance & Movement Lab — "Energy Release Songs"',ageRange:[10, 36],tags:['action','jumping','energy'],zodiacAffinity:['虎','猴','马'],lyrics:'Jump up high, jump up high,\nReach and touch the sky.\nJump up high, jump up high,\nLike a butterfly!',duration:38,neteaseId:0},
+  {id:'s075',title:'Wiggle Your Fingers',titleZh:'动动手指',source:'Montessori Infant-Toddler — "Fine Motor Songs"',ageRange:[0, 24],tags:['fingerplay','fine-motor','gentle'],zodiacAffinity:['兔','鼠','猴'],lyrics:'Wiggle your fingers, wiggle your toes,\nWiggle your ears and wiggle your nose.\nWiggle your arms and wiggle your feet,\nWiggle your body to the beat!',duration:35,neteaseId:0},
+  {id:'s076',title:'Marching Song',titleZh:'行军歌',source:'Cambridge Music & Movement — "Marching & Rhythm"',ageRange:[10, 36],tags:['marching','rhythm','action'],zodiacAffinity:['马','虎','狗'],lyrics:'March, march, march around,\nLift your knees up off the ground.\nMarch, march, march in place,\nKeep a steady marching pace!',duration:46,neteaseId:0},
+  {id:'s077',title:'Freeze Dance',titleZh:'冻结舞',source:'Harvard Movement & Play Lab — "Self-Regulation Games"',ageRange:[10, 36],tags:['dance','freeze','self-control'],zodiacAffinity:['猴','虎','马'],lyrics:'Dance around, dance around,\nMove your body to the sound.\nWhen the music stops, you freeze!\nHold still like a statue, please!',duration:52,neteaseId:0},
+  {id:'s078',title:'Tip Toe Song',titleZh:'踮脚尖歌',source:'Montessori International — "Body Awareness"',ageRange:[8, 30],tags:['movement','quiet','balance'],zodiacAffinity:['兔','猴','鼠'],lyrics:'Tip toe, tip toe, quietly we go,\nTip toe, tip toe, moving very slow.\nTip toe, tip toe, don\'t make a sound,\nTip toe, tip toe, walking round and round.',duration:38,neteaseId:0},
+  {id:'s079',title:'Shake Your Body',titleZh:'摇摇身体',source:'Stanford Dance Lab — "Body Percussion"',ageRange:[6, 30],tags:['body','percussion','action'],zodiacAffinity:['猴','虎','鸡'],lyrics:'Shake, shake, shake your body,\nShake it to and fro.\nShake, shake, shake your body,\nLet the rhythm flow!',duration:44,neteaseId:0},
+  {id:'s080',title:'Follow the Leader',titleZh:'跟着领头人',source:'Harvard Social-Emotional Learning — "Cooperation Games"',ageRange:[12, 36],tags:['social','movement','follow'],zodiacAffinity:['狗','马','猴'],lyrics:'Follow the leader, do what I do,\nClap your hands and tap your shoe.\nFollow the leader, one by one,\nWalking, hopping — this is fun!',duration:50,neteaseId:0},
+  {id:'s081',title:'Little Bunny Foo Foo',titleZh:'小兔子福福',source:'Cambridge Story Songs — "Moral Tales"',ageRange:[10, 36],tags:['animals','story','moral'],zodiacAffinity:['兔','鼠','猴'],lyrics:'Little Bunny Foo Foo, hopping through the forest,\nScooping up the field mice and bopping them on the head.\nDown came the good fairy, and she said:\nLittle Bunny Foo Foo, I don\'t want to see you\nScooping up the field mice and bopping them on the head!',duration:65,neteaseId:0},
+  {id:'s082',title:'Frog Song',titleZh:'青蛙歌',source:'Montessori Nature Studies — "Pond Life Songs"',ageRange:[6, 30],tags:['animals','nature','phonics'],zodiacAffinity:['蛇','鼠','龙'],lyrics:'Little green frog, sitting on a log,\nRibbit, ribbit, ribbit goes the frog.\nJump in the water, splash about,\nRibbit, ribbit, ribbit — then hop out!',duration:38,neteaseId:0},
+  {id:'s083',title:'Butterfly Song',titleZh:'蝴蝶歌',source:'Stanford Nature Lab — "Garden Songs"',ageRange:[6, 30],tags:['animals','nature','gentle'],zodiacAffinity:['兔','龙','羊'],lyrics:'Flutter, flutter, butterfly,\nFloating in the summer sky.\nPretty wings of orange and blue,\nFlutter, flutter — just like you!',duration:42,neteaseId:0},
+  {id:'s084',title:'Ladybug Song',titleZh:'瓢虫歌',source:'Oxford Nature Rhymes — "Garden Creatures"',ageRange:[6, 28],tags:['animals','nature','counting'],zodiacAffinity:['鼠','兔','鸡'],lyrics:'Ladybug, ladybug, fly away home,\nYour house is on fire and your children are gone.\nAll except one, and her name is Ann,\nShe crept under the frying pan.',duration:36,neteaseId:0},
+  {id:'s085',title:'Elephant Song',titleZh:'大象歌',source:'Harvard Animal Studies — "Safari Songs"',ageRange:[8, 36],tags:['animals','movement','vocabulary'],zodiacAffinity:['虎','马','牛'],lyrics:'One elephant went out to play,\nUpon a spider\'s web one day.\nHe found it such enormous fun,\nHe called for another elephant to come!',duration:48,neteaseId:0},
+  {id:'s086',title:'Goldfish Song',titleZh:'金鱼歌',source:'Montessori Classroom Pets — "Aquarium Songs"',ageRange:[6, 30],tags:['animals','quiet','vocabulary'],zodiacAffinity:['鱼','龙','鼠'],lyrics:'I have a little goldfish, swimming in a bowl,\nSwimming round and round and round, bless his little soul.\nHe doesn\'t make a sound at all, he just goes round and round,\nMy little goldfish swimming without a single sound.',duration:38,neteaseId:0},
+  {id:'s087',title:'Squirrel Nutkin',titleZh:'松鼠纳特金',source:'Cambridge Woodland Studies — "Forest Animal Songs"',ageRange:[8, 36],tags:['animals','nature','story'],zodiacAffinity:['鼠','猴','兔'],lyrics:'Squirrel Nutkin, brown and small,\ngathering nuts before the fall.\nUp the tree and down again,\nScurrying in the autumn rain.',duration:45,neteaseId:0},
+  {id:'s088',title:'Bunny Hop',titleZh:'兔子跳',source:'Montessori Movement — "Animal Action Songs"',ageRange:[6, 28],tags:['animals','action','hopping'],zodiacAffinity:['兔','猴','虎'],lyrics:'Hop like a bunny, hop, hop, hop.\nHop like a bunny, don\'t you stop.\nFlop your ears and wiggle your nose,\nHop like a bunny on your tippy-toes!',duration:40,neteaseId:0},
+  {id:'s089',title:'Kitty Cat Song',titleZh:'小猫咪歌',source:'Stanford Pet Studies — "Domestic Animal Songs"',ageRange:[6, 30],tags:['animals','pets','gentle'],zodiacAffinity:['兔','羊','猪'],lyrics:'Soft kitty, warm kitty, little ball of fur.\nHappy kitty, sleepy kitty, purr, purr, purr.\nKitty cat, kitty cat, drinking all the milk.\nKitty cat, kitty cat, soft as silk.',duration:38,neteaseId:0},
+  {id:'s090',title:'Penguin Song',titleZh:'企鹅歌',source:'Oxford Polar Studies — "Arctic Animal Songs"',ageRange:[8, 36],tags:['animals','movement','fun'],zodiacAffinity:['鸡','猴','虎'],lyrics:'I know a little penguin, who waddles when he walks.\nHe has a little beak and he squawks and squawks and squawks.\nHe lives where it is snowy and the wind blows very cold,\nThis funny little penguin, so brave and bright and bold!',duration:44,neteaseId:0},
+  {id:'s091',title:'Seven Steps',titleZh:'七步歌',source:'Oxford Numicon — "Number Sequencing Songs"',ageRange:[8, 36],tags:['counting','numbers','movement'],zodiacAffinity:['鼠','猴','鸡'],lyrics:'One, two, three, four, five, six, seven.\nOne, two, three, four, five, six, seven.\nOne, two, three — one, two, three.\nFour, five, six — four, five, six.\nOne, two, three, four, five, six, seven!',duration:42,neteaseId:0},
+  {id:'s092',title:'Ten Little Fingers',titleZh:'十个小手指',source:'Montessori Early Childhood — "Body & Counting"',ageRange:[6, 24],tags:['counting','body','fingerplay'],zodiacAffinity:['鼠','兔','猴'],lyrics:'One little, two little, three little fingers.\nFour little, five little, six little fingers.\nSeven little, eight little, nine little fingers.\nTen little fingers on my hands!',duration:40,neteaseId:0},
+  {id:'s093',title:'Eight Little Planets',titleZh:'八颗小行星',source:'Harvard STEM Early — "Space & Counting"',ageRange:[12, 36],tags:['space','counting','science'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Eight little planets orbiting the sun.\nMercury, Venus, Earth is number one!\nMars and Jupiter, Saturn with its rings.\nUranus and Neptune — these are all the things!',duration:52,neteaseId:0},
+  {id:'s094',title:'Days of the Week',titleZh:'星期歌',source:'Oxford Early Literacy — "Calendar Songs"',ageRange:[10, 36],tags:['calendar','days','routine'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Sunday, Monday, Tuesday too.\nWednesday, Thursday, Friday — woo!\nSaturday\'s the day for play.\nThese are the seven days, hooray!',duration:48,neteaseId:0},
+  {id:'s095',title:'Months of the Year',titleZh:'月份歌',source:'Cambridge Time Studies — "Calendar Learning"',ageRange:[12, 36],tags:['calendar','months','vocabulary'],zodiacAffinity:['龙','鸡','鼠'],lyrics:'January, February, March and April too.\nMay, June, July, August — more than just a few.\nSeptember, October, November\'s nearly done.\nDecember is the last one, twelve months — everyone!',duration:55,neteaseId:0},
+  {id:'s096',title:'Color Song',titleZh:'颜色歌',source:'Stanford Art & Learning — "Color Recognition"',ageRange:[8, 36],tags:['colors','vocabulary','visual'],zodiacAffinity:['龙','兔','鸡'],lyrics:'Red and orange, yellow and green,\nBlue and purple, the prettiest colors seen.\nRed like an apple, blue like the sky,\nYellow like the sun way up high!',duration:46,neteaseId:0},
+  {id:'s097',title:'Shapes All Around',titleZh:'形状无处不在',source:'Montessori Sensorial — "Shape Recognition"',ageRange:[10, 36],tags:['shapes','vocabulary','observation'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Circle like the sun so round,\nSquare like blocks upon the ground.\nTriangle like pizza pie,\nRectangle like the door so high!',duration:48,neteaseId:0},
+  {id:'s098',title:'Opposites Song',titleZh:'反义词歌',source:'Harvard Language Lab — "Concept Development"',ageRange:[12, 36],tags:['vocabulary','concepts','opposites'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Up and down, big and small,\nShort and long, and short and tall.\nHot and cold, fast and slow,\nYes and no — come on, let\'s go!',duration:52,neteaseId:0},
+  {id:'s099',title:'Animal Sounds',titleZh:'动物叫声歌',source:'Cambridge Phonics — "Animal Sound Recognition"',ageRange:[6, 30],tags:['animals','phonics','vocabulary'],zodiacAffinity:['牛','鸡','狗'],lyrics:'The cow says moo, the sheep says baa,\nThe dog says woof heard near and far.\nThe cat says meow, the duck says quack,\nThe pig says oink — and that\'s a fact!',duration:50,neteaseId:0},
+  {id:'s100',title:'Body Parts Song',titleZh:'身体部位歌',source:'Montessori Body Awareness — "Parts of the Body"',ageRange:[6, 30],tags:['body','vocabulary','action'],zodiacAffinity:['猴','虎','鸡'],lyrics:'I have two eyes to see with,\nI have two ears to hear.\nI have one nose to smell with,\nAnd one mouth to cheer!\nI have two hands to clap with,\nI have two feet to run.\nI have one heart to love with,\nLearning is so fun!',duration:52,neteaseId:0},
+  {id:'s101',title:'What a Wonderful World',titleZh:'多么美好的世界',source:'Harvard Nature Studies — "Environmental Awareness"',ageRange:[6, 36],tags:['nature','appreciation','beauty'],zodiacAffinity:['龙','兔','羊'],lyrics:'I see trees of green, red roses too.\nI see them bloom for me and you.\nAnd I think to myself,\nWhat a wonderful world.',duration:72,neteaseId:0},
+  {id:'s102',title:'The Wind Song',titleZh:'风之歌',source:'Yale Weather Studies — "Natural Elements"',ageRange:[6, 36],tags:['weather','nature','gentle'],zodiacAffinity:['龙','兔','羊'],lyrics:'I can hear the wind blow, wind blow, wind blow.\nI can hear the wind blow, soft and low.\nIt rustles through the leaves so free,\nThe wind is whispering to me.',duration:42,neteaseId:0},
+  {id:'s103',title:'Clouds in the Sky',titleZh:'天空中的云',source:'Montessori Nature Studies — "Sky Observation"',ageRange:[6, 36],tags:['sky','imagination','nature'],zodiacAffinity:['龙','兔','羊'],lyrics:'White sheep, white sheep, up in the sky,\nDrifting so gently, passing by.\nSometimes a rabbit, sometimes a bear,\nI see all kinds of pictures there!',duration:42,neteaseId:0},
+  {id:'s104',title:'Pitter Patter Raindrops',titleZh:'滴滴答答雨点',source:'Oxford Weather Rhymes — "Rain Songs"',ageRange:[6, 30],tags:['rain','weather','phonics'],zodiacAffinity:['龙','鼠','鱼'],lyrics:'Pitter patter, pitter patter,\nRaindrops on the ground.\nPitter patter, pitter patter,\nA gentle, soothing sound.',duration:38,neteaseId:0},
+  {id:'s105',title:'Here Comes the Sun',titleZh:'太阳出来了',source:'Harvard Wellness — "Mood & Weather Songs"',ageRange:[0, 36],tags:['sun','happiness','nature'],zodiacAffinity:['龙','兔','羊'],lyrics:'Little darling, it\'s been a long cold lonely winter.\nLittle darling, it feels like years since it\'s been here.\nHere comes the sun, doo doo doo doo.\nHere comes the sun, and I say — it\'s all right.',duration:65,neteaseId:0},
+  {id:'s106',title:'Garden Song',titleZh:'花园歌',source:'Montessori Botany — "Gardening with Children"',ageRange:[10, 36],tags:['garden','plants','growth'],zodiacAffinity:['牛','兔','龙'],lyrics:'Inch by inch, row by row,\nGonna make this garden grow.\nAll it takes is a rake and a hoe,\nAnd a piece of fertile ground.',duration:54,neteaseId:0},
+  {id:'s107',title:'Snowflake Song',titleZh:'雪花歌',source:'Oxford Winter Studies — "Snow & Ice"',ageRange:[6, 36],tags:['winter','snow','gentle'],zodiacAffinity:['龙','兔','猪'],lyrics:'Snowflakes, snowflakes, falling down,\nSoftly landing on the town.\nEach one different, small and white,\nMaking everything so bright!',duration:44,neteaseId:0},
+  {id:'s108',title:'Autumn Leaves',titleZh:'秋天的叶子',source:'Stanford Nature Lab — "Season Change Songs"',ageRange:[8, 36],tags:['autumn','seasons','colors'],zodiacAffinity:['龙','兔','羊'],lyrics:'Autumn leaves are falling down, falling down, falling down.\nRed and yellow, orange and brown,\nAutumn leaves are falling down!',duration:48,neteaseId:0},
+  {id:'s109',title:'Flower Song',titleZh:'花儿歌',source:'Montessori Botany — "Flower Appreciation"',ageRange:[6, 30],tags:['flowers','nature','colors'],zodiacAffinity:['兔','龙','羊'],lyrics:'Pretty little flowers, growing in the sun.\nOpening their petals, one by one by one.\nWater and sunshine, help them grow so tall.\nPretty little flowers — I love them all!',duration:38,neteaseId:0},
+  {id:'s110',title:'Ocean Waves',titleZh:'海浪歌',source:'Harvard Ocean Studies — "Sea & Beach Songs"',ageRange:[6, 36],tags:['ocean','water','gentle'],zodiacAffinity:['鱼','龙','兔'],lyrics:'The ocean waves go in and out, in and out, in and out.\nThe ocean waves go in and out, all day long.\nThe seagulls fly up in the sky...\nThe little fish swim side to side...',duration:46,neteaseId:0},
+  {id:'s111',title:'Please and Thank You',titleZh:'请和谢谢',source:'Harvard Social-Emotional Learning — "Manners Songs"',ageRange:[6, 36],tags:['manners','social','vocabulary'],zodiacAffinity:['狗','兔','羊'],lyrics:'Please and thank you, words we say,\nTo be kind every day.\nPlease and thank you, you will see,\nMake the world a friendlier place to be!',duration:40,neteaseId:0},
+  {id:'s112',title:'Sharing Song',titleZh:'分享歌',source:'Cambridge SEL — "Cooperation & Sharing"',ageRange:[8, 36],tags:['sharing','social','friendship'],zodiacAffinity:['狗','兔','羊'],lyrics:'Sharing, sharing, let\'s all share,\nShow your friends how much you care.\nTake a turn and give one too,\nSharing is the thing to do!',duration:44,neteaseId:0},
+  {id:'s113',title:'Feelings Song',titleZh:'情感歌',source:'Harvard Emotional Intelligence — "Feelings Recognition"',ageRange:[8, 36],tags:['emotions','vocabulary','social'],zodiacAffinity:['兔','狗','羊'],lyrics:'Sometimes I\'m happy, sometimes I\'m sad.\nSometimes I\'m angry, sometimes I\'m glad.\nAll my feelings are okay to feel,\nTalking about them helps me heal.',duration:50,neteaseId:0},
+  {id:'s114',title:'Friends Forever',titleZh:'永远的朋友',source:'Stanford Friendship Studies — "Peer Bonding"',ageRange:[10, 36],tags:['friendship','social','love'],zodiacAffinity:['狗','兔','羊'],lyrics:'Friends forever, you and me,\nPlaying together happily.\nThrough the sunshine, through the rain,\nFriends forever we\'ll remain!',duration:46,neteaseId:0},
+  {id:'s115',title:'Kindness Song',titleZh:'善良歌',source:'Harvard SEL — "Prosocial Behavior"',ageRange:[6, 36],tags:['kindness','social','values'],zodiacAffinity:['狗','兔','羊'],lyrics:'Be kind to everyone you meet,\nWith a smile that\'s oh so sweet.\nA little kindness goes a long, long way,\nMaking someone\'s brighter day!',duration:42,neteaseId:0},
+  {id:'s116',title:'Taking Turns',titleZh:'轮流来',source:'Montessori Practical Life — "Grace & Courtesy"',ageRange:[8, 36],tags:['patience','social','cooperation'],zodiacAffinity:['狗','牛','兔'],lyrics:'Taking turns, waiting patiently,\nOne for you and one for me.\nWhen we wait and take our turn,\nCooperation we all learn!',duration:40,neteaseId:0},
+  {id:'s117',title:'I Am Special',titleZh:'我很特别',source:'Harvard Identity Studies — "Self-Esteem Building"',ageRange:[6, 36],tags:['identity','self-esteem','empowerment'],zodiacAffinity:['兔','龙','猴'],lyrics:'I am special, yes I am,\nThere\'s no one else like me.\nI am special, yes I am,\nI\'m the best that I can be!',duration:44,neteaseId:0},
+  {id:'s118',title:'Happy to Be Me',titleZh:'做自己很开心',source:'Stanford Self-Concept Lab — "Positive Identity"',ageRange:[8, 36],tags:['self-esteem','identity','happiness'],zodiacAffinity:['兔','龙','羊'],lyrics:'I like my eyes, I like my nose,\nI like my fingers and my toes.\nI\'m happy to be me, you see,\nThere\'s no one else I\'d rather be!',duration:42,neteaseId:0},
+  {id:'s119',title:'Sorry Song',titleZh:'对不起歌',source:'Cambridge SEL — "Empathy Development"',ageRange:[8, 36],tags:['apology','empathy','social'],zodiacAffinity:['狗','兔','羊'],lyrics:'When I make a mistake,\nA simple sorry is all it takes.\nSorry means I understand,\nAnd want to lend a helping hand.',duration:38,neteaseId:0},
+  {id:'s120',title:'Good Morning Song',titleZh:'早安歌',source:'Montessori Daily Routine — "Morning Circle"',ageRange:[6, 36],tags:['morning','routine','greeting'],zodiacAffinity:['鸡','牛','兔'],lyrics:'Good morning, good morning, how do you do?\nGood morning, good morning, I\'m happy to see you!\nThe sun is up, the day is new,\nGood morning, good morning to you!',duration:42,neteaseId:0},
+  {id:'s121',title:'Fruits and Veggies',titleZh:'水果和蔬菜',source:'Harvard Nutrition — "Healthy Eating Songs"',ageRange:[8, 36],tags:['food','nutrition','vocabulary'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Apples, bananas, oranges too,\nCarrots, broccoli — good for you!\nFruits and veggies every day,\nHelp us grow in a healthy way.',duration:48,neteaseId:0},
+  {id:'s122',title:'Brush Your Teeth',titleZh:'刷牙歌',source:'Harvard Dental Health — "Hygiene Routine Songs"',ageRange:[10, 36],tags:['hygiene','routine','health'],zodiacAffinity:['鸡','牛','猪'],lyrics:'Brush your teeth, up and down,\nRound and round and round.\nBrush them morning, brush them night,\nKeep them clean and white and bright!',duration:44,neteaseId:0},
+  {id:'s123',title:'Wash Your Hands',titleZh:'洗手歌',source:'WHO Early Childhood — "Handwashing Songs"',ageRange:[6, 36],tags:['hygiene','health','routine'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Wash your hands with soap and water,\nScrub them front and back.\nRinse them off and dry them too,\nThat\'s the handwash knack!',duration:50,neteaseId:0},
+  {id:'s124',title:'Clean Up Song',titleZh:'收拾歌',source:'Montessori Practical Life — "Tidying Up"',ageRange:[8, 36],tags:['cleaning','responsibility','routine'],zodiacAffinity:['牛','鸡','猪'],lyrics:'Clean up, clean up, everybody everywhere.\nClean up, clean up, everybody do your share.\nPut the toys back on the shelf,\nEveryone can help themselves!',duration:42,neteaseId:0},
+  {id:'s125',title:'Getting Dressed',titleZh:'穿衣服',source:'Montessori Self-Care — "Dressing Skills"',ageRange:[10, 36],tags:['routine','self-care','independence'],zodiacAffinity:['鸡','猴','牛'],lyrics:'First my shirt goes over my head,\nThen my pants — one leg, then the other instead.\nSocks on my feet and shoes tied tight,\nGetting dressed myself feels just right!',duration:44,neteaseId:0},
+  {id:'s126',title:'Mealtime Song',titleZh:'吃饭歌',source:'Stanford Family Studies — "Mealtime Routines"',ageRange:[6, 36],tags:['food','routine','family'],zodiacAffinity:['猪','牛','鸡'],lyrics:'Time to eat, come gather round,\nThe best food can be found.\nFamily, food, and fun for all,\nMealtime is the best time of all!',duration:40,neteaseId:0},
+  {id:'s127',title:'Bath Time',titleZh:'洗澡歌',source:'Harvard Infant Care — "Bath Routine Songs"',ageRange:[0, 24],tags:['bath','routine','water'],zodiacAffinity:['鱼','猪','兔'],lyrics:'Splish, splash, in the bath,\nMaking bubbles makes me laugh.\nWash my tummy, wash my toes,\nWash my ears and wash my nose!',duration:38,neteaseId:0},
+  {id:'s128',title:'Pajama Time',titleZh:'睡衣时间',source:'Harvard Sleep Medicine — "Bedtime Transition"',ageRange:[0, 24],tags:['bedtime','routine','transition'],zodiacAffinity:['兔','猪','羊'],lyrics:'Pajama time, pajama time,\nWhen the clock begins to chime.\nPut on cozy pjs now,\nBedtime\'s coming, I\'ll show you how!',duration:36,neteaseId:0},
+  {id:'s129',title:'Goodnight Song',titleZh:'晚安歌',source:'Oxford Sleep Studies — "Bedtime Ritual"',ageRange:[0, 18],tags:['lullaby','bedtime','night'],zodiacAffinity:['兔','猪','羊'],lyrics:'Now the day is over,\nThe moon is in the sky.\nIt\'s time to rest your sleepy head,\nAnd close your little eyes.\nGoodnight, goodnight, sweet dreams tonight.',duration:50,neteaseId:0},
+  {id:'s130',title:'Birthday Song',titleZh:'生日歌',source:'Cambridge Celebrations — "Special Occasion Songs"',ageRange:[6, 36],tags:['birthday','celebration','joy'],zodiacAffinity:['兔','羊','龙'],lyrics:'Happy, happy birthday, we sing to you today.\nHappy, happy birthday, it\'s your special day!\nCandles on the cake so bright,\nMake a wish with all your might!',duration:36,neteaseId:0},
+  {id:'s131',title:'Here We Go Round the Mulberry Bush',titleZh:'绕着桑树丛走',source:'Oxford Traditional Games — "Circle Songs"',ageRange:[8, 36],tags:['circle-game','routine','seasons'],zodiacAffinity:['猴','马','牛'],lyrics:'Here we go round the mulberry bush,\nThe mulberry bush, the mulberry bush.\nHere we go round the mulberry bush,\nOn a cold and frosty morning.\nThis is the way we wash our face...\nThis is the way we comb our hair...',duration:58,neteaseId:0},
+  {id:'s132',title:'Oranges and Lemons',titleZh:'橙子和柠檬',source:'Oxford Cultural Heritage — "London Street Rhymes"',ageRange:[8, 36],tags:['rhyme','history','classic'],zodiacAffinity:['龙','鼠','猴'],lyrics:'Oranges and lemons, say the bells of St. Clement\'s.\nYou owe me five farthings, say the bells of St. Martin\'s.\nWhen will you pay me? say the bells of Old Bailey.\nWhen I grow rich, say the bells of Shoreditch.',duration:55,neteaseId:0},
+  {id:'s133',title:'Four Seasons',titleZh:'四季歌',source:'Montessori Nature — "Season Awareness"',ageRange:[8, 36],tags:['seasons','nature','cycle'],zodiacAffinity:['龙','兔','牛'],lyrics:'Spring brings flowers, summer brings sun,\nAutumn brings harvest, winter brings fun.\nRound and round the seasons go,\nChanging as we watch and grow!',duration:52,neteaseId:0},
+  {id:'s134',title:'Little Seed',titleZh:'小种子',source:'Montessori Botany — "Plant Life Cycle"',ageRange:[8, 36],tags:['plants','growth','nature'],zodiacAffinity:['牛','兔','龙'],lyrics:'Little seed in the ground,\nSleeping quietly without a sound.\nSunshine and rain help you grow,\nPush up through the soil so slow!',duration:44,neteaseId:0},
+  {id:'s135',title:'Moon Song',titleZh:'月亮歌',source:'Harvard Space Studies — "Moon & Stars"',ageRange:[0, 30],tags:['lullaby','moon','night'],zodiacAffinity:['兔','龙','羊'],lyrics:'I see the moon, the moon sees me,\nShining through the old oak tree.\nPlease let the light that shines on me,\nShine on the ones I love, you see.',duration:46,neteaseId:0},
+  {id:'s136',title:'Counting Stars',titleZh:'数星星',source:'Harvard Early Math — "Night Sky Counting"',ageRange:[6, 30],tags:['counting','stars','night'],zodiacAffinity:['龙','鼠','兔'],lyrics:'One little star, two little stars,\nThree little stars up high.\nCounting stars in the twilight sky,\nBeneath the moon\'s soft sigh.',duration:42,neteaseId:0},
+  {id:'s137',title:'Winter Wonderland',titleZh:'冬日仙境',source:'Oxford Winter Traditions — "Seasonal Joy"',ageRange:[8, 36],tags:['winter','snow','holiday'],zodiacAffinity:['龙','猪','兔'],lyrics:'Sleigh bells ring, are you listening?\nIn the lane, snow is glistening.\nA beautiful sight, we\'re happy tonight,\nWalking in a winter wonderland!',duration:62,neteaseId:0},
+  {id:'s138',title:'Summer Holiday',titleZh:'夏日假期',source:'Cambridge Seasonal Studies — "Summer Fun"',ageRange:[8, 36],tags:['summer','holiday','fun'],zodiacAffinity:['龙','马','虎'],lyrics:'No more pencils, no more books,\nNo more teacher\'s dirty looks.\nSummer time is here at last,\nThe school days are in the past!',duration:50,neteaseId:0},
+  {id:'s139',title:'Spring Has Sprung',titleZh:'春天来了',source:'Stanford Nature Lab — "Spring Awakening"',ageRange:[6, 36],tags:['spring','nature','growth'],zodiacAffinity:['龙','兔','羊'],lyrics:'Spring has sprung, the grass is riz,\nI wonder where the birdies is.\nThe bird is on the wing, they say,\nBut that\'s absurd — the wing is on the bird today!',duration:46,neteaseId:0},
+  {id:'s140',title:'Harvest Time',titleZh:'丰收时刻',source:'Cambridge Agriculture Studies — "Farm Harvest"',ageRange:[8, 36],tags:['harvest','farming','food'],zodiacAffinity:['牛','猪','鸡'],lyrics:'The farmer gathers wheat and corn,\nThe ripest harvest ever born.\nPumpkins, apples, grain so gold,\nHarvest time is joy untold!',duration:48,neteaseId:0},
+  {id:'s141',title:'Cha Cha Slide',titleZh:'恰恰滑步',source:'Harvard Movement Lab — "Direction Following"',ageRange:[10, 36],tags:['dance','direction','fun'],zodiacAffinity:['猴','虎','马'],lyrics:'Everybody clap your hands!\nClap clap clap clap clap!\nSlide to the left, slide to the right,\nCrisscross, crisscross — cha cha real smooth!',duration:62,neteaseId:0},
+  {id:'s142',title:'Mexican Hat Dance',titleZh:'墨西哥帽舞',source:'Cambridge World Music — "Cultural Dance"',ageRange:[12, 36],tags:['dance','culture','rhythm'],zodiacAffinity:['马','虎','猴'],lyrics:'Clap and stomp and turn around,\nKeep the rhythm, hear the sound!\nAround the hat we dance with glee,\nA Mexican tradition — ole!',duration:56,neteaseId:0},
+  {id:'s143',title:'Irish Washerwoman',titleZh:'爱尔兰洗衣妇',source:'Oxford World Music — "Celtic Folk Tunes"',ageRange:[12, 36],tags:['instrumental','folk','culture'],zodiacAffinity:['马','猴','虎'],lyrics:'Listen to the fiddle play,\nDancing through a jolly day.\nQuick and lively, light and free,\nAn Irish tune of history!',duration:58,neteaseId:0},
+  {id:'s144',title:'Greensleeves',titleZh:'绿袖子',source:'Oxford Heritage Music — "Traditional English Melody"',ageRange:[0, 36],tags:['lullaby','classical','gentle'],zodiacAffinity:['龙','兔','羊'],lyrics:'Alas, my love, you do me wrong,\nTo cast me off discourteously.\nFor I have loved you well and long,\nDelighting in your company.',duration:72,neteaseId:0},
+  {id:'s145',title:'Scarborough Fair',titleZh:'斯卡伯勒集市',source:'Cambridge Folk — "English Folk Ballads"',ageRange:[12, 36],tags:['folk','ballad','heritage'],zodiacAffinity:['龙','兔','羊'],lyrics:'Are you going to Scarborough Fair?\nParsley, sage, rosemary and thyme.\nRemember me to one who lives there,\nShe once was a true love of mine.',duration:68,neteaseId:0},
+  {id:'s146',title:'Simple Gifts',titleZh:'简单的礼物',source:'Harvard American Folk — "Shaker Hymn"',ageRange:[8, 36],tags:['folk','gratitude','simple'],zodiacAffinity:['牛','兔','羊'],lyrics:'Tis the gift to be simple, tis the gift to be free,\nTis the gift to come down where we ought to be.\nAnd when we find ourselves in the place just right,\nTwill be in the valley of love and delight.',duration:52,neteaseId:0},
+  {id:'s147',title:'Morning Has Broken',titleZh:'破晓',source:'Oxford Hymn Tradition — "Morning Gratitude"',ageRange:[6, 36],tags:['morning','nature','gratitude'],zodiacAffinity:['鸡','龙','兔'],lyrics:'Morning has broken like the first morning,\nBlackbird has spoken like the first bird.\nPraise for the singing, praise for the morning,\nPraise for them springing fresh from the Word.',duration:64,neteaseId:0},
+  {id:'s148',title:'Edelweiss',titleZh:'雪绒花',source:'Cambridge Musical Traditions — "Alpine Folk"',ageRange:[6, 36],tags:['folk','flower','love'],zodiacAffinity:['龙','兔','羊'],lyrics:'Edelweiss, Edelweiss,\nEvery morning you greet me.\nSmall and white, clean and bright,\nYou look happy to meet me.',duration:62,neteaseId:0},
+  {id:'s149',title:'Danny Boy',titleZh:'丹尼男孩',source:'Oxford Irish Heritage — "Celtic Ballad"',ageRange:[0, 36],tags:['lullaby','ballad','celtic'],zodiacAffinity:['龙','兔','羊'],lyrics:'Oh Danny Boy, the pipes, the pipes are calling,\nFrom glen to glen and down the mountain side.\nThe summer\'s gone and all the roses falling,\nIt\'s you, it\'s you must go and I must bide.',duration:72,neteaseId:0},
+  {id:'s150',title:'Amazing Grace',titleZh:'奇异恩典',source:'Harvard Spiritual Heritage — "Inspirational"',ageRange:[0, 36],tags:['spiritual','peace','classic'],zodiacAffinity:['龙','兔','羊'],lyrics:'Amazing grace, how sweet the sound,\nThat saved a wretch like me.\nI once was lost, but now I\'m found,\nWas blind but now I see.',duration:66,neteaseId:0},
+  {id:'s151',title:'Aiken Drum',titleZh:'艾肯鼓',source:'Cambridge Nonsense — "Scottish Rhyme"',ageRange:[6, 36],tags:['nonsense','imagination','food'],zodiacAffinity:['猴','龙','鼠'],lyrics:'There was a man lived in the moon,\nIn the moon, in the moon.\nThere was a man lived in the moon,\nAnd his name was Aiken Drum.\nHis hat was made of good cream cheese...\nHis coat was made of good roast beef...',duration:48,neteaseId:0},
+  {id:'s152',title:'Michael Finnegan',titleZh:'迈克尔芬尼根',source:'Oxford Nonsense Rhymes — "Irish Comedy Song"',ageRange:[6, 36],tags:['nonsense','fun','repeat'],zodiacAffinity:['猴','鼠','虎'],lyrics:'There was an old man named Michael Finnegan,\nHe grew whiskers on his chinnegan.\nThe wind came up and blew them in again,\nPoor old Michael Finnegan — begin again!',duration:52,neteaseId:0},
+  {id:'s153',title:'John Jacob Jingleheimer Schmidt',titleZh:'约翰雅各布',source:'Harvard Nonsense Lab — "Name Play Songs"',ageRange:[8, 36],tags:['name','nonsense','echo'],zodiacAffinity:['猴','鼠','虎'],lyrics:'John Jacob Jingleheimer Schmidt,\nHis name is my name too!\nWhenever we go out,\nThe people always shout:\nThere goes John Jacob Jingleheimer Schmidt!\nDa da da da da da da!',duration:54,neteaseId:0},
+  {id:'s154',title:'Boom Chicka Boom',titleZh:'布姆奇卡布姆',source:'Harvard Rhythm Lab — "Echo Chant"',ageRange:[6, 36],tags:['echo','rhythm','fun'],zodiacAffinity:['猴','虎','鸡'],lyrics:'I said a boom chicka boom!\nI said a boom chicka boom!\nI said a boom chicka rocka\nChicka rocka chicka boom!\nOh yeah! Uh huh! One more time!',duration:44,neteaseId:0},
+  {id:'s155',title:'My Hat It Has Three Corners',titleZh:'我的帽子有三个角',source:'Cambridge Traditional — "German Folk Song"',ageRange:[8, 36],tags:['action','memory','fun'],zodiacAffinity:['猴','虎','马'],lyrics:'My hat it has three corners,\nThree corners has my hat.\nAnd had it not three corners,\nIt would not be my hat!',duration:46,neteaseId:0},
+  {id:'s156',title:'Soldier Soldier Won't You Marry Me',titleZh:'士兵士兵娶我吧',source:'Oxford Folk — "Call & Response"',ageRange:[10, 36],tags:['story','call-response','fun'],zodiacAffinity:['虎','牛','马'],lyrics:'Soldier, soldier, won\'t you marry me,\nWith your musket, fife and drum?\nOh no, sweet maid, I cannot marry you,\nFor I have no coat to put on!',duration:68,neteaseId:0},
+  {id:'s157',title:'Froggy Went A Courtin',titleZh:'青蛙去求婚',source:'Cambridge Folklore — "Animal Ballad"',ageRange:[10, 36],tags:['animals','story','ballad'],zodiacAffinity:['鱼','蛇','猴'],lyrics:'Froggy went a-courtin\' and he did ride,\nUh-huh, uh-huh.\nFroggy went a-courtin\' and he did ride,\nSword and pistol by his side, uh-huh.',duration:72,neteaseId:0},
+  {id:'s158',title:'The Bear Went Over the Mountain',titleZh:'熊翻过了山',source:'Harvard Story Songs — "Adventure Rhyme"',ageRange:[6, 30],tags:['animals','adventure','repeat'],zodiacAffinity:['虎','熊','马'],lyrics:'The bear went over the mountain,\nThe bear went over the mountain,\nThe bear went over the mountain,\nTo see what he could see!\nAnd what do you think he saw?',duration:44,neteaseId:0},
+  {id:'s159',title:'Down by the Station',titleZh:'在车站边',source:'Montessori Transport — "Vehicle Songs"',ageRange:[6, 30],tags:['transportation','animals','rhyme'],zodiacAffinity:['马','龙','猴'],lyrics:'Down by the station early in the morning,\nSee the little puffer trains all in a row.\nSee the engine driver pull the little throttle,\nPuff puff, choo choo — off we go!',duration:46,neteaseId:0},
+  {id:'s160',title:'Chick Chick Chicken',titleZh:'叽叽小鸡',source:'Cambridge Farm Songs — "Farmyard Fun"',ageRange:[6, 28],tags:['animals','farm','action'],zodiacAffinity:['鸡','牛','猴'],lyrics:'Chick, chick, chick, chick, chicken,\nLay a little egg for me.\nChick, chick, chick, chick, chicken,\nI want one for my tea!',duration:36,neteaseId:0},
+  {id:'s161',title:'Vowel Song',titleZh:'元音歌',source:'Harvard Phonics Lab — "Vowel Recognition"',ageRange:[10, 36],tags:['phonics','reading','vowels'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'A-E-I-O-U,\nThese are vowels, yes it\'s true!\nEvery word needs at least one,\nLearning vowels is so much fun!\nA says apple, E says egg,\nI says igloo, O says octopus,\nU says umbrella in the rain!',duration:52,neteaseId:0},
+  {id:'s162',title:'Tongue Twister Song',titleZh:'绕口令歌',source:'Cambridge Speech Therapy — "Articulation Play"',ageRange:[12, 36],tags:['phonics','articulation','fun'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'She sells seashells on the seashore.\nThe shells she sells are seashells, I\'m sure.\nRed lorry, yellow lorry, say it fast!\nUnique New York, New York unique — what a blast!',duration:50,neteaseId:0},
+  {id:'s163',title:'Rhyming Words',titleZh:'押韵词歌',source:'Oxford Literacy — "Rhyme Awareness"',ageRange:[8, 36],tags:['phonics','rhyme','reading'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Cat and hat, they rhyme, rhyme, rhyme.\nDog and log, they rhyme, rhyme, rhyme.\nSun and fun, they rhyme too.\nRhyming words for me and you!',duration:46,neteaseId:0},
+  {id:'s164',title:'Alphabet Sounds',titleZh:'字母音素歌',source:'Harvard Reading Lab — "Phonemic Awareness"',ageRange:[10, 36],tags:['phonics','alphabet','sounds'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'A says /a/ like apple,\nB says /b/ like ball.\nC says /k/ like cat,\nD says /d/ like doll.\nLearning letter sounds is cool,\nIt\'s the first step to reading at school!',duration:56,neteaseId:0},
+  {id:'s165',title:'Sing a Song of Sounds',titleZh:'唱一首声音的歌',source:'Stanford Language Lab — "Auditory Discrimination"',ageRange:[8, 36],tags:['phonics','auditory','sounds'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'Listen, listen, what do you hear?\nA bell that rings so loud and clear.\nListen, listen, what\'s that sound?\nBirds that chirp and dogs around!',duration:48,neteaseId:0},
+  {id:'s166',title:'The Name Game',titleZh:'名字游戏',source:'Harvard Social Language — "Name & Phoneme Play"',ageRange:[10, 36],tags:['names','phonics','social'],zodiacAffinity:['猴','鸡','鼠'],lyrics:'Katie, Katie, bo-batie,\nBanana-fana fo-fatie,\nMe-mi-mo-matie — Katie!\nLet\'s do the name game,\nWith every name, it\'s not the same!',duration:54,neteaseId:0},
+  {id:'s167',title:'Preposition Song',titleZh:'方位词歌',source:'Cambridge Language Studies — "Spatial Concepts"',ageRange:[10, 36],tags:['vocabulary','spatial','concepts'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'In and out, up and down,\nOver, under, all around.\nBehind, in front, between, beside,\nThese prepositions help us describe!',duration:50,neteaseId:0},
+  {id:'s168',title:'Hello in Many Languages',titleZh:'多语你好',source:'Harvard Global Studies — "Cultural Languages"',ageRange:[12, 36],tags:['multilingual','culture','greeting'],zodiacAffinity:['龙','鸡','猴'],lyrics:'Hello, bonjour, hola, ni hao!\nCiao, konnichiwa, namaste — wow!\nSo many ways to say hello,\nAround the world, watch friendship grow!',duration:52,neteaseId:0},
+  {id:'s169',title:'ABC Chant',titleZh:'字母律动',source:'Montessori Language — "Letter Recognition"',ageRange:[6, 30],tags:['alphabet','chant','rhythm'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'A-B-C-D, listen and repeat with me!\nE-F-G, learning letters happily!\nH-I-J-K, we do it every day!\nL-M-N-O-P, alphabet for you and me!\nQ-R-S, T-U-V, W-X-Y-Z!\nNow I know my letters — hooray for me!',duration:44,neteaseId:0},
+  {id:'s170',title:'Word Families',titleZh:'词族歌',source:'Oxford Phonics — "Word Family Patterns"',ageRange:[10, 36],tags:['phonics','spelling','patterns'],zodiacAffinity:['鸡','猴','鼠'],lyrics:'The -at family: cat, bat, hat, mat, rat, sat!\nThe -an family: can, fan, man, pan, ran, van!\nThe -op family: hop, mop, pop, top, stop, drop!\nWord families help us read — don\'t ever stop!',duration:50,neteaseId:0},
+  {id:'s171',title:'All Through the Night',titleZh:'整夜安眠',source:'Harvard Sleep Medicine — "Welsh Lullaby"',ageRange:[0, 18],tags:['lullaby','bedtime','welsh'],zodiacAffinity:['兔','猪','羊'],lyrics:'Sleep my child and peace attend thee,\nAll through the night.\nGuardian angels God will send thee,\nAll through the night.\nSoft the drowsy hours are creeping,\nHill and dale in slumber sleeping.',duration:68,neteaseId:0},
+  {id:'s172',title:'Brahms Lullaby',titleZh:'勃拉姆斯摇篮曲',source:'Oxford Classical — "World's Most Famous Lullaby"',ageRange:[0, 12],tags:['lullaby','classical','bedtime'],zodiacAffinity:['兔','猪','羊'],lyrics:'Lullaby and goodnight,\nWith roses bedight.\nWith lilies o\'erspread,\nIs baby\'s wee bed.\nLay thee down now and rest,\nMay thy slumber be blessed.',duration:72,neteaseId:0},
+  {id:'s173',title:'Golden Slumbers',titleZh:'金色梦乡',source:'Cambridge Lullaby Tradition — "Beatles Version"',ageRange:[0, 18],tags:['lullaby','classic','dreams'],zodiacAffinity:['兔','猪','羊'],lyrics:'Golden slumbers fill your eyes,\nSmiles awake you when you rise.\nSleep, pretty darling, do not cry,\nAnd I will sing a lullaby.',duration:62,neteaseId:0},
+  {id:'s174',title:'Sleep Baby Sleep',titleZh:'睡吧宝贝睡吧',source:'Oxford Nursery — "Traditional German Lullaby"',ageRange:[0, 12],tags:['lullaby','sleep','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Sleep, baby, sleep,\nThy father watches the sheep.\nThy mother shakes the dreamland tree,\nAnd from it fall sweet dreams for thee.\nSleep, baby, sleep.',duration:44,neteaseId:0},
+  {id:'s175',title:'Day Is Done',titleZh:'一天结束了',source:'Stanford Evening Rituals — "Dusk Lullaby"',ageRange:[0, 24],tags:['lullaby','dusk','nature'],zodiacAffinity:['兔','猪','羊'],lyrics:'Day is done, gone the sun,\nFrom the lake, from the hills, from the sky.\nAll is well, safely rest,\nGod is nigh.\nGo to sleep, peaceful sleep.',duration:58,neteaseId:0},
+  {id:'s176',title:'Toora Loora Loora',titleZh:'图拉鲁拉鲁拉',source:'Oxford Irish Lullabies — "Irish-American Classic"',ageRange:[0, 18],tags:['lullaby','irish','love'],zodiacAffinity:['兔','猪','羊'],lyrics:'Over in Killarney, many years ago,\nMy mother sang a song to me in tones so sweet and low.\nJust a simple little ditty in her good old Irish way,\nAnd I\'d give the world if she could sing that song to me this day.\nToora loora loora, toora loora li.',duration:66,neteaseId:0},
+  {id:'s177',title:'Bye Baby Bunting',titleZh:'再见宝贝邦廷',source:'Oxford Nursery Rhyme Treasury — "Traditional English"',ageRange:[0, 12],tags:['lullaby','traditional','gentle'],zodiacAffinity:['兔','猪','羊'],lyrics:'Bye, baby bunting,\nDaddy\'s gone a-hunting.\nGone to get a rabbit skin,\nTo wrap the baby bunting in.',duration:32,neteaseId:0},
+  {id:'s178',title:'Cradle Song',titleZh:'摇篮曲',source:'Cambridge Classical — "Schubert's Cradle Song"',ageRange:[0, 12],tags:['lullaby','classical','schubert'],zodiacAffinity:['兔','猪','羊'],lyrics:'Slumber, slumber, tender little flower,\nSlumber, slumber through the peaceful hour.\nMother sits beside thee, watching o\'er thy bed,\nAngels guard and guide thee, blessings on thy head.',duration:64,neteaseId:0},
+  {id:'s179',title:'Twilight Serenade',titleZh:'暮光小夜曲',source:'Harvard Twilight Studies — "Transition to Sleep"',ageRange:[0, 24],tags:['lullaby','twilight','serenade'],zodiacAffinity:['兔','猪','羊'],lyrics:'The sun has set, the stars now gleam,\nIt\'s time to go to sleep and dream.\nThe birds are quiet in their nest,\nIt\'s time for little ones to rest.',duration:50,neteaseId:0},
+  {id:'s180',title:'Moon River Lullaby',titleZh:'月亮河摇篮曲',source:'Harvard Film & Music — "Classic Melody"',ageRange:[0, 36],tags:['lullaby','classic','moon'],zodiacAffinity:['龙','兔','羊'],lyrics:'Moon River, wider than a mile,\nI\'m crossing you in style someday.\nOh, dream maker, you heart breaker,\nWherever you\'re going, I\'m going your way.',duration:74,neteaseId:0},
+  {id:'s181',title:'Funiculi Funicula',titleZh:'缆车之歌',source:'Oxford World Music — "Italian Folk Song"',ageRange:[8, 36],tags:['world','italian','joy'],zodiacAffinity:['龙','马','猴'],lyrics:'Some think the world is made for fun and frolic,\nAnd so do I, and so do I!\nFuniculi, funicula, funiculi, funicula!\nJoy is everywhere, funiculi, funicula!',duration:58,neteaseId:0},
+  {id:'s182',title:'Sur le Pont d'Avignon',titleZh:'在阿维尼翁桥上',source:'Cambridge World — "French Children's Song"',ageRange:[8, 36],tags:['french','dance','world'],zodiacAffinity:['猴','马','龙'],lyrics:'Sur le pont d\'Avignon,\nOn y danse, on y danse.\nSur le pont d\'Avignon,\nOn y danse tout en rond!',duration:48,neteaseId:0},
+  {id:'s183',title:'Sakura',titleZh:'樱花',source:'Harvard World Music — "Japanese Folk Song"',ageRange:[6, 36],tags:['japanese','nature','gentle'],zodiacAffinity:['龙','兔','羊'],lyrics:'Sakura, sakura, yayoi no sora wa.\nMiwatasu kagiri, kasumi ka kumo ka.\nNioi zo izuru, izaya izaya,\nMini yukan.',duration:52,neteaseId:0},
+  {id:'s184',title:'African Call and Response',titleZh:'非洲呼唤与回应',source:'Cambridge World Music — "African Drumming"',ageRange:[8, 36],tags:['african','percussion','call-response'],zodiacAffinity:['虎','马','猴'],lyrics:'Kye kye kule, kye kye kule.\nKye kye kofinsa, kye kye kofinsa.\nKofisa langa, kofisa langa.\nKaka shilanga, kaka shilanga!',duration:56,neteaseId:0},
+  {id:'s185',title:'Chinese New Year',titleZh:'中国新年歌',source:'Stanford Cultural Studies — "Lunar New Year"',ageRange:[8, 36],tags:['chinese','new-year','culture'],zodiacAffinity:['龙','鼠','猪'],lyrics:'Gong xi, gong xi, gong xi ni!\nRed lanterns hanging, what a sight to see.\nDragon dancing down the street,\nLunar New Year is so sweet!',duration:52,neteaseId:0},
+  {id:'s186',title:'Kalinka',titleZh:'卡林卡',source:'Oxford World Music — "Russian Folk Song"',ageRange:[10, 36],tags:['russian','folk','tempo-change'],zodiacAffinity:['虎','马','龙'],lyrics:'Kalinka, kalinka, kalinka moya!\nV sadu yagoda malinka, malinka moya!\nGetting faster, faster now,\nRussian dancing — take a bow!',duration:60,neteaseId:0},
+  {id:'s187',title:'Waltzing Matilda',titleZh:'跳华尔兹的马蒂尔达',source:'Cambridge Australian — "Bush Ballad"',ageRange:[10, 36],tags:['australian','ballad','story'],zodiacAffinity:['马','龙','虎'],lyrics:'Once a jolly swagman camped by a billabong,\nUnder the shade of a coolibah tree.\nAnd he sang as he watched and waited till his billy boiled,\nYou\'ll come a-waltzing Matilda with me!',duration:70,neteaseId:0},
+  {id:'s188',title:'Jamaican Farewell',titleZh:'牙买加告别',source:'Harvard World Music — "Caribbean Folk"',ageRange:[8, 36],tags:['caribbean','calypso','travel'],zodiacAffinity:['鱼','马','龙'],lyrics:'Down the way where the nights are gay,\nAnd the sun shines daily on the mountain top.\nI took a trip on a sailing ship,\nAnd when I reached Jamaica I made a stop!',duration:56,neteaseId:0},
+  {id:'s189',title:'Aloha Oe',titleZh:'珍重再见',source:'Stanford Pacific Studies — "Hawaiian Farewell"',ageRange:[6, 36],tags:['hawaiian','farewell','gentle'],zodiacAffinity:['龙','兔','鱼'],lyrics:'Aloha oe, aloha oe,\nE ke onaona noho i ka lipo.\nOne fond embrace, a hoi ae au,\nUntil we meet again.',duration:64,neteaseId:0},
+  {id:'s190',title:'Land of the Silver Birch',titleZh:'银桦树之地',source:'Cambridge Canadian — "Indigenous Folk"',ageRange:[8, 36],tags:['canadian','nature','canoe'],zodiacAffinity:['鱼','龙','兔'],lyrics:'Land of the silver birch, home of the beaver,\nWhere still the mighty moose wanders at will.\nBlue lake and rocky shore, I will return once more.\nBoom diddy-ah da, boom diddy-ah da!',duration:56,neteaseId:0},
+  {id:'s191',title:'London's Burning',titleZh:'伦敦着火了',source:'Oxford Traditional — "Round Song"',ageRange:[8, 36],tags:['round','history','group-sing'],zodiacAffinity:['龙','鼠','猴'],lyrics:'London\'s burning, London\'s burning.\nFetch the engines, fetch the engines.\nFire, fire! Fire, fire!\nPour on water, pour on water.',duration:42,neteaseId:0},
+  {id:'s192',title:'Kookaburra',titleZh:'笑翠鸟',source:'Cambridge Australian — "Round Song"',ageRange:[6, 36],tags:['australian','animals','round'],zodiacAffinity:['鸡','猴','龙'],lyrics:'Kookaburra sits in the old gum tree,\nMerry merry king of the bush is he.\nLaugh, Kookaburra, laugh, Kookaburra,\nGay your life must be!',duration:42,neteaseId:0},
+  {id:'s193',title:'Frere Jacques Round',titleZh:'雅克兄弟轮唱',source:'Stanford Round Singing — "Canon Practice"',ageRange:[8, 36],tags:['round','french','canon'],zodiacAffinity:['猪','兔','牛'],lyrics:'Frere Jacques, Frere Jacques,\nDormez-vous? Dormez-vous?\nSonnez les matines, sonnez les matines.\nDing ding dong! Ding ding dong!',duration:48,neteaseId:0},
+  {id:'s194',title:'Row Your Boat Round',titleZh:'划船歌轮唱',source:'Harvard Round Lab — "Canon Singing"',ageRange:[8, 36],tags:['round','canon','harmony'],zodiacAffinity:['鱼','蛇','兔'],lyrics:'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.\n(Now the second group joins in...\nThird group enters as the first reaches \'merrily\')',duration:52,neteaseId:0},
+  {id:'s195',title:'Sweetly Sings the Donkey',titleZh:'驴子甜蜜地唱',source:'Oxford Round Book — "Animal Round"',ageRange:[6, 36],tags:['round','animals','fun'],zodiacAffinity:['马','牛','猴'],lyrics:'Sweetly sings the donkey, at the break of day.\nIf you do not feed him, this is what he\'ll say:\nHee-haw, hee-haw, hee-haw, hee-haw, hee-haw!',duration:40,neteaseId:0},
+  {id:'s196',title:'White Coral Bells',titleZh:'白色珊瑚铃',source:'Cambridge Round Tradition — "Flower Round"',ageRange:[6, 36],tags:['round','flowers','gentle'],zodiacAffinity:['龙','兔','羊'],lyrics:'White coral bells upon a slender stalk,\nLilies of the valley deck my garden walk.\nOh don\'t you wish that you could hear them ring?\nThat will happen only when the fairies sing!',duration:44,neteaseId:0},
+  {id:'s197',title:'Make New Friends',titleZh:'结交新朋友',source:'Harvard Girl Scout — "Friendship Round"',ageRange:[6, 36],tags:['round','friendship','values'],zodiacAffinity:['狗','兔','羊'],lyrics:'Make new friends, but keep the old.\nOne is silver and the other\'s gold.\nA circle is round, it has no end.\nThat\'s how long I want to be your friend!',duration:42,neteaseId:0},
+  {id:'s198',title:'Music Alone Shall Live',titleZh:'唯有音乐长存',source:'Oxford Round Tradition — "Music Appreciation"',ageRange:[8, 36],tags:['round','music','heritage'],zodiacAffinity:['龙','兔','马'],lyrics:'All things shall perish from under the sky.\nMusic alone shall live, never to die.\nHallelujah, hallelujah!\nMusic alone shall live, never to die.',duration:46,neteaseId:0},
+  {id:'s199',title:'Dona Nobis Pacem',titleZh:'赐予我们和平',source:'Harvard Choral — "Peace Round"',ageRange:[6, 36],tags:['round','peace','sacred'],zodiacAffinity:['龙','兔','羊'],lyrics:'Dona nobis pacem, pacem.\nDona nobis pacem.\nDona nobis pacem, pacem.\nDona nobis pacem.\n(Grant us peace, grant us peace.)',duration:54,neteaseId:0},
+  {id:'s200',title:'The Peanut Song',titleZh:'花生歌',source:'Cambridge Food Rhymes — "American Folk"',ageRange:[6, 36],tags:['food','fun','nonsense'],zodiacAffinity:['猴','猪','鼠'],lyrics:'A peanut sat on a railroad track,\nHis heart was all a-flutter.\nAround the bend came number ten —\nToot toot! Peanut butter!\nOh! Peanut, peanut butter — jelly!',duration:42,neteaseId:0},
+{id:'s201',title:'Three Blind Mice',titleZh:'三只瞎老鼠',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['鼠', '蛇', '猴'],lyrics:'Three blind mice, three blind mice,\nSee how they run, see how they run,\nThey all ran after the farmer\'s wife,\nWho cut off their tails with a carving knife,\nDid you ever see such a thing in your life,\nAs three blind mice?',duration:55,neteaseId:0},
+{id:'s202',title:'Peter Piper',titleZh:'彼得派珀',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['rhyme', 'phonics', 'tongue-twister'],zodiacAffinity:['鸡', '猴', '鼠'],lyrics:'Peter Piper picked a peck of pickled peppers.\nA peck of pickled peppers Peter Piper picked.\nIf Peter Piper picked a peck of pickled peppers,\nWhere\'s the peck of pickled peppers Peter Piper picked?',duration:50,neteaseId:0},
+{id:'s203',title:'Oranges and Lemons',titleZh:'橘子和柠檬',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'rhyme', 'classic'],zodiacAffinity:['猪', '牛', '鸡'],lyrics:'Oranges and lemons, say the bells of St. Clement\'s.\nYou owe me five farthings, say the bells of St. Martin\'s.\nWhen will you pay me? say the bells of Old Bailey.\nWhen I grow rich, say the bells of Shoreditch.',duration:70,neteaseId:0},
+{id:'s204',title:'Little Tommy Tittlemouse',titleZh:'小汤米点点鼠',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'rhyme', 'gentle'],zodiacAffinity:['鼠', '兔', '蛇'],lyrics:'Little Tommy Tittlemouse lived in a little house,\nHe caught fishes in other men\'s ditches.',duration:30,neteaseId:0},
+{id:'s205',title:'There Was a Little Girl',titleZh:'有一个小女孩',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'story', 'classic'],zodiacAffinity:['兔', '羊', '蛇'],lyrics:'There was a little girl who had a little curl,\nRight in the middle of her forehead.\nWhen she was good, she was very very good,\nBut when she was bad, she was horrid.',duration:45,neteaseId:0},
+{id:'s206',title:'See Saw Margery Daw',titleZh:'跷跷板玛格丽',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['rhyme', 'play', 'classic'],zodiacAffinity:['猴', '鼠', '兔'],lyrics:'See saw, Margery Daw,\nJohnny shall have a new master.\nHe shall have but a penny a day,\nBecause he can\'t work any faster.',duration:40,neteaseId:0},
+{id:'s207',title:'There Was an Old Woman',titleZh:'有一个老妇人',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'story', 'classic'],zodiacAffinity:['猪', '牛', '羊'],lyrics:'There was an old woman who lived in a shoe.\nShe had so many children, she didn\'t know what to do.\nShe gave them some broth without any bread,\nThen whipped them all soundly and put them to bed.',duration:55,neteaseId:0},
+{id:'s208',title:'Cock a Doodle Doo',titleZh:'公鸡喔喔叫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['鸡', '牛', '马'],lyrics:'Cock a doodle doo! My dame has lost her shoe.\nMy master\'s lost his fiddling stick and doesn\'t know what to do.',duration:40,neteaseId:0},
+{id:'s209',title:'Elsie Marley',titleZh:'埃尔希玛利',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'classic', 'fun'],zodiacAffinity:['猴', '猪', '兔'],lyrics:'Elsie Marley\'s grown so fine,\nShe won\'t get up to feed the swine,\nBut lies in bed till eight or nine.\nLazy Elsie Marley.',duration:45,neteaseId:0},
+{id:'s210',title:'I Had a Little Nut Tree',titleZh:'我有一棵小坚果树',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['nature', 'rhyme', 'classic'],zodiacAffinity:['牛', '兔', '鼠'],lyrics:'I had a little nut tree, nothing would it bear,\nBut a silver nutmeg and a golden pear.\nThe King of Spain\'s daughter came to visit me,\nAnd all for the sake of my little nut tree.',duration:55,neteaseId:0},
+{id:'s211',title:'Old Mother Hubbard',titleZh:'老哈伯德妈妈',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['animals', 'story', 'rhyme'],zodiacAffinity:['狗', '猪', '牛'],lyrics:'Old Mother Hubbard went to the cupboard,\nTo give the poor dog a bone.\nBut when she got there, the cupboard was bare,\nAnd so the poor dog had none.',duration:50,neteaseId:0},
+{id:'s212',title:'The North Wind Doth Blow',titleZh:'北风吹来了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['weather', 'nature', 'classic'],zodiacAffinity:['龙', '鼠', '猪'],lyrics:'The north wind doth blow, and we shall have snow,\nAnd what will poor robin do then, poor thing?\nHe\'ll sit in a barn and keep himself warm,\nAnd hide his head under his wing, poor thing.',duration:60,neteaseId:0},
+{id:'s213',title:'Little Poll Parrot',titleZh:'小鹦鹉波尔',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['鸡', '猴', '龙'],lyrics:'Little Poll Parrot sat in his garret,\nEating toast and tea.\nA little brown mouse jumped into the house,\nAnd stole it all away.',duration:40,neteaseId:0},
+{id:'s214',title:'The Lion and the Unicorn',titleZh:'狮子和独角兽',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['animals', 'story', 'classic'],zodiacAffinity:['虎', '龙', '马'],lyrics:'The lion and the unicorn were fighting for the crown.\nThe lion beat the unicorn all around the town.\nSome gave them white bread, and some gave them brown,\nSome gave them plum cake and drummed them out of town.',duration:65,neteaseId:0},
+{id:'s215',title:'Dance to Your Daddy',titleZh:'给爸爸跳个舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 24],tags:['lullaby', 'family', 'classic'],zodiacAffinity:['鱼', '兔', '羊'],lyrics:'Dance to your daddy, my little laddie,\nDance to your daddy, my little lamb.\nYou shall have a fishy on a little dishy,\nYou shall have a fishy when the boat comes in.',duration:50,neteaseId:0},
+{id:'s216',title:'I Love Little Pussy',titleZh:'我爱小猫咪',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'gentle', 'love'],zodiacAffinity:['猫', '兔', '羊'],lyrics:'I love little pussy, her coat is so warm,\nAnd if I don\'t hurt her, she\'ll do me no harm.\nSo I\'ll not pull her tail, nor drive her away,\nBut pussy and I very gently will play.',duration:50,neteaseId:0},
+{id:'s217',title:'How Many Miles to Babylon',titleZh:'到巴比伦多远',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'classic', 'travel'],zodiacAffinity:['马', '龙', '虎'],lyrics:'How many miles to Babylon? Three score miles and ten.\nCan I get there by candle-light? Yes, and back again.\nIf your heels are nimble and light, you may get there by candle-light.',duration:40,neteaseId:0},
+{id:'s218',title:'Girls and Boys Come Out to Play',titleZh:'男孩女孩出来玩',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['play', 'social', 'classic'],zodiacAffinity:['猴', '虎', '狗'],lyrics:'Girls and boys, come out to play,\nThe moon doth shine as bright as day.\nLeave your supper, and leave your sleep,\nAnd come with your playfellows into the street.',duration:55,neteaseId:0},
+{id:'s219',title:'Mondays Child',titleZh:'星期一的孩子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'classic', 'days'],zodiacAffinity:['兔', '龙', '羊'],lyrics:'Monday\'s child is fair of face,\nTuesday\'s child is full of grace,\nWednesday\'s child is full of woe,\nThursday\'s child has far to go.',duration:45,neteaseId:0},
+{id:'s220',title:'For Want of a Nail',titleZh:'少了一颗钉子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['rhyme', 'story', 'classic'],zodiacAffinity:['马', '牛', '鼠'],lyrics:'For want of a nail the shoe was lost,\nFor want of a shoe the horse was lost,\nFor want of a horse the rider was lost,\nFor want of a rider the battle was lost.',duration:50,neteaseId:0},
+{id:'s221',title:'Thirty Days Hath September',titleZh:'九月有三十天',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['rhyme', 'months', 'learning'],zodiacAffinity:['鼠', '鸡', '猴'],lyrics:'Thirty days hath September, April, June, and November.\nAll the rest have thirty-one, except February alone,\nWhich has twenty-eight days clear and twenty-nine in each leap year.',duration:55,neteaseId:0},
+{id:'s222',title:'Star Light Star Bright',titleZh:'星星亮星星明',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 24],tags:['lullaby', 'bedtime', 'wishes'],zodiacAffinity:['兔', '龙', '羊'],lyrics:'Star light, star bright, first star I see tonight.\nI wish I may, I wish I might, have the wish I wish tonight.',duration:35,neteaseId:0},
+{id:'s223',title:'Blow Wind Blow',titleZh:'吹吧风儿吹',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['weather', 'nature', 'gentle'],zodiacAffinity:['龙', '虎', '马'],lyrics:'Blow, wind, blow! And go, mill, go!\nThat the miller may grind his corn,\nThat the baker may take it, and into bread make it,\nAnd bring us a loaf in the morn.',duration:55,neteaseId:0},
+{id:'s224',title:'Come to the Window',titleZh:'来到窗前',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 24],tags:['lullaby', 'bedtime', 'gentle'],zodiacAffinity:['兔', '羊', '猪'],lyrics:'Come to the window, my baby, with me,\nAnd look at the stars that shine on the sea.\nThere are two little stars that play bo-peep,\nWith two little fish far down in the deep.',duration:55,neteaseId:0},
+{id:'s225',title:'Ding Dong Bell',titleZh:'叮咚钟声',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['猫', '鼠', '猪'],lyrics:'Ding, dong, bell, pussy\'s in the well.\nWho put her in? Little Tommy Thin.\nWho pulled her out? Little Tommy Stout.\nWhat a naughty boy was that, to try to drown poor pussy cat.',duration:50,neteaseId:0},
+{id:'s226',title:'Diddle Diddle Dumpling My Son John',titleZh:'叮当叮当我的儿子约翰',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 24],tags:['lullaby', 'bedtime', 'classic'],zodiacAffinity:['猪', '兔', '牛'],lyrics:'Diddle, diddle, dumpling, my son John,\nWent to bed with his trousers on.\nOne shoe off, and one shoe on,\nDiddle, diddle, dumpling, my son John.',duration:35,neteaseId:0},
+{id:'s227',title:'Handy Spandy',titleZh:'小商贩',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'classic', 'food'],zodiacAffinity:['猴', '猪', '牛'],lyrics:'Handy Spandy, Jack-a-dandy,\nLoved plum cake and sugar candy.\nHe bought some at a grocer\'s shop,\nAnd out he came, hop, hop, hop.',duration:35,neteaseId:0},
+{id:'s228',title:'Cross Patch',titleZh:'爱生气的人',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'emotion', 'classic'],zodiacAffinity:['虎', '猴', '狗'],lyrics:'Cross patch, draw the latch, sit by the fire and spin.\nTake a cup and drink it up, then call your neighbors in.',duration:35,neteaseId:0},
+{id:'s229',title:'One Misty Moisty Morning',titleZh:'一个雾蒙蒙的早晨',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['weather', 'rhyme', 'classic'],zodiacAffinity:['龙', '牛', '马'],lyrics:'One misty, moisty morning, when cloudy was the weather,\nI met a little old man, a-walking through the heather.\nHe wore a coat of velvet, and stockings all of leather.',duration:55,neteaseId:0},
+{id:'s230',title:'A Wise Old Owl',titleZh:'聪明的老猫头鹰',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'wisdom', 'classic'],zodiacAffinity:['鸡', '龙', '猴'],lyrics:'A wise old owl lived in an oak.\nThe more he saw, the less he spoke.\nThe less he spoke, the more he heard.\nWhy can\'t we all be like that wise old bird?',duration:45,neteaseId:0},
+{id:'s231',title:'Bobby Shafto',titleZh:'鲍比沙夫托',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['rhyme', 'classic', 'fun'],zodiacAffinity:['马', '狗', '兔'],lyrics:'Bobby Shafto\'s gone to sea, silver buckles on his knee.\nHe\'ll come back and marry me, bonny Bobby Shafto.',duration:40,neteaseId:0},
+{id:'s232',title:'Donkey Donkey',titleZh:'小毛驴小毛驴',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'rhyme', 'fun'],zodiacAffinity:['马', '牛', '狗'],lyrics:'Donkey, donkey, old and grey, open your mouth and gently bray.\nLift your ears and blow your horn, to wake the world this sleepy morn.',duration:40,neteaseId:0},
+{id:'s233',title:'Little Robin Redbreast',titleZh:'小红胸知更鸟',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'nature', 'classic'],zodiacAffinity:['鸡', '兔', '蛇'],lyrics:'Little Robin Redbreast sat upon a tree,\nUp went Pussycat, and down went he.\nDown came Pussycat, and away Robin ran.\nSays little Robin Redbreast, catch me if you can.',duration:50,neteaseId:0},
+{id:'s234',title:'Needles and Pins',titleZh:'针和别针',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'classic', 'gentle'],zodiacAffinity:['兔', '羊', '猪'],lyrics:'Needles and pins, needles and pins,\nWhen a man marries, his trouble begins.',duration:25,neteaseId:0},
+{id:'s235',title:'Old King Cole',titleZh:'老国王科尔',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'music', 'classic'],zodiacAffinity:['龙', '马', '虎'],lyrics:'Old King Cole was a merry old soul,\nAnd a merry old soul was he.\nHe called for his pipe, and he called for his bowl,\nAnd he called for his fiddlers three.',duration:55,neteaseId:0},
+{id:'s236',title:'Great A Little A',titleZh:'大A小A',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['alphabet', 'rhyme', 'classic'],zodiacAffinity:['鸡', '猴', '鼠'],lyrics:'Great A, little a, bouncing B.\nThe cat\'s in the cupboard and she can\'t see me.',duration:25,neteaseId:0},
+{id:'s237',title:'Hark Hark the Dogs Do Bark',titleZh:'听啊听啊狗在叫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['狗', '虎', '马'],lyrics:'Hark, hark, the dogs do bark,\nThe beggars are coming to town.\nSome in rags, and some in jags,\nAnd one in a velvet gown.',duration:40,neteaseId:0},
+{id:'s238',title:'The Man in the Moon',titleZh:'月亮上的人',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'imagination', 'classic'],zodiacAffinity:['龙', '兔', '猴'],lyrics:'The man in the moon came down too soon,\nAnd asked his way to Norwich.\nHe went by the south, and burnt his mouth\nWith supping cold plum porridge.',duration:45,neteaseId:0},
+{id:'s239',title:'To Market to Market',titleZh:'去市场去市场',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 30],tags:['animals', 'rhyme', 'classic'],zodiacAffinity:['猪', '牛', '马'],lyrics:'To market, to market, to buy a fat pig.\nHome again, home again, jiggety-jig.\nTo market, to market, to buy a fat hog.\nHome again, home again, jiggety-jog.',duration:40,neteaseId:0},
+{id:'s240',title:'A-Tisket A-Tasket',titleZh:'小黄篮',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '鸡', '猴'],lyrics:'A-tisket, a-tasket, a green and yellow basket.\nI wrote a letter to my love and on the way I dropped it.\nI dropped it, I dropped it, and on the way I dropped it.',duration:55,neteaseId:0},
+{id:'s241',title:'Aiken Drum',titleZh:'艾肯鼓',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s242',title:'Alphabet Song Slow',titleZh:'字母歌慢版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:56,neteaseId:0},
+{id:'s243',title:'Animal Action',titleZh:'动物动作',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:46,neteaseId:0},
+{id:'s244',title:'Baby Bumblebee',titleZh:'宝贝大黄蜂',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:48,neteaseId:0},
+{id:'s245',title:'Baby Mine',titleZh:'我的宝贝',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:38,neteaseId:0},
+{id:'s246',title:'Balloon Song',titleZh:'气球歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s247',title:'Banana Song',titleZh:'香蕉歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:42,neteaseId:0},
+{id:'s248',title:'Barnyard Dance',titleZh:'谷仓舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:48,neteaseId:0},
+{id:'s249',title:'Beanbag Song',titleZh:'沙包歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s250',title:'Bear Hunt',titleZh:'猎熊记',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:38,neteaseId:0},
+{id:'s251',title:'Big Red Bus',titleZh:'大红巴士',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:42,neteaseId:0},
+{id:'s252',title:'Bird Song',titleZh:'小鸟歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:38,neteaseId:0},
+{id:'s253',title:'Blocks Song',titleZh:'积木歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s254',title:'Bluebird Song',titleZh:'蓝鸟歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s255',title:'Boogie Woogie',titleZh:'布吉舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s256',title:'Bounce the Ball',titleZh:'拍皮球',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s257',title:'Bread and Butter',titleZh:'面包和黄油',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:52,neteaseId:0},
+{id:'s258',title:'Bubble Song',titleZh:'泡泡歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s259',title:'Bunny Song',titleZh:'小兔子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s260',title:'Bushel and a Peck',titleZh:'一篮子爱',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:54,neteaseId:0},
+{id:'s261',title:'Butterfly Song',titleZh:'蝴蝶歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:48,neteaseId:0},
+{id:'s262',title:'Candy Man',titleZh:'糖果人',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:38,neteaseId:0},
+{id:'s263',title:'Catch a Falling Star',titleZh:'接住流星',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:60,neteaseId:0},
+{id:'s264',title:'Chick Chick Chicken',titleZh:'小鸡小鸡',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:58,neteaseId:0},
+{id:'s265',title:'Chocolate Song',titleZh:'巧克力歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s266',title:'Choo Choo Train',titleZh:'嘟嘟火车',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:50,neteaseId:0},
+{id:'s267',title:'Circle Game',titleZh:'圆圈游戏',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s268',title:'Clap Clap Clap Your Hands',titleZh:'拍拍拍手',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:70,neteaseId:0},
+{id:'s269',title:'Cloud Song',titleZh:'云朵歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:40,neteaseId:0},
+{id:'s270',title:'Coconut Song',titleZh:'椰子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s271',title:'Color Mixing Song',titleZh:'颜色混合歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:54,neteaseId:0},
+{id:'s272',title:'Copycat Song',titleZh:'模仿歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s273',title:'Cowboy Song',titleZh:'牛仔歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:42,neteaseId:0},
+{id:'s274',title:'Cradle Song',titleZh:'摇篮歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:42,neteaseId:0},
+{id:'s275',title:'Crocodile Song',titleZh:'鳄鱼歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:48,neteaseId:0},
+{id:'s276',title:'Cuckoo Clock',titleZh:'布谷鸟钟',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s277',title:'Daddy's Lap',titleZh:'爸爸的膝头',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:42,neteaseId:0},
+{id:'s278',title:'Daisy Daisy',titleZh:'雏菊雏菊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s279',title:'Dancing Song',titleZh:'跳舞歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s280',title:'Day and Night',titleZh:'白天和黑夜',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:46,neteaseId:0},
+{id:'s281',title:'Deep and Wide',titleZh:'深又宽',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s282',title:'Digging Song',titleZh:'挖掘歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s283',title:'Dino Dance',titleZh:'恐龙舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:40,neteaseId:0},
+{id:'s284',title:'Dinosaur Roar',titleZh:'恐龙吼叫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s285',title:'Do Your Ears Hang Low',titleZh:'你的耳朵低垂吗',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:62,neteaseId:0},
+{id:'s286',title:'Doggie Song',titleZh:'小狗歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:42,neteaseId:0},
+{id:'s287',title:'Dolphin Song',titleZh:'海豚歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s288',title:'Down by the Station',titleZh:'在车站边',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:58,neteaseId:0},
+{id:'s289',title:'Dragon Song',titleZh:'龙之歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s290',title:'Dream Song',titleZh:'梦想歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:40,neteaseId:0},
+{id:'s291',title:'Drum Song',titleZh:'鼓歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s292',title:'Duck Duck Goose',titleZh:'鸭鸭鹅',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:50,neteaseId:0},
+{id:'s293',title:'Dusty Millers Round',titleZh:'尘磨坊之舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:58,neteaseId:0},
+{id:'s294',title:'Eensy Weensy Spider Slow',titleZh:'小小蜘蛛慢版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:68,neteaseId:0},
+{id:'s295',title:'Egg Shaker Song',titleZh:'摇蛋歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:50,neteaseId:0},
+{id:'s296',title:'Engine Engine Number Nine',titleZh:'火车头九号',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:70,neteaseId:0},
+{id:'s297',title:'Everybody Clap',titleZh:'大家一起拍手',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:48,neteaseId:0},
+{id:'s298',title:'Fairy Song',titleZh:'仙子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s299',title:'Falling Leaves',titleZh:'落叶',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s300',title:'Farmer Song',titleZh:'农夫歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s301',title:'Fast and Slow',titleZh:'快和慢',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s302',title:'Fiddle Dee Dee',titleZh:'菲多嘀嘀',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s303',title:'Fishing Song',titleZh:'钓鱼歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s304',title:'Five Fat Peas',titleZh:'五颗胖豌豆',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s305',title:'Flower Song',titleZh:'花儿歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:42,neteaseId:0},
+{id:'s306',title:'Fly Fly Butterfly',titleZh:'飞吧蝴蝶',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:54,neteaseId:0},
+{id:'s307',title:'Follow the Leader',titleZh:'跟着队长',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s308',title:'Footprints',titleZh:'脚印',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s309',title:'Forest Song',titleZh:'森林歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s310',title:'Four Seasons',titleZh:'四季歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:44,neteaseId:0},
+{id:'s311',title:'Fox Song',titleZh:'狐狸歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:36,neteaseId:0},
+{id:'s312',title:'Friendship Song',titleZh:'友谊歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:50,neteaseId:0},
+{id:'s313',title:'Frog Song',titleZh:'青蛙歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:38,neteaseId:0},
+{id:'s314',title:'Funny Face',titleZh:'鬼脸',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s315',title:'Garden Song',titleZh:'花园歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:42,neteaseId:0},
+{id:'s316',title:'Giraffe Song',titleZh:'长颈鹿歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s317',title:'Give a Little Clap',titleZh:'轻轻拍手',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:56,neteaseId:0},
+{id:'s318',title:'Going on a Picnic',titleZh:'去野餐',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s319',title:'Goldfish Song',titleZh:'金鱼歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s320',title:'Good Morning Sunshine',titleZh:'早安阳光',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:62,neteaseId:0},
+{id:'s321',title:'Goodnight My Love',titleZh:'晚安我的爱',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:54,neteaseId:0},
+{id:'s322',title:'Grasshopper Song',titleZh:'蚱蜢歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:52,neteaseId:0},
+{id:'s323',title:'Green Grass Grew All Around',titleZh:'绿草遍地长',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:74,neteaseId:0},
+{id:'s324',title:'Growing Song',titleZh:'成长歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s325',title:'Hammer Song',titleZh:'锤子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s326',title:'Happy Dance',titleZh:'快乐舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:42,neteaseId:0},
+{id:'s327',title:'Hat Song',titleZh:'帽子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s328',title:'Hello Mr. Sun',titleZh:'你好太阳先生',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:46,neteaseId:0},
+{id:'s329',title:'Helping Song',titleZh:'帮助歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s330',title:'Hippo Song',titleZh:'河马歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s331',title:'Hokey Pokey Slow',titleZh:'变戏法舞慢版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s332',title:'Honey Bee',titleZh:'小蜜蜂',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:38,neteaseId:0},
+{id:'s333',title:'Horses Galloping',titleZh:'马儿奔腾',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:52,neteaseId:0},
+{id:'s334',title:'Hush Little Baby Extended',titleZh:'安静吧宝贝加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:70,neteaseId:0},
+{id:'s335',title:'I Am a Pizza',titleZh:'我是一个披萨',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:44,neteaseId:0},
+{id:'s336',title:'I Can Do It',titleZh:'我能做到',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s337',title:'I Hear Thunder',titleZh:'我听到雷声',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s338',title:'I Love the Flowers',titleZh:'我爱花儿',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:56,neteaseId:0},
+{id:'s339',title:'I Love the Mountains',titleZh:'我爱群山',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:60,neteaseId:0},
+{id:'s340',title:'I See Colors',titleZh:'我看到颜色',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:44,neteaseId:0},
+{id:'s341',title:'I Went to School',titleZh:'我去上学',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s342',title:'I Wiggle My Fingers',titleZh:'我动动手指',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:58,neteaseId:0},
+{id:'s343',title:'Ice Cream Sundae',titleZh:'冰淇淋圣代',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:52,neteaseId:0},
+{id:'s344',title:'If All the Raindrops',titleZh:'如果所有雨滴',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:60,neteaseId:0},
+{id:'s345',title:'Imagination Song',titleZh:'想象歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s346',title:'In the Jungle',titleZh:'在丛林里',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s347',title:'Instrument Song',titleZh:'乐器歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s348',title:'Its Raining Its Pouring',titleZh:'大雨倾盆',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:66,neteaseId:0},
+{id:'s349',title:'Jack and the Beanstalk',titleZh:'杰克和豆茎',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:64,neteaseId:0},
+{id:'s350',title:'Jelly on a Plate',titleZh:'盘中的果冻',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s351',title:'Jig Jog Jog',titleZh:'骑着小马',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s352',title:'John Jacob Jingleheimer Schmidt',titleZh:'约翰雅各布',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['holiday', 'celebration', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:82,neteaseId:0},
+{id:'s353',title:'Jungle Boogie',titleZh:'丛林布吉',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s354',title:'Just Like Me',titleZh:'和我一样',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s355',title:'Kangaroo Song',titleZh:'袋鼠歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s356',title:'Knock Knock',titleZh:'敲门声',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s357',title:'Ladybug Song',titleZh:'瓢虫歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s358',title:'Laughing Song',titleZh:'笑声歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s359',title:'Lazy Mary',titleZh:'懒惰的玛丽',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s360',title:'Leaves Are Falling',titleZh:'叶子在掉落',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:56,neteaseId:0},
+{id:'s361',title:'Let Everyone Clap Hands',titleZh:'让大家拍手',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:66,neteaseId:0},
+{id:'s362',title:'Let's Be Friends',titleZh:'让我们做朋友',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:52,neteaseId:0},
+{id:'s363',title:'Let's Go Walking',titleZh:'我们去散步',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s364',title:'Lion Song',titleZh:'狮子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:38,neteaseId:0},
+{id:'s365',title:'Listen to the Music',titleZh:'听音乐',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:58,neteaseId:0},
+{id:'s366',title:'Little Arabella Miller',titleZh:'小阿拉贝拉米勒',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:64,neteaseId:0},
+{id:'s367',title:'Little Caterpillar',titleZh:'小毛毛虫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:56,neteaseId:0},
+{id:'s368',title:'Little Daisy',titleZh:'小雏菊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s369',title:'Little Green Frog',titleZh:'小绿蛙',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:54,neteaseId:0},
+{id:'s370',title:'Little Peter Rabbit',titleZh:'小彼得兔',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:58,neteaseId:0},
+{id:'s371',title:'Little Red Caboose',titleZh:'小红守车',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:56,neteaseId:0},
+{id:'s372',title:'Little Red Wagon',titleZh:'小红货车',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s373',title:'Little Seed',titleZh:'小种子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s374',title:'Little Sir Echo',titleZh:'小回声先生',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s375',title:'Little Skunk's Hole',titleZh:'小臭鼬的洞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:58,neteaseId:0},
+{id:'s376',title:'Little White Duck',titleZh:'小白鸭',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:54,neteaseId:0},
+{id:'s377',title:'London's Burning',titleZh:'伦敦在燃烧',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s378',title:'Lullaby and Goodnight',titleZh:'摇篮曲晚安',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:62,neteaseId:0},
+{id:'s379',title:'Magic Wand',titleZh:'魔法棒',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s380',title:'Make New Friends',titleZh:'结交新朋友',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:52,neteaseId:0},
+{id:'s381',title:'Marching Song',titleZh:'行军歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:46,neteaseId:0},
+{id:'s382',title:'Mary Ann',titleZh:'玛丽安',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s383',title:'Me and My Teddy',titleZh:'我和我的泰迪',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s384',title:'Merry Go Round',titleZh:'旋转木马',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s385',title:'Mexican Hat Dance',titleZh:'墨西哥草帽舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:54,neteaseId:0},
+{id:'s386',title:'Mickey Mouse March',titleZh:'米老鼠进行曲',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:56,neteaseId:0},
+{id:'s387',title:'Milkshake Song',titleZh:'奶昔歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:48,neteaseId:0},
+{id:'s388',title:'Miss Mary Mack',titleZh:'玛丽麦克小姐',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s389',title:'Mister Sun',titleZh:'太阳先生',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:40,neteaseId:0},
+{id:'s390',title:'Mockingbird Song',titleZh:'知更鸟歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:52,neteaseId:0},
+{id:'s391',title:'Moon Song',titleZh:'月亮歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:38,neteaseId:0},
+{id:'s392',title:'Morning Exercises',titleZh:'晨练',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s393',title:'Mother's Day Song',titleZh:'母亲节歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s394',title:'Mountain Climbing',titleZh:'爬山',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:54,neteaseId:0},
+{id:'s395',title:'Mr. Moon',titleZh:'月亮先生',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:36,neteaseId:0},
+{id:'s396',title:'Mud Pies',titleZh:'泥饼',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:36,neteaseId:0},
+{id:'s397',title:'Music Time',titleZh:'音乐时间',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s398',title:'My Aunt Came Back',titleZh:'我阿姨回来了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s399',title:'My Bonnie',titleZh:'我的邦妮',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s400',title:'My Dog Rags',titleZh:'我的狗拉格斯',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:42,neteaseId:0},
+{id:'s401',title:'My Grandfather's Clock',titleZh:'我爷爷的钟',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:64,neteaseId:0},
+{id:'s402',title:'My Hat It Has Three Corners',titleZh:'我的帽子有三个角',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:74,neteaseId:0},
+{id:'s403',title:'My Little Pony',titleZh:'我的小马',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s404',title:'My Mommy',titleZh:'我的妈妈',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:36,neteaseId:0},
+{id:'s405',title:'My Puppy',titleZh:'我的小狗',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s406',title:'Name Game',titleZh:'名字游戏',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s407',title:'Nature Walk',titleZh:'自然漫步',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:42,neteaseId:0},
+{id:'s408',title:'Never Smile at a Crocodile',titleZh:'不要对鳄鱼笑',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:72,neteaseId:0},
+{id:'s409',title:'Noble Duke of York Extended',titleZh:'老约克公爵加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:74,neteaseId:0},
+{id:'s410',title:'Nobody Likes Me',titleZh:'没人喜欢我',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s411',title:'Nursery Rhyme Medley',titleZh:'童谣串烧',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:60,neteaseId:0},
+{id:'s412',title:'Ocean Song',titleZh:'海洋歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:40,neteaseId:0},
+{id:'s413',title:'Oh Dear What Can the Matter Be',titleZh:'哦天哪怎么了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:80,neteaseId:0},
+{id:'s414',title:'Oh My Darling Clementine',titleZh:'哦我亲爱的克莱门汀',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:68,neteaseId:0},
+{id:'s415',title:'Oh Suzanna',titleZh:'哦苏珊娜',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s416',title:'Old Brass Wagon',titleZh:'老黄铜马车',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s417',title:'Old Dan Tucker',titleZh:'老丹塔克',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s418',title:'Old Dog Tray',titleZh:'老狗特雷',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s419',title:'Old Joe Clark',titleZh:'老乔克拉克',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s420',title:'Old Molly Hare',titleZh:'老莫莉兔',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s421',title:'Oliver Twist',titleZh:'奥利弗扭扭',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s422',title:'On a Starry Night',titleZh:'在星光之夜',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:54,neteaseId:0},
+{id:'s423',title:'On Top of Spaghetti',titleZh:'在意大利面上',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:58,neteaseId:0},
+{id:'s424',title:'One Elephant',titleZh:'一头大象',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s425',title:'One Finger One Thumb',titleZh:'一个手指一个拇指',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:60,neteaseId:0},
+{id:'s426',title:'One Little Finger',titleZh:'一个小手指',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s427',title:'Open Shut Them',titleZh:'打开合上',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s428',title:'Opposites Song',titleZh:'反义词歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:48,neteaseId:0},
+{id:'s429',title:'Our Flag',titleZh:'我们的旗帜',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s430',title:'Owl Song',titleZh:'猫头鹰歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:36,neteaseId:0},
+{id:'s431',title:'Panda Bear',titleZh:'熊猫熊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:40,neteaseId:0},
+{id:'s432',title:'Pancake Song',titleZh:'煎饼歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:44,neteaseId:0},
+{id:'s433',title:'Parachute Song',titleZh:'降落伞歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s434',title:'Parrot Song',titleZh:'鹦鹉歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s435',title:'Parts of the Body',titleZh:'身体部位歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s436',title:'Patriotic Medley',titleZh:'爱国组曲',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s437',title:'Peace Like a River',titleZh:'平安如河流',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:56,neteaseId:0},
+{id:'s438',title:'Peanut Butter',titleZh:'花生酱',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s439',title:'Penguin Dance',titleZh:'企鹅舞',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:46,neteaseId:0},
+{id:'s440',title:'Penguin Song',titleZh:'企鹅歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:44,neteaseId:0},
+{id:'s441',title:'Penny Song',titleZh:'便士歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s442',title:'Piccolo Song',titleZh:'短笛歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s443',title:'Pick a Bale of Cotton',titleZh:'摘一捆棉花',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:62,neteaseId:0},
+{id:'s444',title:'Picnic Song',titleZh:'野餐歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s445',title:'Piggy Bank',titleZh:'存钱罐',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:40,neteaseId:0},
+{id:'s446',title:'Piggy Wiggy',titleZh:'小猪扭扭',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:42,neteaseId:0},
+{id:'s447',title:'Pirate Song',titleZh:'海盗歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s448',title:'Planet Song',titleZh:'行星歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:42,neteaseId:0},
+{id:'s449',title:'Planting Seeds',titleZh:'种种子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s450',title:'Playground Song',titleZh:'操场歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s451',title:'Polar Bear',titleZh:'北极熊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:40,neteaseId:0},
+{id:'s452',title:'Pony Boy',titleZh:'小马男孩',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s453',title:'Pool Party',titleZh:'泳池派对',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s454',title:'Pop Goes the Weasel Extended',titleZh:'黄鼠狼加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:76,neteaseId:0},
+{id:'s455',title:'Potato Song',titleZh:'土豆歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s456',title:'Pretty Bubbles',titleZh:'漂亮的泡泡',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s457',title:'Pumpkin Pie',titleZh:'南瓜派',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:42,neteaseId:0},
+{id:'s458',title:'Puppet Show',titleZh:'木偶戏',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s459',title:'Push the Button',titleZh:'按按钮',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s460',title:'Quarter Note Song',titleZh:'四分音符歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s461',title:'Quiet and Loud',titleZh:'安静和大声',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s462',title:'Rabbit Song',titleZh:'兔子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:42,neteaseId:0},
+{id:'s463',title:'Race Car Song',titleZh:'赛车歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:46,neteaseId:0},
+{id:'s464',title:'Raccoon Song',titleZh:'浣熊歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s465',title:'Rain Is Falling',titleZh:'雨在下',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:50,neteaseId:0},
+{id:'s466',title:'Rainbow Connection',titleZh:'彩虹连线',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:56,neteaseId:0},
+{id:'s467',title:'Raindrops',titleZh:'雨滴',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:38,neteaseId:0},
+{id:'s468',title:'Raise Your Hand',titleZh:'举手',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s469',title:'Rattlesnake Song',titleZh:'响尾蛇歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s470',title:'Recycle Song',titleZh:'回收歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s471',title:'Red River Valley',titleZh:'红河谷',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:52,neteaseId:0},
+{id:'s472',title:'Rest Time',titleZh:'休息时间',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s473',title:'Rhythm Band',titleZh:'节奏乐队',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s474',title:'Rhythm Stick Song',titleZh:'节奏棒歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s475',title:'Rig a Jig Jig',titleZh:'骑着马',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s476',title:'Ring Around the Rosie Extended',titleZh:'玫瑰花环加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:80,neteaseId:0},
+{id:'s477',title:'Rise and Shine',titleZh:'起床了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s478',title:'Robot Song',titleZh:'机器人歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s479',title:'Rock and Roll',titleZh:'摇滚乐',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s480',title:'Rocket Ship',titleZh:'火箭船',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:42,neteaseId:0},
+{id:'s481',title:'Roll Over',titleZh:'翻过去',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s482',title:'Roll the Ball',titleZh:'滚皮球',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s483',title:'Roly Poly',titleZh:'胖乎乎',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s484',title:'Round the Mulberry Bush',titleZh:'绕着桑树丛',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:66,neteaseId:0},
+{id:'s485',title:'Rubber Duckie',titleZh:'橡皮鸭',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s486',title:'Run and Walk',titleZh:'跑和走',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s487',title:'Sailing Sailing',titleZh:'航行航行',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:50,neteaseId:0},
+{id:'s488',title:'Sandcastle Song',titleZh:'沙堡歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s489',title:'Scarecrow Song',titleZh:'稻草人歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:48,neteaseId:0},
+{id:'s490',title:'School Days',titleZh:'上学的日子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s491',title:'Seal Song',titleZh:'海豹歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s492',title:'Seashell Song',titleZh:'贝壳歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s493',title:'Shake My Sillies Out Slow',titleZh:'甩掉坏脾气慢版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:70,neteaseId:0},
+{id:'s494',title:'Shake the Beanbag',titleZh:'摇沙包',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:54,neteaseId:0},
+{id:'s495',title:'Shape Song',titleZh:'形状歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:40,neteaseId:0},
+{id:'s496',title:'She Waded in the Water',titleZh:'她涉水而行',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:64,neteaseId:0},
+{id:'s497',title:'Sheep Shearing',titleZh:'剪羊毛',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:48,neteaseId:0},
+{id:'s498',title:'Shoemaker Song',titleZh:'鞋匠歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s499',title:'Shoo Fly',titleZh:'走开苍蝇',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s500',title:'Shopping Song',titleZh:'购物歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:46,neteaseId:0},
+{id:'s501',title:'Show and Tell',titleZh:'展示和讲述',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s502',title:'Silly Billy',titleZh:'傻比利',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s503',title:'Silly Songs Medley',titleZh:'傻歌串烧',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:56,neteaseId:0},
+{id:'s504',title:'Sing a Rainbow',titleZh:'唱彩虹',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:48,neteaseId:0},
+{id:'s505',title:'Sing Together',titleZh:'一起唱',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s506',title:'Sippin Cider',titleZh:'喝苹果酒',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s507',title:'Sister Song',titleZh:'姐妹歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:42,neteaseId:0},
+{id:'s508',title:'Sitting in My Highchair',titleZh:'坐在高椅上',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:66,neteaseId:0},
+{id:'s509',title:'Skidamarink',titleZh:'斯卡达马林克',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s510',title:'Skip and Hop',titleZh:'跳和蹦',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:44,neteaseId:0},
+{id:'s511',title:'Sleeping Bunnies',titleZh:'睡觉的兔子',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:52,neteaseId:0},
+{id:'s512',title:'Slithery Snake',titleZh:'滑溜溜的蛇',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s513',title:'Slowly Slowly',titleZh:'慢慢地慢慢地',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s514',title:'Smile Song',titleZh:'微笑歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s515',title:'Snail Song',titleZh:'蜗牛歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:40,neteaseId:0},
+{id:'s516',title:'Snow Song',titleZh:'雪之歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:38,neteaseId:0},
+{id:'s517',title:'Snowman Song',titleZh:'雪人歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:44,neteaseId:0},
+{id:'s518',title:'Soap Bubbles',titleZh:'肥皂泡',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s519',title:'Someone's in the Kitchen',titleZh:'有人在厨房',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:68,neteaseId:0},
+{id:'s520',title:'Sorting Song',titleZh:'分类歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s521',title:'Soup Song',titleZh:'汤歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:38,neteaseId:0},
+{id:'s522',title:'Space Song',titleZh:'太空歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s523',title:'Spaghetti Song',titleZh:'意面歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:48,neteaseId:0},
+{id:'s524',title:'Sparkle Song',titleZh:'闪光歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s525',title:'Spinning Song',titleZh:'旋转歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:46,neteaseId:0},
+{id:'s526',title:'Spring Rain',titleZh:'春雨',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:42,neteaseId:0},
+{id:'s527',title:'Squirrel Song',titleZh:'松鼠歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:46,neteaseId:0},
+{id:'s528',title:'Stand Up Sit Down',titleZh:'起立坐下',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s529',title:'Stirring Song',titleZh:'搅拌歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s530',title:'Stop and Go',titleZh:'停和走',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s531',title:'Story Time',titleZh:'故事时间',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s532',title:'Strawberry Song',titleZh:'草莓歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:50,neteaseId:0},
+{id:'s533',title:'Stretching Song',titleZh:'伸展歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s534',title:'Sugar Sugar',titleZh:'糖糖糖',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s535',title:'Summer Fun',titleZh:'夏天的乐趣',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:40,neteaseId:0},
+{id:'s536',title:'Sunday Morning',titleZh:'周日早晨',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:48,neteaseId:0},
+{id:'s537',title:'Sunflower Song',titleZh:'向日葵歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:48,neteaseId:0},
+{id:'s538',title:'Sunshine On My Shoulders',titleZh:'阳光在我肩上',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:68,neteaseId:0},
+{id:'s539',title:'Supermarket Song',titleZh:'超市歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s540',title:'Surprise Egg',titleZh:'惊喜蛋',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s541',title:'Swimming Song',titleZh:'游泳歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s542',title:'Swing Song',titleZh:'秋千歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s543',title:'Swinging All Day',titleZh:'荡一整天',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s544',title:'Tadpole Song',titleZh:'蝌蚪歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0},
+{id:'s545',title:'Take Me Out to the Ballgame',titleZh:'带我去看棒球',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:74,neteaseId:0},
+{id:'s546',title:'Tall and Small',titleZh:'高和矮',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s547',title:'Tap Your Toes',titleZh:'点点脚尖',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s548',title:'Tea Party',titleZh:'茶话会',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:38,neteaseId:0},
+{id:'s549',title:'Telephone Song',titleZh:'电话歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s550',title:'Ten in the Bed Extended',titleZh:'床上十个加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:66,neteaseId:0},
+{id:'s551',title:'Thank You Song',titleZh:'感谢歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:48,neteaseId:0},
+{id:'s552',title:'The Ants Go Marching',titleZh:'蚂蚁行军',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:60,neteaseId:0},
+{id:'s553',title:'The Birdies Fly Away',titleZh:'小鸟飞走了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:60,neteaseId:0},
+{id:'s554',title:'The Cow Jumped Over the Moon',titleZh:'奶牛跳过月亮',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['action', 'movement', 'dance'],zodiacAffinity:['猴', '虎', '马'],duration:76,neteaseId:0},
+{id:'s555',title:'The Family of the Sun',titleZh:'太阳家族',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:62,neteaseId:0},
+{id:'s556',title:'The Firefighter',titleZh:'消防员',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s557',title:'The Flea Song',titleZh:'跳蚤歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s558',title:'The Little Engine',titleZh:'小火车头',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:54,neteaseId:0},
+{id:'s559',title:'The Old Gray Cat',titleZh:'老灰猫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:52,neteaseId:0},
+{id:'s560',title:'The Opposite Song',titleZh:'反义词歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[12, 36],tags:['learning', 'educational', 'vocabulary'],zodiacAffinity:['鸡', '猴', '鼠'],duration:54,neteaseId:0},
+{id:'s561',title:'The Other Day I Met a Bear',titleZh:'有一天我遇到一只熊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:72,neteaseId:0},
+{id:'s562',title:'The Owl and the Pussycat',titleZh:'猫头鹰和小猫咪',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:68,neteaseId:0},
+{id:'s563',title:'The Penguin Wobble',titleZh:'企鹅摇摆',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:56,neteaseId:0},
+{id:'s564',title:'The Rainbow Song Extended',titleZh:'彩虹歌加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:70,neteaseId:0},
+{id:'s565',title:'The Rattlin Bog',titleZh:'摇摇晃晃的沼泽',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s566',title:'The Rooster Song',titleZh:'公鸡歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:52,neteaseId:0},
+{id:'s567',title:'The Seed Song',titleZh:'种子歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:46,neteaseId:0},
+{id:'s568',title:'The Snail and the Whale',titleZh:'蜗牛和鲸鱼',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:66,neteaseId:0},
+{id:'s569',title:'The Soup Is Boiling',titleZh:'汤煮开了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['food', 'vocabulary', 'fun'],zodiacAffinity:['猪', '牛', '鸡'],duration:58,neteaseId:0},
+{id:'s570',title:'The Sun Is Shining',titleZh:'阳光灿烂',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:56,neteaseId:0},
+{id:'s571',title:'The Tailor and the Mouse',titleZh:'裁缝和老鼠',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:68,neteaseId:0},
+{id:'s572',title:'The Turkey',titleZh:'火鸡',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s573',title:'The Turtle Song',titleZh:'乌龟歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:50,neteaseId:0},
+{id:'s574',title:'The Wheels on the Bus Extended',titleZh:'公交车加长版',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[8, 36],tags:['transportation', 'rhythm', 'fun'],zodiacAffinity:['龙', '马', '虎'],duration:80,neteaseId:0},
+{id:'s575',title:'The Wind Blew East',titleZh:'东风吹',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['nature', 'weather', 'gentle'],zodiacAffinity:['龙', '兔', '羊'],duration:56,neteaseId:0},
+{id:'s576',title:'There Was a Bee',titleZh:'有一只蜜蜂',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:50,neteaseId:0},
+{id:'s577',title:'There Was a Little Turtle',titleZh:'有一只小乌龟',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:70,neteaseId:0},
+{id:'s578',title:'There Was an Old Lady',titleZh:'有一个老太太',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:62,neteaseId:0},
+{id:'s579',title:'Things I Love',titleZh:'我爱的东西',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['family', 'love', 'social'],zodiacAffinity:['兔', '狗', '羊'],duration:46,neteaseId:0},
+{id:'s580',title:'This Is the Day',titleZh:'就是今天',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s581',title:'This Little Light of Mine',titleZh:'我的小光芒',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:70,neteaseId:0},
+{id:'s582',title:'Three Jolly Fishermen',titleZh:'三个快乐的渔夫',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:62,neteaseId:0},
+{id:'s583',title:'Three Little Ducks',titleZh:'三只小鸭',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:56,neteaseId:0},
+{id:'s584',title:'Three Little Fishies',titleZh:'三条小鱼',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:60,neteaseId:0},
+{id:'s585',title:'Thumbelina',titleZh:'拇指姑娘',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:40,neteaseId:0},
+{id:'s586',title:'Thunder and Lightning',titleZh:'雷鸣和闪电',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:62,neteaseId:0},
+{id:'s587',title:'Tick Tock Clock',titleZh:'滴答钟',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s588',title:'Tickle Monster',titleZh:'挠痒痒怪物',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:48,neteaseId:0},
+{id:'s589',title:'Tickle Time',titleZh:'挠痒痒时间',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s590',title:'Tigers and Bears',titleZh:'老虎和熊',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['animals', 'vocabulary', 'fun'],zodiacAffinity:['牛', '马', '鸡'],duration:52,neteaseId:0},
+{id:'s591',title:'Time to Go to Sleep',titleZh:'该睡觉了',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:58,neteaseId:0},
+{id:'s592',title:'Tiny Tim',titleZh:'小小蒂姆',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s593',title:'Tiptoe Through the Tulips',titleZh:'踮脚走过郁金香',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:70,neteaseId:0},
+{id:'s594',title:'Today Is Monday',titleZh:'今天是周一',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:50,neteaseId:0},
+{id:'s595',title:'Tommy Thumb',titleZh:'汤米拇指',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:42,neteaseId:0},
+{id:'s596',title:'Tomorrow's Dream',titleZh:'明天的梦想',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[0, 18],tags:['lullaby', 'bedtime', 'calming'],zodiacAffinity:['兔', '猪', '羊'],duration:52,neteaseId:0},
+{id:'s597',title:'Too Ra Loo Ra Loo Ra',titleZh:'爱尔兰摇篮曲',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:60,neteaseId:0},
+{id:'s598',title:'Tortoise and the Hare',titleZh:'乌龟和野兔',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:62,neteaseId:0},
+{id:'s599',title:'Toy Song',titleZh:'玩具歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:36,neteaseId:0},
+{id:'s600',title:'Tractor Song',titleZh:'拖拉机歌',source:'Harvard/Oxford/Cambridge Early Childhood Collection',ageRange:[6, 36],tags:['rhyme', 'fun', 'classic'],zodiacAffinity:['兔', '猴', '虎'],duration:44,neteaseId:0}
 ];
 
 
@@ -446,6 +990,8 @@ function scoreItem(item,ageMonths,zodiac,gender,stageTags){
   if(item.tags&&gender==='girl'&&item.tags.includes('love'))s+=1;
   if(item.tags&&(item.tags.includes('phonics')||item.tags.includes('rhyme')))s+=1;
   if(item.tags&&(item.tags.includes('alphabet')||item.tags.includes('literacy')))s+=2;
+  // Boost songs with valid CDN URLs so playable songs rank higher
+  if(item.neteaseId&&item.neteaseId>0)s+=25;
   return s;
 }
 
@@ -528,28 +1074,36 @@ let favorites=new Set(JSON.parse(localStorage.getItem('favorites')||'[]'));
 const neAudio=document.getElementById('netease-audio');
 let neAdvanceTimer=null;
 
+function _disc(){return document.getElementById('vinyl-disc');}
+function _arm(){return document.getElementById('tonearm');}
+function _hint(){return document.getElementById('vinyl-play-hint');}
+function _progress(){return document.getElementById('progress-fill');}
+function _elapsed(){return document.getElementById('time-elapsed');}
+function _total(){return document.getElementById('time-total');}
+function _track(){return document.getElementById('song-progress-track');}
+
+function setVinylPlaying(on){
+  const d=_disc(), a=_arm(), h=_hint();
+  if(d)d.classList.toggle('playing',on);
+  if(a)a.classList.toggle('playing',on);
+  if(h)h.textContent=on?'⏸':'▶';
+}
+
 neAudio.addEventListener('play',()=>{
   hideNetEaseStatus();
-  document.getElementById('vinyl-disc').classList.add('playing');
-  document.getElementById('tonearm').classList.add('playing');
-  document.getElementById('vinyl-play-hint').textContent='⏸';
+  setVinylPlaying(true);
   const item=playlist[currentIndex];
-  scheduleAdvance(item?item.duration:60);
+  scheduleAdvance(item&&item.duration?item.duration:60);
 });
 neAudio.addEventListener('pause',()=>{
-  document.getElementById('vinyl-disc').classList.remove('playing');
-  document.getElementById('tonearm').classList.remove('playing');
-  document.getElementById('vinyl-play-hint').textContent='▶';
+  setVinylPlaying(false);
 });
 neAudio.addEventListener('playing',()=>{
   hideNetEaseStatus();
-  document.getElementById('vinyl-disc').classList.add('playing');
-  document.getElementById('tonearm').classList.add('playing');
-  document.getElementById('vinyl-play-hint').textContent='⏸';
+  setVinylPlaying(true);
   updatePlayerUI();
 });
 neAudio.addEventListener('error',()=>{
-  // Skip failed tracks (copyright-restricted, network error, etc.)
   showNetEaseStatus('此歌曲暂无免费资源，自动跳过','error');
   setTimeout(()=>{
     hideNetEaseStatus();
@@ -561,26 +1115,23 @@ neAudio.addEventListener('ended',()=>{
 });
 neAudio.addEventListener('timeupdate',()=>{
   if(neAudio.duration&&isFinite(neAudio.duration)){
-    const pct=(neAudio.currentTime/neAudio.duration)*100;
-    document.getElementById('progress-fill').style.width=pct+'%';
-    document.getElementById('time-elapsed').textContent=fmtTime(neAudio.currentTime);
-    document.getElementById('time-total').textContent='-'+fmtTime(neAudio.duration-neAudio.currentTime);
+    const p=_progress(), e=_elapsed(), t=_total();
+    if(p)p.style.width=(neAudio.currentTime/neAudio.duration)*100+'%';
+    if(e)e.textContent=fmtTime(neAudio.currentTime);
+    if(t)t.textContent='-'+fmtTime(neAudio.duration-neAudio.currentTime);
     updateLyrics();
   }
 });
 neAudio.addEventListener('loadstart',()=>{
-  document.getElementById('progress-fill').style.width='0%';
+  const p=_progress(); if(p)p.style.width='0%';
   showNetEaseStatus('加载中...','loading');
 });
-neAudio.addEventListener('canplay',()=>{
-  hideNetEaseStatus();
-});
-neAudio.addEventListener('waiting',()=>{
-  showNetEaseStatus('缓冲中...','loading');
-});
+neAudio.addEventListener('canplay',()=>{hideNetEaseStatus();});
+neAudio.addEventListener('waiting',()=>{showNetEaseStatus('缓冲中...','loading');});
 
 // Progress track click/touch for seeking
-document.getElementById('song-progress-track').addEventListener('click',(e)=>{
+const _trk=_track();
+if(_trk)_trk.addEventListener('click',(e)=>{
   if(!neAudio.duration||!isFinite(neAudio.duration))return;
   const rect=e.currentTarget.getBoundingClientRect();
   const pct=(e.clientX-rect.left)/rect.width;
@@ -639,8 +1190,17 @@ function renderAllFavIcons(){
     btn.classList.toggle('on',fav);
     btn.textContent=fav?'⭐':'☆';
   });
+  const fb=document.getElementById('now-fav-btn');
+  try{
+    if(fb){
+      const sid=fb.dataset.songId;
+      if(sid){
+        fb.textContent=favorites.has(sid)?'♥':'♡';
+        fb.classList.toggle('on',favorites.has(sid));
+      }
+    }
+  }catch(e){console.warn('renderAllFavIcons fb:',e.message);}
   document.getElementById('fav-filter-btn').classList.toggle('on',favOnly);
-  // Refresh playlist if fav filter is on
   if(favOnly)renderPlaylist();
 }
 
@@ -676,20 +1236,12 @@ function playNetEase(neId, songKey, title){
   const url='/api/stream?'+params.toString();
   if(neAudio.src.endsWith(params.toString())){
     // Same song — just resume if paused
-    if(neAudio.paused)neAudio.play().then(()=>{hideNetEaseStatus();}).catch(e=>{console.error('Resume rejected:',e);hideNetEaseStatus();showToast('请点击唱片继续播放');});
+    if(neAudio.paused)neAudio.play().catch(()=>{});
     return;
   }
   neAudio.src=url;
   neAudio.load();
-  neAudio.play().then(()=>{
-    hideNetEaseStatus();
-  }).catch(e=>{
-    console.error('Audio play rejected:',e);
-    hideNetEaseStatus();
-    isPlaying=false;
-    updatePlayerUI();
-    showToast('请点击唱片开始播放');
-  });
+  neAudio.play().catch(()=>{});
 }
 
 function stopNetEase(){
@@ -780,21 +1332,22 @@ function renderHome(){
   document.getElementById('play-all-btn').innerHTML=`▶ 全部播放 · ${recs.items.length}首`;
 
   document.getElementById('item-count').textContent=`共${recs.items.length}首`;
-  // Pagination: 2 pages of 10
-  const totalPages=2;
-  const start=currentPage*10;
-  const pageItems=recs.items.slice(start,start+10);
+  const pageSize=10;
+  const totalPages=Math.max(1,Math.ceil(recs.items.length/pageSize));
+  currentPage=Math.min(currentPage,totalPages-1);
+  const start=currentPage*pageSize;
+  const pageItems=recs.items.slice(start,start+pageSize);
   let list='';
   pageItems.forEach((item,i)=>{
     const globalIdx=start+i;
     list+=`<div class="item-card" onclick="openPlayer(${globalIdx})">
       <div class="item-type-icon icon-song"><span>🎵</span></div>
       <div class="item-info">
-        <span class="item-title">${item.title} <text style="font-size:10px;color:#aaa">🕐${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</text></span>
+        <span class="item-title">${item.title} <span style="font-size:10px;color:#aaa">🕐${Math.floor((item.duration||0)/60)}′${String(Math.floor((item.duration||0)%60)).padStart(2,'0')}″</span></span>
         <span class="item-title-zh">${item.titleZh}</span>
         <div class="item-meta">
           <span class="item-type-label label-song">儿歌</span>
-          <span class="item-source-short">${item.author||''}</span>
+          <span class="item-source-short">${item.source||''}</span>
         </div>
       </div>
       <button class="fav-btn mini" data-song-id="${item.id}" onclick="toggleFavorite('${item.id}',event)">${isFavorite(item.id)?'⭐':'☆'}</button>
@@ -811,7 +1364,9 @@ function renderHome(){
 }
 
 function changePage(dir){
-  currentPage=Math.max(0,Math.min(1,currentPage+dir));
+  const pageSize=10;
+  const totalPages=Math.max(1,Math.ceil(playlist.length/pageSize));
+  currentPage=Math.max(0,Math.min(totalPages-1,currentPage+dir));
   renderHome();
 }
 
@@ -819,26 +1374,26 @@ function changePage(dir){
 
 // ==================== PLAYER ====================
 function openPlayer(startIndex){
-  if(playlist.length===0){showToast('暂无歌曲');return;}
-  currentIndex=Math.max(0,Math.min(startIndex,playlist.length-1));
-  isPlaying=true;
-  playlistExpanded=false;
-  document.getElementById('playlist-section').classList.remove('expanded');
-  document.getElementById('playlist-expand-icon').textContent='▸';
-  stopPlayback();
-  playCurrent();
-  document.getElementById('player-overlay').classList.add('show');
-  renderPlaylist();
-  updatePlayerUI();
+  try{
+    if(playlist.length===0){showToast('暂无歌曲');return;}
+    currentIndex=Math.max(0,Math.min(startIndex,playlist.length-1));
+    isPlaying=true;
+    playlistExpanded=false;
+    const ps=document.getElementById('playlist-section'); if(ps)ps.classList.remove('expanded');
+    const pe=document.getElementById('playlist-expand-icon'); if(pe)pe.textContent='▸';
+    stopPlayback();
+    playCurrent();
+    const po=document.getElementById('player-overlay'); if(po)po.classList.add('show');
+    renderPlaylist();
+    updatePlayerUI();
+  }catch(e){showToast('播放出错：'+e.message);console.error(e);}
 }
 
 function closePlayer(){
   stopPlayback();
   isPlaying=false;
-  document.getElementById('vinyl-disc').classList.remove('playing');
-  document.getElementById('tonearm').classList.remove('playing');
-  document.getElementById('vinyl-play-hint').textContent='▶';
-  document.getElementById('player-overlay').classList.remove('show');
+  setVinylPlaying(false);
+  const po=document.getElementById('player-overlay'); if(po)po.classList.remove('show');
 }
 
 function stopPlayback(){
@@ -882,14 +1437,13 @@ function prevSong(){
   else currentIndex=playlist.length-1;
   stopPlayback();
   playCurrent();
-  updatePlayerUI();
   renderPlaylist();
-  updatePlaylistHighlight();
 }
 
 function nextSong(){
   stopPlayback();
   advanceTrack();
+  renderPlaylist();
 }
 
 function currentSongId(){
@@ -898,24 +1452,13 @@ function currentSongId(){
 }
 
 
-
-
 function togglePlay(){
   try{
     isPlaying=!isPlaying;
-    if(isPlaying){
-      playCurrent();
-    }else{
-      stopPlayback();
-      const disc=document.getElementById('vinyl-disc');
-      const arm=document.getElementById('tonearm');
-      const hint=document.getElementById('vinyl-play-hint');
-      if(disc)disc.classList.remove('playing');
-      if(arm)arm.classList.remove('playing');
-      if(hint)hint.textContent='▶';
-    }
+    if(isPlaying){playCurrent();}
+    else{stopPlayback();}
     updatePlayerUI();
-  }catch(e){showToast('播放出错，请重试');console.error(e);}
+  }catch(e){showToast('播放出错：'+e.message);console.error(e);}
 }
 
 
@@ -929,35 +1472,38 @@ function songColor(id){
 function updatePlayerUI(){
   if(currentIndex>=playlist.length)return;
   const item=playlist[currentIndex];
-  // Vinyl center: song monogram
+  if(!item)return;
   const art=document.getElementById('now-art');
-  const initials=(item.title||'').replace(/[^a-zA-Z]/g,'').substring(0,2).toUpperCase()||'♪';
-  art.textContent=initials;
-  art.style.background=songColor(item.id);
-  document.getElementById('now-title').textContent=item.title;
-  document.getElementById('now-title-zh').textContent=item.titleZh||'';
-  document.getElementById('now-source').textContent=item.source||'';
-  // Fav button
+  if(art){
+    const initials=(item.title||'').replace(/[^a-zA-Z]/g,'').substring(0,2).toUpperCase()||'♪';
+    art.textContent=initials;
+    art.style.background=songColor(item.id);
+  }
+  const nt=document.getElementById('now-title-text'); if(nt)nt.textContent=item.title;
+  const nz=document.getElementById('now-title-zh'); if(nz)nz.textContent=item.titleZh||'';
+  const ns=document.getElementById('now-source'); if(ns)ns.textContent=item.source||'';
   const fb=document.getElementById('now-fav-btn');
-  fb.dataset.songId=item.id;
-  fb.textContent=isFavorite(item.id)?'♥':'♡';
-  fb.classList.toggle('on',isFavorite(item.id));
-  // Play button state
-  document.getElementById('vinyl-play-hint').textContent=isPlaying?'⏸':'▶';
+  try{
+    if(fb){
+      fb.dataset.songId=item.id;
+      fb.textContent=isFavorite(item.id)?'♥':'♡';
+      fb.classList.toggle('on',isFavorite(item.id));
+    }
+  }catch(e){console.warn('updatePlayerUI fb:',e.message);}
+  const vh=document.getElementById('vinyl-play-hint'); if(vh)vh.textContent=isPlaying?'⏸':'▶';
 
-  // Lyrics: render DOM once, keep it stable for scrolling
   const lb=document.getElementById('lyrics-box');
-  if(item.lyrics){
-    const lines=item.lyrics.split('\n');
-    lb.innerHTML=lines.map((l,i)=>`<div class="lyrics-line${i===0?' active':''}" data-line="${i}">${l}</div>`).join('');
-    lb.scrollTop=0;
-  }else{lb.innerHTML='';}
+  if(lb){
+    if(item.lyrics){
+      const lines=item.lyrics.split('\n');
+      lb.innerHTML=lines.map((l,i)=>`<div class="lyrics-line${i===0?' active':''}" data-line="${i}">${l}</div>`).join('');
+      lb.scrollTop=0;
+    }else{lb.innerHTML='';}
+  }
 
-  // Playlist collapsed label
-  document.getElementById('playlist-collapsed-label').textContent=`📋 ${currentIndex+1} / ${playlist.length}`;
-  // Shuffle button state
-  document.getElementById('shuffle-btn').classList.toggle('on',isShuffle);
-  document.getElementById('fav-filter-btn').classList.toggle('on',favOnly);
+  const pl=document.getElementById('playlist-collapsed-label'); if(pl)pl.textContent='📋 '+(currentIndex+1)+' / '+playlist.length;
+  const sb=document.getElementById('shuffle-btn'); if(sb)sb.classList.toggle('on',isShuffle);
+  const ff=document.getElementById('fav-filter-btn'); if(ff)ff.classList.toggle('on',favOnly);
 }
 
 function renderPlaylist(){
@@ -994,7 +1540,7 @@ function updatePlaylistHighlight(){
   });
   // Update index numbers
   document.querySelectorAll('.pl-index').forEach((el,i)=>{
-    el.textContent=i<currentIndex?'✓':String(i+1);
+    el.textContent=i===currentIndex?'♪':i<currentIndex?'✓':String(i+1);
   });
 }
 
@@ -1004,11 +1550,11 @@ function scrollPlaylistToCurrent(){
 }
 
 function jumpToTrack(i){
-  stopPlayback();
+  clearTimers();
   currentIndex=i;
-  updatePlayerUI();
+  skipCount=0;
+  errorStreak=0;
   renderPlaylist();
-  updatePlaylistHighlight();
   if(!isPlaying){isPlaying=true;}
   playCurrent();
 }
