@@ -1,5 +1,5 @@
 // 九豆米 — Service Worker for offline PWA
-const CACHE = 'jiudoumi-v2'
+const CACHE = 'jiudoumi-v3'
 
 self.addEventListener('install', e => {
   self.skipWaiting()
